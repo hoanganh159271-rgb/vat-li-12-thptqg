@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô phỏng 03: Cảm ứng điện từ &amp; Dòng điện xoay chiều</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
+        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Đổi đơn vị</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Mô phỏng Chương 3: Khung dây quay, Từ thông Φ(t) &amp; Suất điện động e(t)</h1>
+    <p class="muted">Quan sát khung dây quay đều trong từ trường đều B, chiều dòng điện cảm ứng theo định luật Lenz và độ lệch pha π/2 giữa Φ(t) với e(t).</p>
+
+    <div class="lab-layout" style="margin-top: 20px;">
+      <!-- Bảng điều khiển -->
+      <div class="card">
+        <h3>Thông số khung dây &amp; Từ trường</h3>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-N" class="control-label">Số vòng dây N</label>
+            <span id="val-N" class="control-val">100 vòng</span>
+          </div>
+          <input id="rng-N" type="range" min="10" max="500" step="10" value="100">
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-B" class="control-label">Cảm ứng từ B</label>
+            <span id="val-B" class="control-val">0,20 T</span>
+          </div>
+          <input id="rng-B" type="range" min="0.05" max="1.00" step="0.05" value="0.20">
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-S" class="control-label">Diện tích 1 vòng S</label>
+            <span id="val-S" class="control-val">100 cm² (0,0100 m²)</span>
+          </div>
+          <input id="rng-S" type="range" min="10" max="500" step="10" value="100">
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-f" class="control-label">Tần số quay f</label>
+            <span id="val-f" class="control-val">50 Hz</span>
+          </div>
+          <input id="rng-f" type="range" min="5" max="100" step="5" value="50">
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-phi" class="control-label">Pha ban đầu φ = (n⃗, B⃗)₀</label>
+            <span id="val-phi" class="control-val">0° (0 rad)</span>
+          </div>
+          <input id="rng-phi" type="range" min="-180" max="180" step="15" value="0">
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-t" class="control-label">Thời điểm quan sát t / T</label>
+            <span id="val-t" class="control-val">0,15 T</span>
+          </div>
+          <input id="rng-t" type="range" min="0" max="2" step="0.01" value="0.15">
+        </div>
+
+        <div class="btn-group">
+          <button type="button" id="btn-play" class="btn btn-primary btn-sm">Chạy mô phỏng</button>
+          <button type="button" id="btn-ac-reset" class="btn btn-sm">Đặt lại</button>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Nhảy nhanh mốc thời gian</span>
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm jump-t" data-t="0">t = 0</button>
+            <button type="button" class="btn btn-sm jump-t" data-t="0.25">T/4</button>
+            <button type="button" class="btn btn-sm jump-t" data-t="0.5">T/2</button>
+            <button type="button" class="btn btn-sm jump-t" data-t="0.75">3T/4</button>
+            <button type="button" class="btn btn-sm jump-t" data-t="1">T</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Đồ thị & Mặt cắt -->
+      <div class="card">
+        <div class="grid-2" style="gap: 16px;">
+          <div>
+            <h3>Mặt cắt khung dây &amp; Định luật Lenz</h3>
+            <div class="canvas-box">
+              <canvas id="cv-coil"></canvas>
+            </div>
+            <div id="lenz-box" class="notice notice-info" style="margin-top: 10px;">
+              <div class="notice-title">Phân tích chiều dòng cảm ứng</div>
+              <div id="lenz-text" class="num"></div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Đồ thị Φ(t) và e(t) đồng bộ</h3>
+            <div class="canvas-box">
+              <canvas id="cv-wave"></canvas>
+              <div class="canvas-legend">
+                <span class="legend-item"><span class="legend-swatch" id="sw-phi"></span>Φ(t) (mWb)</span>
+                <span class="legend-item"><span class="legend-swatch" id="sw-e"></span>e(t) (V) — trễ pha π/2 so với Φ(t)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-item">
+            <div class="stat-label">Từ thông cực đại Φ₀</div>
+            <div id="st-phi0" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Suất điện động cực đại E₀</div>
+            <div id="st-e0" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Suất điện động hiệu dụng E</div>
+            <div id="st-erms" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Chu kì T | Tốc độ góc ω</div>
+            <div id="st-tw" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Từ thông tức thời Φ(t)</div>
+            <div id="st-phinow" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Suất điện động tức thời e(t)</div>
+            <div id="st-enow" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Góc α = (n⃗, B⃗)</div>
+            <div id="st-alpha" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Kiểm tra (Φ/Φ₀)² + (e/E₀)²</div>
+            <div id="st-indep" class="stat-value">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section-block">
+      <div class="card">
+        <h2>Điều kiện mô hình &amp; Bẫy hay gặp (Chương 3)</h2>
+        <div class="grid-2">
+          <div class="panel-alt">
+            <h3>Điều kiện áp dụng &amp; Ý nghĩa đồ thị</h3>
+            <ul class="clean-list">
+              <li><strong>Đồ thị hình sin</strong>: khung dây quay đều trong <strong>từ trường đều</strong> quanh trục vuông góc đường sức từ.</li>
+              <li><strong>Quan hệ pha</strong>: Φ(t) = NBS·cos(ωt + φ) và e(t) = −Φ'(t) = ωNBS·sin(ωt + φ) = E₀·cos(ωt + φ − π/2).</li>
+              <li><strong>Giá trị hiệu dụng</strong>: E = E₀/√2 chỉ áp dụng cho dòng/suất điện động hình sin.</li>
+            </ul>
+          </div>
+          <div class="notice notice-danger">
+            <h3>3 bẫy đề thi cần cảnh giác</h3>
+            <ul class="clean-list">
+              <li><strong>Bẫy 1 (Góc với mặt khung)</strong>: Đề cho "mặt phẳng khung hợp với B⃗ góc 30°" thì α = (n⃗, B⃗) = 90° − 30° = 60°.</li>
+              <li><strong>Bẫy 2 (Đổi cm² sang m²)</strong>: 1 cm² = 10⁻⁴ m² (chia 10 000), hay nhầm thành chia 100.</li>
+              <li><strong>Bẫy 3 (Cực trị vuông pha)</strong>: Khi Φ = ±Φ₀ (khung vuông góc B⃗) thì e = 0; khi Φ = 0 (khung song song B⃗) thì |e| = E₀.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var rngN = document.getElementById('rng-N');
+      var rngB = document.getElementById('rng-B');
+      var rngS = document.getElementById('rng-S');
+      var rngF = document.getElementById('rng-f');
+      var rngPhi = document.getElementById('rng-phi');
+      var rngT = document.getElementById('rng-t');
+      var btnPlay = document.getElementById('btn-play');
+      var btnReset = document.getElementById('btn-ac-reset');
+      var cvCoil = document.getElementById('cv-coil');
+      var cvWave = document.getElementById('cv-wave');
+
+      var playing = false;
+      var lastTs = performance.now();
+
+      function readState() {
+        var N = parseFloat(rngN.value);
+        var B = parseFloat(rngB.value);
+        var Scm2 = parseFloat(rngS.value);
+        var S = Scm2 * 1e-4;
+        var f = parseFloat(rngF.value);
+        var phiDeg = parseFloat(rngPhi.value);
+        var phi = (phiDeg * Math.PI) / 180;
+        var tOverT = parseFloat(rngT.value);
+
+        var omega = 2 * Math.PI * f;
+        var T = 1 / f;
+        var phi0 = N * B * S;
+        var E0 = omega * phi0;
+        var Erms = E0 / Math.SQRT2;
+
+        var alpha = 2 * Math.PI * tOverT + phi;
+        var phiNow = phi0 * Math.cos(alpha);
+        var eNow = E0 * Math.sin(alpha);
+        return {
+          N: N, B: B, Scm2: Scm2, S: S, f: f,
+          phiDeg: phiDeg, phi: phi, tOverT: tOverT,
+          omega: omega, T: T, phi0: phi0, E0: E0, Erms: Erms,
+          alpha: alpha, phiNow: phiNow, eNow: eNow
+        };
+      }
+
+      function renderAll() {
+        var st = readState();
+        var colors = C.getColors();
+
+        document.getElementById('val-N').textContent = st.N + ' vòng';
+        document.getElementById('val-B').textContent = C.fmt(st.B, 2) + ' T';
+        document.getElementById('val-S').textContent = st.Scm2 + ' cm² (' + C.fmt(st.S, 4) + ' m²)';
+        document.getElementById('val-f').textContent = st.f + ' Hz';
+        document.getElementById('val-phi').textContent = st.phiDeg + '° (' + C.fmt(st.phi / Math.PI, 2) + 'π rad)';
+        document.getElementById('val-t').textContent = C.fmt(st.tOverT, 2) + ' T (' + C.fmt(st.tOverT * st.T * 1000, 2) + ' ms)';
+
+        document.getElementById('st-phi0').textContent = C.fmt(st.phi0 * 1000, 2) + ' mWb (' + C.fmt(st.phi0, 4) + ' Wb)';
+        document.getElementById('st-e0').textContent = C.fmt(st.E0, 2) + ' V';
+        document.getElementById('st-erms').textContent = C.fmt(st.Erms, 2) + ' V';
+        document.getElementById('st-tw').textContent = C.fmt(st.T * 1000, 2) + ' ms | ' + C.fmt(st.omega, 1) + ' rad/s';
+        document.getElementById('st-phinow').textContent = C.fmt(st.phiNow * 1000, 2) + ' mWb';
+        document.getElementById('st-enow').textContent = C.fmt(st.eNow, 2) + ' V';
+
+        var alphaDeg = ((st.alpha * 180 / Math.PI) % 360 + 360) % 360;
+        document.getElementById('st-alpha').textContent = C.fmt(alphaDeg, 1) + '°';
+        var indep = Math.pow(st.phiNow / st.phi0, 2) + Math.pow(st.eNow / st.E0, 2);
+        document.getElementById('st-indep').textContent = C.fmt(indep, 3);
+
+        document.getElementById('sw-phi').style.backgroundColor = colors.cold;
+        document.getElementById('sw-e').style.backgroundColor = colors.warm;
+
+        /* Lenz box */
+        var lenzEl = document.getElementById('lenz-text');
+        var eps = 0.01 * st.E0;
+        if (Math.abs(st.eNow) <= eps) {
+          lenzEl.textContent = 'Φ đang đạt cực trị (±Φ₀) ⇒ tốc độ biến thiên ΔΦ/Δt = 0 ⇒ e = 0 V, dòng cảm ứng bằng 0.';
+        } else if (st.eNow > 0) {
+          lenzEl.textContent = 'dΦ/dt < 0 ⇒ e > 0 (' + C.fmt(st.eNow, 1) + ' V): theo định luật Lenz, B_cảm_ứng cùng chiều pháp tuyến n⃗ (đầu trên +u có dòng đi ra ⊙, đầu dưới −u đi vào ⊗).';
+        } else {
+          lenzEl.textContent = 'dΦ/dt > 0 ⇒ e < 0 (' + C.fmt(st.eNow, 1) + ' V): theo định luật Lenz, B_cảm_ứng ngược chiều pháp tuyến n⃗ (đầu +u có dòng đi vào ⊗, đầu −u đi ra ⊙).';
+        }
+
+        drawCoil(st, colors);
+        drawWaves(st, colors);
+      }
+
+      function drawCoil(st, colors) {
+        var s = C.setupCanvas(cvCoil, 290);
+        var ctx = s.ctx;
+        var W = s.width;
+        var H = s.height;
+        ctx.fillStyle = colors.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        /* Đường sức từ B ngang từ trái sang phải */
+        ctx.save();
+        for (var row = 1; row <= 5; row++) {
+          var y = (row / 6) * H;
+          C.drawArrow(ctx, 20, y, W - 24, y, colors.grid, 1.5, 7);
+        }
+        ctx.fillStyle = colors.muted;
+        ctx.font = '700 13px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'right';
+        ctx.fillText('Từ trường đều B⃗', W - 26, 22);
+        ctx.restore();
+
+        var cx = W * 0.5;
+        var cy = H * 0.52;
+        var halfLen = Math.min(W, H) * 0.30;
+
+        /* Hướng n = (cos α, -sin α), mặt khung u = (-sin α, -cos α) */
+        var nx = Math.cos(st.alpha);
+        var ny = -Math.sin(st.alpha);
+        var ux = -Math.sin(st.alpha);
+        var uy = -Math.cos(st.alpha);
+
+        var xA = cx + ux * halfLen;
+        var yA = cy + uy * halfLen;
+        var xC = cx - ux * halfLen;
+        var yC = cy - uy * halfLen;
+
+        /* Cung góc alpha giữa B (+x) và n */
+        ctx.save();
+        ctx.strokeStyle = colors.phase;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + halfLen * 0.85, cy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        var normAng = -st.alpha;
+        ctx.arc(cx, cy, 34, 0, normAng, Math.sin(st.alpha) >= 0);
+        ctx.stroke();
+        ctx.restore();
+
+        /* Mặt cắt khung dây */
+        ctx.save();
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(xA, yA);
+        ctx.lineTo(xC, yC);
+        ctx.stroke();
+
+        /* Chốt quay ở tâm */
+        ctx.fillStyle = colors.ink;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        /* Pháp tuyến n */
+        C.drawArrow(ctx, cx, cy, cx + nx * halfLen * 0.88, cy + ny * halfLen * 0.88, colors.cold, 2.8, 9);
+        ctx.save();
+        ctx.fillStyle = colors.cold;
+        ctx.font = '700 13px ' + getComputedStyle(document.body).fontFamily;
+        ctx.fillText('n⃗', cx + nx * (halfLen * 0.88 + 12) - 4, cy + ny * (halfLen * 0.88 + 12) + 4);
+        ctx.restore();
+
+        /* Kí hiệu chiều dòng cảm ứng tại 2 cạnh A (+u) và C (-u) */
+        var eps = 0.01 * st.E0;
+        function drawWireSymbol(px, py, isDot) {
+          ctx.save();
+          ctx.fillStyle = colors.bg;
+          ctx.strokeStyle = colors.warm;
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.arc(px, py, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          if (isDot === true) {
+            ctx.fillStyle = colors.warm;
+            ctx.beginPath();
+            ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (isDot === false) {
+            ctx.beginPath();
+            ctx.moveTo(px - 5.5, py - 5.5);
+            ctx.lineTo(px + 5.5, py + 5.5);
+            ctx.moveTo(px + 5.5, py - 5.5);
+            ctx.lineTo(px - 5.5, py + 5.5);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        if (Math.abs(st.eNow) > eps) {
+          var aOut = st.eNow > 0;
+          drawWireSymbol(xA, yA, aOut);
+          drawWireSymbol(xC, yC, !aOut);
+        } else {
+          drawWireSymbol(xA, yA, null);
+          drawWireSymbol(xC, yC, null);
+        }
+      }
+
+      function drawWaves(st, colors) {
+        var s = C.setupCanvas(cvWave, 290);
+        var ctx = s.ctx;
+        var W = s.width;
+        var H = s.height;
+        ctx.fillStyle = colors.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        var pad = { left: 54, right: 20, top: 24, bottom: 34 };
+        var plotW = Math.max(80, W - pad.left - pad.right);
+        var midPhiY = H * 0.28;
+        var midEY = H * 0.72;
+        var amp = Math.max(36, H * 0.17);
+
+        function toX(tRatio) {
+          return pad.left + (tRatio / 2) * plotW;
+        }
+
+        /* Lưới trục thời gian t/T = 0, 0.5, 1, 1.5, 2 */
+        ctx.save();
+        ctx.font = '12px ' + getComputedStyle(document.body).fontFamily;
+        for (var k = 0; k <= 4; k++) {
+          var tr = k * 0.5;
+          var xp = toX(tr);
+          ctx.strokeStyle = colors.grid;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(xp, pad.top);
+          ctx.lineTo(xp, H - pad.bottom);
+          ctx.stroke();
+
+          ctx.fillStyle = colors.muted;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText(tr === 0 ? '0' : C.fmtTrim(tr, 1) + 'T', xp, H - pad.bottom + 8);
+        }
+
+        /* Đường trục 0 cho Φ và e */
+        [midPhiY, midEY].forEach(function (yy) {
+          ctx.strokeStyle = colors.ink;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(pad.left, yy);
+          ctx.lineTo(pad.left + plotW, yy);
+          ctx.stroke();
+        });
+
+        /* Nhãn trục tung */
+        ctx.fillStyle = colors.cold;
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('+Φ₀', pad.left - 6, midPhiY - amp);
+        ctx.fillText('0', pad.left - 6, midPhiY);
+        ctx.fillText('-Φ₀', pad.left - 6, midPhiY + amp);
+
+        ctx.fillStyle = colors.warm;
+        ctx.fillText('+E₀', pad.left - 6, midEY - amp);
+        ctx.fillText('0', pad.left - 6, midEY);
+        ctx.fillText('-E₀', pad.left - 6, midEY + amp);
+
+        /* Vẽ đồ thị Φ(t) */
+        ctx.strokeStyle = colors.cold;
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        for (var i = 0; i <= 160; i++) {
+          var tR = (i / 160) * 2;
+          var ang = 2 * Math.PI * tR + st.phi;
+          var py = midPhiY - amp * Math.cos(ang);
+          if (i === 0) ctx.moveTo(toX(tR), py);
+          else ctx.lineTo(toX(tR), py);
+        }
+        ctx.stroke();
+
+        /* Vẽ đồ thị e(t) */
+        ctx.strokeStyle = colors.warm;
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        for (var j = 0; j <= 160; j++) {
+          var tRe = (j / 160) * 2;
+          var ange = 2 * Math.PI * tRe + st.phi;
+          var ey = midEY - amp * Math.sin(ange);
+          if (j === 0) ctx.moveTo(toX(tRe), ey);
+          else ctx.lineTo(toX(tRe), ey);
+        }
+        ctx.stroke();
+
+        /* Vạch thời điểm hiện tại */
+        var curX = toX(st.tOverT);
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(curX, pad.top);
+        ctx.lineTo(curX, H - pad.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        var curPhiY = midPhiY - amp * Math.cos(st.alpha);
+        var curEY = midEY - amp * Math.sin(st.alpha);
+
+        ctx.fillStyle = colors.cold;
+        ctx.beginPath();
+        ctx.arc(curX, curPhiY, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = colors.warm;
+        ctx.beginPath();
+        ctx.arc(curX, curEY, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      function tick(now) {
+        var dt = Math.min(0.05, (now - lastTs) / 1000);
+        lastTs = now;
+        if (playing) {
+          var nextT = (parseFloat(rngT.value) + dt * 0.25) % 2;
+          rngT.value = nextT.toFixed(2);
+          renderAll();
+        }
+        requestAnimationFrame(tick);
+      }
+
+      btnPlay.addEventListener('click', function () {
+        playing = !playing;
+        btnPlay.textContent = playing ? 'Tạm dừng' : 'Chạy mô phỏng';
+      });
+
+      btnReset.addEventListener('click', function () {
+        playing = false;
+        btnPlay.textContent = 'Chạy mô phỏng';
+        rngN.value = '100';
+        rngB.value = '0.20';
+        rngS.value = '100';
+        rngF.value = '50';
+        rngPhi.value = '0';
+        rngT.value = '0.15';
+        renderAll();
+      });
+
+      document.querySelectorAll('.jump-t').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          playing = false;
+          btnPlay.textContent = 'Chạy mô phỏng';
+          rngT.value = btn.getAttribute('data-t');
+          renderAll();
+        });
+      });
+
+      [rngN, rngB, rngS, rngF, rngPhi, rngT].forEach(function (el) {
+        el.addEventListener('input', renderAll);
+      });
+
+      renderAll();
+      requestAnimationFrame(tick);
+      window.addEventListener('resize', renderAll);
+      window.addEventListener('ly-theme-change', renderAll);
+    })();
+  </script>
+</body>
+</html>

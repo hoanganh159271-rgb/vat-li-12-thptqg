@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô phỏng 04: Định luật Phóng xạ &amp; Độ phóng xạ H(t)</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
+        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Đổi đơn vị</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Mô phỏng Chương 4: Đường cong phân rã N(t), Hạt nhân con &amp; Độ phóng xạ H(t)</h1>
+    <p class="muted">Quan sát đồng thời đường cong hạt nhân mẹ N(t) = N₀·2^(-t/T), hạt nhân con ΔN(t) = N₀(1 − 2^(-t/T)), giao điểm tại t = T và độ phóng xạ H(t) = λN(t).</p>
+
+    <div class="lab-layout" style="margin-top: 20px;">
+      <!-- Điều khiển -->
+      <div class="card">
+        <h3>Thông số mẫu phóng xạ</h3>
+
+        <div class="control-group">
+          <label for="sel-iso" class="control-label">Chọn đồng vị mẫu (hoặc tùy chỉnh)</label>
+          <select id="sel-iso">
+            <option value="Po210">²¹⁰Po → ²⁰⁶Pb + α (T = 138 ngày)</option>
+            <option value="I131">¹³¹I → ¹³¹Xe + β⁻ (T = 8 ngày)</option>
+            <option value="Na24">²⁴Na → ²⁴Mg + β⁻ (T = 15 giờ)</option>
+            <option value="C14">¹⁴C → ¹⁴N + β⁻ (T = 5730 năm)</option>
+            <option value="custom">Tùy chỉnh chu kì T</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-n0" class="control-label">Số hạt ban đầu N₀ (× 10¹² hạt)</label>
+            <span id="val-n0" class="control-val">4,0 × 10¹²</span>
+          </div>
+          <input id="rng-n0" type="range" min="1" max="10" step="0.5" value="4">
+        </div>
+
+        <div class="grid-2" style="gap: 10px;">
+          <div class="control-group">
+            <label for="inp-T" class="control-label">Chu kì bán rã T</label>
+            <input id="inp-T" type="number" min="0.1" step="any" value="138">
+          </div>
+          <div class="control-group">
+            <label for="sel-Tunit" class="control-label">Đơn vị của T</label>
+            <select id="sel-Tunit">
+              <option value="1">Giây (s)</option>
+              <option value="60">Phút</option>
+              <option value="3600">Giờ</option>
+              <option value="86400" selected>Ngày</option>
+              <option value="31536000">Năm (365 ngày)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-head">
+            <label for="rng-time" class="control-label">Thời điểm khảo sát t / T</label>
+            <span id="val-time" class="control-val">1,00 T</span>
+          </div>
+          <input id="rng-time" type="range" min="0" max="5" step="0.05" value="1.00">
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Mốc thời gian hay thi</span>
+          <div class="btn-group">
+            <button type="button" class="btn btn-sm jump-rad" data-r="0.5">0,5T</button>
+            <button type="button" class="btn btn-sm jump-rad" data-r="1">1T</button>
+            <button type="button" class="btn btn-sm jump-rad" data-r="2">2T</button>
+            <button type="button" class="btn btn-sm jump-rad" data-r="3">3T</button>
+            <button type="button" class="btn btn-sm jump-rad" data-r="4">4T</button>
+          </div>
+        </div>
+
+        <div class="panel-alt">
+          <div class="notice-title">Phân bố ngẫu nhiên 100 hạt nhân đại diện</div>
+          <div id="grid-100" style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-top: 8px;"></div>
+          <div class="canvas-legend" style="margin-top: 10px;">
+            <span class="legend-item"><span class="legend-swatch" id="sw-dot-m"></span>Còn lại (mẹ)</span>
+            <span class="legend-item"><span class="legend-swatch" id="sw-dot-c"></span>Đã phân rã (con)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Đồ thị -->
+      <div class="card">
+        <h3>Đồ thị số hạt N(t) &amp; Hạt nhân con sinh ra ΔN(t)</h3>
+        <div class="canvas-box">
+          <canvas id="cv-decay"></canvas>
+          <div class="canvas-legend">
+            <span class="legend-item"><span class="legend-swatch" id="sw-mother"></span>Hạt nhân mẹ còn lại N(t) = N₀·2^(-t/T)</span>
+            <span class="legend-item"><span class="legend-swatch" id="sw-daughter"></span>Hạt nhân con ΔN(t) = N₀(1 − 2^(-t/T))</span>
+          </div>
+        </div>
+
+        <h3>Đường cong độ phóng xạ H(t) = λN(t)</h3>
+        <div class="canvas-box">
+          <canvas id="cv-activity"></canvas>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-item">
+            <div class="stat-label">Mẹ còn lại N(t)</div>
+            <div id="st-n" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Con sinh ra ΔN(t)</div>
+            <div id="st-dn" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Tỉ lệ con / mẹ (N_con/N)</div>
+            <div id="st-ratio" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Hằng số phóng xạ λ (s⁻¹)</div>
+            <div id="st-lam" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Độ phóng xạ đầu H₀</div>
+            <div id="st-h0" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Độ phóng xạ H(t) theo Bq</div>
+            <div id="st-ht" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Độ phóng xạ H(t) theo Ci</div>
+            <div id="st-hci" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Thời gian thực t</div>
+            <div id="st-treal" class="stat-value">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section-block">
+      <div class="card">
+        <h2>Điều kiện mô hình &amp; Bẫy hay gặp (Chương 4)</h2>
+        <div class="grid-2">
+          <div class="panel-alt">
+            <h3>Điều kiện áp dụng &amp; Ý nghĩa đồ thị</h3>
+            <ul class="clean-list">
+              <li><strong>Bản chất thống kê</strong>: Định luật N(t) = N₀·2^(-t/T) đúng khi số hạt rất lớn (N₀ ≫ 1) và không chịu tác động từ nhiệt độ, áp suất hay hóa học.</li>
+              <li><strong>Giao điểm trên đồ thị</strong>: Đường N(t) và ΔN(t) cắt nhau tại đúng thời điểm t = T với giá trị N₀/2 (50% phân rã).</li>
+              <li><strong>Hạt nhân con bền</strong>: Tỉ số N_con / N_mẹ = 2^(t/T) − 1 đúng khi mẫu ban đầu nguyên chất và hạt nhân con không phóng xạ tiếp.</li>
+            </ul>
+          </div>
+          <div class="notice notice-danger">
+            <h3>3 bẫy đề thi cần cảnh giác</h3>
+            <ul class="clean-list">
+              <li><strong>Bẫy 1 (Đổi T ra giây)</strong>: Khi tính H = λN theo đơn vị chuẩn Bq (1 Bq = 1 phân rã/s), bắt buộc đổi T sang <strong>giây</strong> (1 ngày = 86 400 s).</li>
+              <li><strong>Bẫy 2 (Khối lượng con ≠ Δm_mẹ)</strong>: Số hạt N_con = ΔN_mẹ, nhưng khối lượng con phải nhân tỉ số số khối: m_con = (A_con / A_mẹ)·Δm_mẹ.</li>
+              <li><strong>Bẫy 3 (Hằng số phóng xạ vs nhiệt độ)</strong>: Đun nóng hay nén mẫu phóng xạ KHÔNG làm thay đổi chu kì bán rã T.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var PRESETS = {
+        Po210: { T: 138, unit: '86400', label: 'ngày' },
+        I131: { T: 8, unit: '86400', label: 'ngày' },
+        Na24: { T: 15, unit: '3600', label: 'giờ' },
+        C14: { T: 5730, unit: '31536000', label: 'năm' }
+      };
+
+      var selIso = document.getElementById('sel-iso');
+      var rngN0 = document.getElementById('rng-n0');
+      var inpT = document.getElementById('inp-T');
+      var selUnit = document.getElementById('sel-Tunit');
+      var rngTime = document.getElementById('rng-time');
+      var grid100 = document.getElementById('grid-100');
+      var cvDecay = document.getElementById('cv-decay');
+      var cvActivity = document.getElementById('cv-activity');
+
+      /* Tạo hoán vị cố định 100 ô hạt nhân để khi kéo thanh t không bị nháy loạn */
+      var perm = [];
+      for (var p = 0; p < 100; p++) perm.push(p);
+      for (var k = 99; k > 0; k--) {
+        var r = (k * 37 + 13) % (k + 1);
+        var tmp = perm[k];
+        perm[k] = perm[r];
+        perm[r] = tmp;
+      }
+
+      var cells = [];
+      for (var i = 0; i < 100; i++) {
+        var d = document.createElement('div');
+        d.style.height = '14px';
+        d.style.borderRadius = '3px';
+        d.style.border = '1px solid var(--border)';
+        grid100.appendChild(d);
+        cells.push(d);
+      }
+
+      function unitName(secPerUnit) {
+        var s = String(secPerUnit);
+        if (s === '1') return 's';
+        if (s === '60') return 'phút';
+        if (s === '3600') return 'giờ';
+        if (s === '86400') return 'ngày';
+        return 'năm';
+      }
+
+      function renderAll() {
+        var colors = C.getColors();
+        var n0Mul = parseFloat(rngN0.value);
+        var N0 = n0Mul * 1e12;
+        var Tval = Math.max(0.01, parseFloat(inpT.value) || 1);
+        var unitSec = parseFloat(selUnit.value);
+        var Tsec = Tval * unitSec;
+        var ratio = parseFloat(rngTime.value);
+
+        var fracRemain = Math.pow(2, -ratio);
+        var fracDecayed = 1 - fracRemain;
+        var Nt = N0 * fracRemain;
+        var dNt = N0 * fracDecayed;
+        var childMother = fracRemain > 0 ? (Math.pow(2, ratio) - 1) : Infinity;
+
+        var lam = Math.LN2 / Tsec;
+        var H0 = lam * N0;
+        var Ht = lam * Nt;
+        var Ci = 3.7e10;
+
+        document.getElementById('val-n0').textContent = C.fmt(n0Mul, 1) + ' × 10¹²';
+        document.getElementById('val-time').textContent = C.fmt(ratio, 2) + ' T (' + C.fmtTrim(ratio * Tval, 2) + ' ' + unitName(unitSec) + ')';
+
+        document.getElementById('st-n').textContent = C.fmt(Nt / 1e12, 3) + '×10¹² (' + C.fmt(fracRemain * 100, 1) + '%)';
+        document.getElementById('st-dn').textContent = C.fmt(dNt / 1e12, 3) + '×10¹² (' + C.fmt(fracDecayed * 100, 1) + '%)';
+        document.getElementById('st-ratio').textContent = C.fmt(childMother, 3);
+        document.getElementById('st-lam').textContent = C.fmtSci(lam, 3);
+        document.getElementById('st-h0').textContent = C.fmtSci(H0, 2) + ' Bq';
+        document.getElementById('st-ht').textContent = C.fmtSci(Ht, 2) + ' Bq';
+        document.getElementById('st-hci').textContent = C.fmtSci(Ht / Ci, 3) + ' Ci';
+        document.getElementById('st-treal').textContent = C.fmtTrim(ratio * Tval, 2) + ' ' + unitName(unitSec);
+
+        document.getElementById('sw-mother').style.backgroundColor = colors.cold;
+        document.getElementById('sw-daughter').style.backgroundColor = colors.warm;
+        document.getElementById('sw-dot-m').style.backgroundColor = colors.cold;
+        document.getElementById('sw-dot-c').style.backgroundColor = colors.warm;
+
+        /* Cập nhật lưới 100 hạt nhân */
+        var aliveTarget = Math.round(fracRemain * 100);
+        for (var idx = 0; idx < 100; idx++) {
+          var isAlive = perm[idx] < aliveTarget;
+          cells[idx].style.backgroundColor = isAlive ? colors.cold : colors.warm;
+        }
+
+        drawDecayCurve(n0Mul, ratio, colors);
+        drawActivityCurve(H0, ratio, colors);
+      }
+
+      function drawDecayCurve(n0Mul, ratioNow, colors) {
+        var s = C.setupCanvas(cvDecay, 300);
+        var ctx = s.ctx;
+        var ax = C.drawAxes(ctx, s.width, s.height, {
+          xMin: 0, xMax: 5, yMin: 0, yMax: n0Mul * 1.08,
+          xTicks: 5, yTicks: 4,
+          xLabel: 't / T', yLabel: 'Số hạt (× 10¹²)',
+          xFormat: function (v) { return Math.round(v) + 'T'; },
+          yFormat: function (v) { return C.fmtTrim(v, 1); }
+        });
+
+        /* Đường N(t) */
+        ctx.save();
+        ctx.strokeStyle = colors.cold;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (var i = 0; i <= 150; i++) {
+          var tr = (i / 150) * 5;
+          var yv = n0Mul * Math.pow(2, -tr);
+          if (i === 0) ctx.moveTo(ax.toX(tr), ax.toY(yv));
+          else ctx.lineTo(ax.toX(tr), ax.toY(yv));
+        }
+        ctx.stroke();
+
+        /* Đường ΔN(t) */
+        ctx.strokeStyle = colors.warm;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (var j = 0; j <= 150; j++) {
+          var tr2 = (j / 150) * 5;
+          var yv2 = n0Mul * (1 - Math.pow(2, -tr2));
+          if (j === 0) ctx.moveTo(ax.toX(tr2), ax.toY(yv2));
+          else ctx.lineTo(ax.toX(tr2), ax.toY(yv2));
+        }
+        ctx.stroke();
+
+        /* Giao điểm tại t = T */
+        var ix = ax.toX(1);
+        var iy = ax.toY(n0Mul * 0.5);
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.muted;
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(ix, ax.toY(0));
+        ctx.lineTo(ix, iy);
+        ctx.lineTo(ax.toX(0), iy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = colors.phase;
+        ctx.beginPath();
+        ctx.arc(ix, iy, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = colors.ink;
+        ctx.font = '700 12px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'left';
+        ctx.fillText('Giao điểm (T; N₀/2)', ix + 8, iy - 8);
+
+        /* Vạch tại thời điểm hiện tại */
+        var cx = ax.toX(ratioNow);
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(cx, ax.pad.top);
+        ctx.lineTo(cx, ax.pad.top + ax.plotH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = colors.cold;
+        ctx.beginPath();
+        ctx.arc(cx, ax.toY(n0Mul * Math.pow(2, -ratioNow)), 5.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = colors.warm;
+        ctx.beginPath();
+        ctx.arc(cx, ax.toY(n0Mul * (1 - Math.pow(2, -ratioNow))), 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawActivityCurve(H0, ratioNow, colors) {
+        var s = C.setupCanvas(cvActivity, 210);
+        var ctx = s.ctx;
+        var scaleExp = Math.floor(Math.log10(Math.max(1e-20, H0)));
+        var div = Math.pow(10, scaleExp);
+        var h0Scaled = H0 / div;
+
+        var ax = C.drawAxes(ctx, s.width, s.height, {
+          xMin: 0, xMax: 5, yMin: 0, yMax: h0Scaled * 1.1,
+          xTicks: 5, yTicks: 3,
+          xLabel: 't / T', yLabel: 'H (×10^' + scaleExp + ' Bq)',
+          xFormat: function (v) { return Math.round(v) + 'T'; },
+          yFormat: function (v) { return C.fmtTrim(v, 1); }
+        });
+
+        ctx.save();
+        ctx.strokeStyle = colors.ok;
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        for (var i = 0; i <= 150; i++) {
+          var tr = (i / 150) * 5;
+          var hv = h0Scaled * Math.pow(2, -tr);
+          if (i === 0) ctx.moveTo(ax.toX(tr), ax.toY(hv));
+          else ctx.lineTo(ax.toX(tr), ax.toY(hv));
+        }
+        ctx.stroke();
+
+        var cx = ax.toX(ratioNow);
+        var cy = ax.toY(h0Scaled * Math.pow(2, -ratioNow));
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(cx, ax.pad.top);
+        ctx.lineTo(cx, ax.pad.top + ax.plotH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = colors.ok;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      selIso.addEventListener('change', function () {
+        var p = PRESETS[selIso.value];
+        if (p) {
+          inpT.value = p.T;
+          selUnit.value = p.unit;
+        }
+        renderAll();
+      });
+
+      [inpT, selUnit].forEach(function (el) {
+        el.addEventListener('change', function () {
+          selIso.value = 'custom';
+          renderAll();
+        });
+        el.addEventListener('input', renderAll);
+      });
+
+      [rngN0, rngTime].forEach(function (el) {
+        el.addEventListener('input', renderAll);
+      });
+
+      document.querySelectorAll('.jump-rad').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          rngTime.value = btn.getAttribute('data-r');
+          renderAll();
+        });
+      });
+
+      renderAll();
+      window.addEventListener('resize', renderAll);
+      window.addEventListener('ly-theme-change', renderAll);
+    })();
+  </script>
+</body>
+</html>
