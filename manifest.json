@@ -1,0 +1,18 @@
+{
+  "name": "Hệ sinh thái Vật lí 12 — GDPT 2018",
+  "short_name": "Vật lí 12",
+  "description": "Kho kiến thức 6 lớp, 4 mô phỏng Canvas, Phòng thi THPTQG và Máy tính đổi đơn vị chạy 100% ngoại tuyến.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F6F7F9",
+  "theme_color": "#184E8A",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
