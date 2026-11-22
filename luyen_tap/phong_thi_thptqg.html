@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phòng thi THPTQG — Luyện đề &amp; Chẩn đoán lỗi Vật lí 12</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .exam-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .timer-display {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 1.35rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+    }
+    .q-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .q-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .opt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .opt-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background-color: var(--surface);
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .opt-label:hover {
+      background-color: var(--surface-alt);
+    }
+    .opt-label input[type="radio"] {
+      margin-top: 4px;
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+    .tf-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background-color: var(--surface);
+    }
+    @media (max-width: 639px) {
+      .tf-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .tf-choice-group {
+      display: inline-flex;
+      gap: 8px;
+    }
+    .tf-btn {
+      min-width: 68px;
+      min-height: 42px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background-color: var(--surface-alt);
+      color: var(--ink);
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .tf-btn[aria-pressed="true"] {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+    .short-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+    .short-input {
+      max-width: 170px !important;
+      font-family: var(--font-mono);
+      font-size: 1.2rem !important;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: center;
+    }
+    .omr-boxes {
+      display: inline-flex;
+      gap: 6px;
+    }
+    .omr-cell {
+      width: 34px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background-color: var(--surface-alt);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .omr-cell.filled {
+      border-color: var(--accent);
+      background-color: var(--accent-subtle);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(10, 14, 22, 0.6);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-backdrop[hidden] {
+      display: none;
+    }
+    .modal-card {
+      width: 100%;
+      max-width: 560px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
+        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Hằng số &amp; Đổi đơn vị</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Phòng luyện đề chuẩn THPTQG (GDPT 2018)</h1>
+    <p class="muted" id="exam-subtitle">Chấm chính xác thang lũy tiến Phần II (0,10 – 0,25 – 0,50 – 1,00), kiểm tra chuẩn phiếu tô tối đa 4 ký tự Phần III và đẩy câu sai vào Nhật ký lỗi.</p>
+
+    <!-- Thanh điều khiển đề thi -->
+    <div class="card" style="margin-top: 20px;">
+      <div class="exam-toolbar">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <div>
+            <label for="sel-exam" class="control-label" style="display: block; margin-bottom: 4px;">Chọn bộ đề</label>
+            <select id="sel-exam" style="min-width: 260px;"></select>
+          </div>
+          <div>
+            <label for="sel-chapter" class="control-label" style="display: block; margin-bottom: 4px;">Lọc theo chương</label>
+            <select id="sel-chapter" style="min-width: 210px;">
+              <option value="all">Tất cả 4 chương</option>
+              <option value="1">Chương 1: Vật lí nhiệt</option>
+              <option value="2">Chương 2: Khí lí tưởng</option>
+              <option value="3">Chương 3: Từ trường</option>
+              <option value="4">Chương 4: Vật lí hạt nhân</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+          <div class="timer-display" id="timer-box" aria-live="off">00:00</div>
+          <button type="button" id="btn-timer-toggle" class="btn btn-sm">Tạm dừng đồng hồ</button>
+          <button type="button" id="btn-reset-exam" class="btn btn-sm">Làm lại đề</button>
+          <button type="button" id="btn-export-md" class="btn btn-sm">Xuất Markdown Nhật ký lỗi</button>
+        </div>
+      </div>
+
+      <div id="result-banner" class="notice notice-ok" hidden>
+        <div class="notice-title" id="result-headline">Kết quả bài làm</div>
+        <div class="stat-grid" style="margin-top: 10px;">
+          <div class="stat-item">
+            <div class="stat-label">Tổng điểm đạt được</div>
+            <div id="res-total" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Phần I (0,25 đ/câu)</div>
+            <div id="res-p1" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Phần II (Lũy tiến)</div>
+            <div id="res-p2" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Phần III (Trả lời ngắn)</div>
+            <div id="res-p3" class="stat-value">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nội dung câu hỏi -->
+    <form id="exam-form" style="display: flex; flex-direction: column; gap: 28px; margin-top: 24px;">
+      <section id="sec-p1" style="display: flex; flex-direction: column; gap: 14px;"></section>
+      <section id="sec-p2" style="display: flex; flex-direction: column; gap: 14px;"></section>
+      <section id="sec-p3" style="display: flex; flex-direction: column; gap: 14px;"></section>
+
+      <div class="card" style="flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Hoàn tất bài làm?</strong>
+          <div class="muted" style="font-size: 0.92rem;">Kiểm tra lại dấu, đơn vị và quy tắc 4 ký tự Phần III trước khi nộp.</div>
+        </div>
+        <button type="submit" id="btn-submit-exam" class="btn btn-primary btn-mobile-full">Nộp bài &amp; Chấm điểm</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- Modal đẩy câu sai vào Nhật ký lỗi -->
+  <div id="err-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="err-modal-title">
+    <div class="modal-card">
+      <div class="q-head">
+        <h3 id="err-modal-title">Đẩy câu sai vào Nhật ký lỗi</h3>
+        <button type="button" id="err-modal-close" class="btn btn-sm">Đóng</button>
+      </div>
+      <div id="err-q-preview" class="panel-alt" style="font-size: 0.94rem;"></div>
+
+      <div class="control-group">
+        <label for="err-group" class="control-label">Chọn đúng 1 trong 8 nhóm lỗi chẩn đoán</label>
+        <select id="err-group"></select>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Thẻ phụ đặc thù Vật lí (nếu có)</span>
+        <div id="err-subtags" style="display: flex; flex-wrap: wrap; gap: 14px;"></div>
+      </div>
+
+      <div class="control-group">
+        <label for="err-note" class="control-label">Lý do bạn làm nhầm &amp; Bẫy cần nhớ</label>
+        <textarea id="err-note" placeholder="Ví dụ: Quên đổi 20 cm² sang 2×10⁻³ m², hoặc nhầm góc α với góc mặt khung 30°..."></textarea>
+      </div>
+
+      <div class="btn-group" style="justify-content: flex-end;">
+        <button type="button" id="err-save-btn" class="btn btn-primary">Lưu vào Nhật ký lỗi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal xuất Markdown -->
+  <div id="md-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="md-modal-title">
+    <div class="modal-card">
+      <div class="q-head">
+        <h3 id="md-modal-title">Nhật ký lỗi dạng Markdown</h3>
+        <button type="button" id="md-modal-close" class="btn btn-sm">Đóng</button>
+      </div>
+      <p class="muted" style="font-size: 0.92rem;">Sao chép bảng dưới đây dán vào tệp <code>chan_doan/nhat_ky_loi_sai.md</code> hoặc tải xuống.</p>
+      <textarea id="md-output" readonly style="min-height: 220px; font-family: var(--font-mono); font-size: 0.85rem;"></textarea>
+      <div class="btn-group" style="justify-content: flex-end;">
+        <button type="button" id="md-copy-btn" class="btn btn-sm">Sao chép Markdown</button>
+        <button type="button" id="md-download-btn" class="btn btn-primary btn-sm">Tải tệp .md</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/common.js"></script>
+  <script src="./data_cau_hoi.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      var BANK = window.LY_EXAM_BANK;
+      C.initShell();
+
+      var selExam = document.getElementById('sel-exam');
+      var selChapter = document.getElementById('sel-chapter');
+      var secP1 = document.getElementById('sec-p1');
+      var secP2 = document.getElementById('sec-p2');
+      var secP3 = document.getElementById('sec-p3');
+      var resultBanner = document.getElementById('result-banner');
+
+      /* Đồng hồ bấm giờ */
+      var timerSec = 0;
+      var timerRunning = true;
+      var timerEl = document.getElementById('timer-box');
+      var btnTimerToggle = document.getElementById('btn-timer-toggle');
+
+      function renderTimer() {
+        var mm = String(Math.floor(timerSec / 60)).padStart(2, '0');
+        var ss = String(timerSec % 60).padStart(2, '0');
+        timerEl.textContent = mm + ':' + ss;
+      }
+
+      setInterval(function () {
+        if (timerRunning) {
+          timerSec += 1;
+          renderTimer();
+        }
+      }, 1000);
+
+      btnTimerToggle.addEventListener('click', function () {
+        timerRunning = !timerRunning;
+        btnTimerToggle.textContent = timerRunning ? 'Tạm dừng đồng hồ' : 'Tiếp tục đồng hồ';
+      });
+
+      /* Chuẩn hóa & Kiểm tra Phần III */
+      function normalizeShortAnswer(raw) {
+        return String(raw || '').trim().replace(/\s+/g, '').replace('.', ',');
+      }
+
+      function validateShortFormat(raw) {
+        var s = String(raw || '').trim();
+        if (!s) return { valid: true, msg: '' };
+        if (s.length > 4) {
+          return { valid: false, msg: 'Vượt quá 4 ký tự chuẩn phiếu tô (' + s.length + '/4).' };
+        }
+        if (!/^-?[0-9.,]+$/.test(s)) {
+          return { valid: false, msg: 'Chỉ nhập số, dấu âm "-" ở đầu và tối đa 1 dấu "," hoặc ".".' };
+        }
+        var sepCount = (s.match(/[.,]/g) || []).length;
+        if (sepCount > 1 || (s.indexOf('-') > 0)) {
+          return { valid: false, msg: 'Định dạng số không hợp lệ trên phiếu tô.' };
+        }
+        return { valid: true, msg: 'Hợp lệ (' + s.length + '/4 ký tự).' };
+      }
+
+      /* Thang điểm lũy tiến CHÍNH XÁC Phần II */
+      function scorePart2(correctCount) {
+        if (correctCount === 1) return 0.10;
+        if (correctCount === 2) return 0.25;
+        if (correctCount === 3) return 0.50;
+        if (correctCount === 4) return 1.00;
+        return 0;
+      }
+
+      /* Nạp danh sách đề */
+      BANK.exams.forEach(function (ex) {
+        var opt = document.createElement('option');
+        opt.value = ex.id;
+        opt.textContent = ex.title;
+        selExam.appendChild(opt);
+      });
+
+      var state = {
+        submitted: false,
+        p1Ans: {},
+        p2Ans: {},
+        p3Ans: {}
+      };
+
+      function getFilteredExam() {
+        var exam = BANK.exams.find(function (e) { return e.id === selExam.value; }) || BANK.exams[0];
+        var ch = selChapter.value;
+        function matchCh(q) { return ch === 'all' || String(q.chapter) === ch; }
+        return {
+          exam: exam,
+          p1: exam.phan1.filter(matchCh),
+          p2: exam.phan2.filter(matchCh),
+          p3: exam.phan3.filter(matchCh)
+        };
+      }
+
+      function buildExplainBlock(q, chapter, qTitle, isWrong) {
+        var box = document.createElement('div');
+        box.className = isWrong ? 'notice notice-danger' : 'notice notice-ok';
+        box.style.marginTop = '8px';
+        box.innerHTML =
+          '<div class="notice-title">' + (isWrong ? 'Cần rà soát lại' : 'Đạt yêu cầu') + '</div>' +
+          '<p><strong>1. Bản chất:</strong> ' + q.banChat + '</p>' +
+          '<p><strong>2. Công thức:</strong> ' + q.congThuc + '</p>' +
+          '<p><strong>3. Bẫy cần tránh:</strong> ' + q.bayCanTranh + '</p>';
+
+        if (isWrong) {
+          var btnLog = document.createElement('button');
+          btnLog.type = 'button';
+          btnLog.className = 'btn btn-sm';
+          btnLog.style.marginTop = '10px';
+          btnLog.textContent = 'Đẩy câu sai vào Nhật ký lỗi';
+          btnLog.addEventListener('click', function () {
+            openErrModal({
+              chapter: chapter,
+              questionId: q.id,
+              questionTitle: qTitle,
+              trapKey: q.bayCanTranh
+            });
+          });
+          box.appendChild(btnLog);
+        }
+        return box;
+      }
+
+      function renderQuestions() {
+        var data = getFilteredExam();
+        secP1.innerHTML = '';
+        secP2.innerHTML = '';
+        secP3.innerHTML = '';
+
+        /* PHẦN I */
+        if (data.p1.length > 0) {
+          var h1 = document.createElement('h2');
+          h1.style.marginTop = '0';
+          h1.textContent = 'Phần I: Trắc nghiệm nhiều lựa chọn (0,25 điểm / câu)';
+          secP1.appendChild(h1);
+
+          data.p1.forEach(function (q, idx) {
+            var card = document.createElement('div');
+            card.className = 'q-card';
+            card.id = 'card-' + q.id;
+
+            var head = document.createElement('div');
+            head.className = 'q-head';
+            head.innerHTML = '<strong>Câu ' + (idx + 1) + '</strong><span class="tag">' + (C.CHAPTER_NAMES[q.chapter] || 'Chương ' + q.chapter) + '</span>';
+            card.appendChild(head);
+
+            var promptEl = document.createElement('p');
+            promptEl.textContent = q.prompt;
+            card.appendChild(promptEl);
+
+            var list = document.createElement('div');
+            list.className = 'opt-list';
+            var letters = ['A', 'B', 'C', 'D'];
+            q.options.forEach(function (optText, oi) {
+              var lbl = document.createElement('label');
+              lbl.className = 'opt-label';
+              var rad = document.createElement('input');
+              rad.type = 'radio';
+              rad.name = 'q_' + q.id;
+              rad.value = String(oi);
+              rad.checked = state.p1Ans[q.id] === oi;
+              rad.disabled = state.submitted;
+              rad.addEventListener('change', function () {
+                state.p1Ans[q.id] = oi;
+              });
+
+              var txt = document.createElement('span');
+              txt.innerHTML = '<strong>' + letters[oi] + '.</strong> ' + optText;
+
+              if (state.submitted) {
+                if (oi === q.answerIndex) {
+                  lbl.style.backgroundColor = 'var(--phys-ok-bg)';
+                  lbl.style.borderColor = 'var(--phys-ok)';
+                } else if (state.p1Ans[q.id] === oi) {
+                  lbl.style.backgroundColor = 'var(--phys-warm-bg)';
+                  lbl.style.borderColor = 'var(--phys-warm)';
+                }
+              }
+
+              lbl.appendChild(rad);
+              lbl.appendChild(txt);
+              list.appendChild(lbl);
+            });
+            card.appendChild(list);
+
+            if (state.submitted) {
+              var isRight = state.p1Ans[q.id] === q.answerIndex;
+              card.appendChild(buildExplainBlock(q, q.chapter, 'Phần I - Câu ' + (idx + 1) + ' (' + q.id + ')', !isRight));
+            }
+            secP1.appendChild(card);
+          });
+        }
+
+        /* PHẦN II */
+        if (data.p2.length > 0) {
+          var h2 = document.createElement('h2');
+          h2.style.marginTop = '8px';
+          h2.textContent = 'Phần II: Trắc nghiệm Đúng/Sai (1 ý: 0,10 | 2 ý: 0,25 | 3 ý: 0,50 | 4 ý: 1,00 điểm)';
+          secP2.appendChild(h2);
+
+          data.p2.forEach(function (q, idx) {
+            var card = document.createElement('div');
+            card.className = 'q-card';
+            card.id = 'card-' + q.id;
+
+            var head = document.createElement('div');
+            head.className = 'q-head';
+            head.innerHTML = '<strong>Câu ' + (idx + 1) + ' (Đúng/Sai)</strong><span class="tag">' + (C.CHAPTER_NAMES[q.chapter] || 'Chương ' + q.chapter) + '</span>';
+            card.appendChild(head);
+
+            var stem = document.createElement('p');
+            stem.textContent = q.stem;
+            card.appendChild(stem);
+
+            if (!state.p2Ans[q.id]) state.p2Ans[q.id] = [null, null, null, null];
+            var correctItems = 0;
+
+            q.items.forEach(function (item, ii) {
+              var row = document.createElement('div');
+              row.className = 'tf-row';
+
+              var txt = document.createElement('div');
+              txt.innerHTML = '<strong>' + item.label + ')</strong> ' + item.text;
+
+              var grp = document.createElement('div');
+              grp.className = 'tf-choice-group';
+
+              var userChoice = state.p2Ans[q.id][ii];
+              var btnTrue = document.createElement('button');
+              btnTrue.type = 'button';
+              btnTrue.className = 'tf-btn';
+              btnTrue.textContent = 'Đúng';
+              btnTrue.setAttribute('aria-pressed', userChoice === true ? 'true' : 'false');
+              btnTrue.disabled = state.submitted;
+
+              var btnFalse = document.createElement('button');
+              btnFalse.type = 'button';
+              btnFalse.className = 'tf-btn';
+              btnFalse.textContent = 'Sai';
+              btnFalse.setAttribute('aria-pressed', userChoice === false ? 'true' : 'false');
+              btnFalse.disabled = state.submitted;
+
+              btnTrue.addEventListener('click', function () {
+                state.p2Ans[q.id][ii] = true;
+                btnTrue.setAttribute('aria-pressed', 'true');
+                btnFalse.setAttribute('aria-pressed', 'false');
+              });
+              btnFalse.addEventListener('click', function () {
+                state.p2Ans[q.id][ii] = false;
+                btnTrue.setAttribute('aria-pressed', 'false');
+                btnFalse.setAttribute('aria-pressed', 'true');
+              });
+
+              if (state.submitted) {
+                var ok = userChoice === item.answer;
+                if (ok) correctItems += 1;
+                row.style.backgroundColor = ok ? 'var(--phys-ok-bg)' : 'var(--phys-warm-bg)';
+                var ansTag = document.createElement('span');
+                ansTag.className = ok ? 'tag tag-ok' : 'tag tag-warm';
+                ansTag.textContent = 'Đáp án: ' + (item.answer ? 'Đúng' : 'Sai');
+                grp.appendChild(ansTag);
+              } else {
+                grp.appendChild(btnTrue);
+                grp.appendChild(btnFalse);
+              }
+
+              row.appendChild(txt);
+              row.appendChild(grp);
+              card.appendChild(row);
+            });
+
+            if (state.submitted) {
+              var pts = scorePart2(correctItems);
+              var scoreLine = document.createElement('div');
+              scoreLine.className = 'num';
+              scoreLine.innerHTML = '<strong>Điểm câu này:</strong> ' + C.fmt(pts, 2) + ' / 1,00 điểm (' + correctItems + '/4 ý đúng).';
+              card.appendChild(scoreLine);
+              card.appendChild(buildExplainBlock(q, q.chapter, 'Phần II - Câu ' + (idx + 1) + ' (' + q.id + ')', correctItems < 4));
+            }
+
+            secP2.appendChild(card);
+          });
+        }
+
+        /* PHẦN III */
+        if (data.p3.length > 0) {
+          var h3 = document.createElement('h2');
+          h3.style.marginTop = '8px';
+          h3.textContent = 'Phần III: Trắc nghiệm Trả lời ngắn (0,25 điểm / câu — Tối đa 4 ký tự)';
+          secP3.appendChild(h3);
+
+          data.p3.forEach(function (q, idx) {
+            var card = document.createElement('div');
+            card.className = 'q-card';
+            card.id = 'card-' + q.id;
+
+            var head = document.createElement('div');
+            head.className = 'q-head';
+            head.innerHTML = '<strong>Câu ' + (idx + 1) + ' (Trả lời ngắn)</strong><span class="tag">' + (C.CHAPTER_NAMES[q.chapter] || 'Chương ' + q.chapter) + '</span>';
+            card.appendChild(head);
+
+            var promptEl = document.createElement('p');
+            promptEl.textContent = q.prompt;
+            card.appendChild(promptEl);
+
+            var row = document.createElement('div');
+            row.className = 'short-row';
+
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.className = 'short-input';
+            inp.maxLength = 4;
+            inp.placeholder = 'VD: -230';
+            inp.value = state.p3Ans[q.id] || '';
+            inp.disabled = state.submitted;
+            inp.setAttribute('aria-label', 'Đáp số trả lời ngắn câu ' + (idx + 1));
+
+            var omr = document.createElement('div');
+            omr.className = 'omr-boxes';
+
+            var statusMsg = document.createElement('div');
+            statusMsg.className = 'muted';
+            statusMsg.style.fontSize = '0.9rem';
+
+            function updateOmr(val) {
+              var s = String(val || '');
+              omr.innerHTML = '';
+              for (var c = 0; c < 4; c++) {
+                var cell = document.createElement('span');
+                cell.className = 'omr-cell' + (s[c] ? ' filled' : '');
+                cell.textContent = s[c] || '';
+                omr.appendChild(cell);
+              }
+              var check = validateShortFormat(s);
+              statusMsg.textContent = check.msg || ('Đơn vị yêu cầu: ' + q.unit + ' | Tối đa 4 ký tự.');
+              statusMsg.style.color = check.valid ? 'var(--ink-muted)' : 'var(--phys-warm)';
+            }
+
+            inp.addEventListener('input', function () {
+              if (inp.value.length > 4) {
+                inp.value = inp.value.slice(0, 4);
+              }
+              state.p3Ans[q.id] = inp.value;
+              updateOmr(inp.value);
+            });
+
+            updateOmr(inp.value);
+
+            var unitBadge = document.createElement('span');
+            unitBadge.className = 'tag';
+            unitBadge.textContent = 'Đơn vị: ' + q.unit;
+
+            row.appendChild(inp);
+            row.appendChild(omr);
+            row.appendChild(unitBadge);
+            card.appendChild(row);
+            card.appendChild(statusMsg);
+
+            if (state.submitted) {
+              var normUser = normalizeShortAnswer(state.p3Ans[q.id]);
+              var normKey = normalizeShortAnswer(q.answer);
+              var ok3 = normUser !== '' && normUser === normKey;
+              var verdict = document.createElement('div');
+              verdict.className = 'num';
+              verdict.innerHTML = '<strong>Đáp số chuẩn phiếu tô:</strong> <code>' + q.answer + '</code> (' + q.unit + ') — ' + (ok3 ? 'Chính xác (+0,25 đ)' : 'Chưa đúng (0,00 đ)');
+              card.appendChild(verdict);
+              card.appendChild(buildExplainBlock(q, q.chapter, 'Phần III - Câu ' + (idx + 1) + ' (' + q.id + ')', !ok3));
+            }
+
+            secP3.appendChild(card);
+          });
+        }
+      }
+
+      /* Nộp bài & Chấm điểm */
+      document.getElementById('exam-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (state.submitted) return;
+
+        var data = getFilteredExam();
+        var p1Score = 0;
+        var p2Score = 0;
+        var p3Score = 0;
+
+        data.p1.forEach(function (q) {
+          if (state.p1Ans[q.id] === q.answerIndex) p1Score += 0.25;
+        });
+
+        data.p2.forEach(function (q) {
+          var arr = state.p2Ans[q.id] || [];
+          var cnt = 0;
+          q.items.forEach(function (it, idx) {
+            if (arr[idx] === it.answer) cnt += 1;
+          });
+          p2Score += scorePart2(cnt);
+        });
+
+        data.p3.forEach(function (q) {
+          if (normalizeShortAnswer(state.p3Ans[q.id]) === normalizeShortAnswer(q.answer)) {
+            p3Score += 0.25;
+          }
+        });
+
+        var maxScore = data.p1.length * 0.25 + data.p2.length * 1.0 + data.p3.length * 0.25;
+        var total = Number((p1Score + p2Score + p3Score).toFixed(2));
+
+        state.submitted = true;
+        timerRunning = false;
+        btnTimerToggle.textContent = 'Đã nộp bài';
+        btnTimerToggle.disabled = true;
+        document.getElementById('btn-submit-exam').disabled = true;
+
+        C.recordExamResult({
+          title: data.exam.title,
+          filter: selChapter.value,
+          totalScore: total,
+          maxScore: maxScore,
+          p1Score: p1Score,
+          p2Score: p2Score,
+          p3Score: p3Score,
+          elapsedSec: timerSec
+        });
+
+        document.getElementById('result-headline').textContent = 'Đã chấm xong bài làm (Thời gian: ' + timerEl.textContent + ')';
+        document.getElementById('res-total').textContent = C.fmt(total, 2) + ' / ' + C.fmt(maxScore, 2);
+        document.getElementById('res-p1').textContent = C.fmt(p1Score, 2) + ' / ' + C.fmt(data.p1.length * 0.25, 2);
+        document.getElementById('res-p2').textContent = C.fmt(p2Score, 2) + ' / ' + C.fmt(data.p2.length * 1.0, 2);
+        document.getElementById('res-p3').textContent = C.fmt(p3Score, 2) + ' / ' + C.fmt(data.p3.length * 0.25, 2);
+        resultBanner.hidden = false;
+
+        renderQuestions();
+        resultBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+
+      function resetExam() {
+        state = { submitted: false, p1Ans: {}, p2Ans: {}, p3Ans: {} };
+        timerSec = 0;
+        timerRunning = true;
+        renderTimer();
+        btnTimerToggle.disabled = false;
+        btnTimerToggle.textContent = 'Tạm dừng đồng hồ';
+        document.getElementById('btn-submit-exam').disabled = false;
+        resultBanner.hidden = true;
+        renderQuestions();
+      }
+
+      selExam.addEventListener('change', resetExam);
+      selChapter.addEventListener('change', resetExam);
+      document.getElementById('btn-reset-exam').addEventListener('click', resetExam);
+
+      /* MODAL ĐẨY LỖI */
+      var errModal = document.getElementById('err-modal');
+      var errGroupSel = document.getElementById('err-group');
+      var errSubtagsBox = document.getElementById('err-subtags');
+      var errNoteEl = document.getElementById('err-note');
+      var pendingErrCtx = null;
+
+      C.ERROR_GROUPS.forEach(function (g) {
+        var o = document.createElement('option');
+        o.value = g;
+        o.textContent = g;
+        errGroupSel.appendChild(o);
+      });
+
+      C.PHYSICS_SUBTAGS.forEach(function (tag) {
+        var lbl = document.createElement('label');
+        lbl.className = 'check-row';
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = tag;
+        var sp = document.createElement('span');
+        sp.textContent = tag;
+        lbl.appendChild(cb);
+        lbl.appendChild(sp);
+        errSubtagsBox.appendChild(lbl);
+      });
+
+      function openErrModal(ctx) {
+        pendingErrCtx = ctx;
+        document.getElementById('err-q-preview').textContent = (C.CHAPTER_NAMES[ctx.chapter] || '') + ' — ' + ctx.questionTitle;
+        errGroupSel.value = C.ERROR_GROUPS[1];
+        errSubtagsBox.querySelectorAll('input[type="checkbox"]').forEach(function (c) { c.checked = false; });
+        errNoteEl.value = '';
+        errModal.hidden = false;
+      }
+
+      document.getElementById('err-modal-close').addEventListener('click', function () {
+        errModal.hidden = true;
+      });
+
+      document.getElementById('err-save-btn').addEventListener('click', function () {
+        if (!pendingErrCtx) return;
+        var subs = [];
+        errSubtagsBox.querySelectorAll('input[type="checkbox"]:checked').forEach(function (c) {
+          subs.push(c.value);
+        });
+        C.addErrorLog({
+          chapter: pendingErrCtx.chapter,
+          questionId: pendingErrCtx.questionId,
+          questionTitle: pendingErrCtx.questionTitle,
+          group: errGroupSel.value,
+          subtags: subs,
+          trapKey: pendingErrCtx.trapKey,
+          note: errNoteEl.value || pendingErrCtx.trapKey
+        });
+        errModal.hidden = true;
+        alert('Đã lưu lỗi vào Nhật ký lỗi (localStorage). Bạn có thể xem lại trên Bảng điều khiển hoặc xuất ra Markdown.');
+      });
+
+      /* MODAL XUẤT MARKDOWN */
+      var mdModal = document.getElementById('md-modal');
+      var mdOut = document.getElementById('md-output');
+
+      document.getElementById('btn-export-md').addEventListener('click', function () {
+        mdOut.value = C.generateErrorLogMarkdown();
+        mdModal.hidden = false;
+      });
+      document.getElementById('md-modal-close').addEventListener('click', function () {
+        mdModal.hidden = true;
+      });
+      document.getElementById('md-copy-btn').addEventListener('click', function () {
+        mdOut.select();
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(mdOut.value);
+          } else {
+            document.execCommand('copy');
+          }
+          alert('Đã sao chép nội dung Markdown.');
+        } catch (err) {
+          alert('Hãy chọn toàn bộ văn bản trong khung để sao chép.');
+        }
+      });
+      document.getElementById('md-download-btn').addEventListener('click', function () {
+        var blob = new Blob([mdOut.value], { type: 'text/markdown;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'nhat_ky_loi_sai_' + new Date().toISOString().slice(0, 10) + '.md';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      });
+
+      /* Cho phép kiểm thử trực tiếp hàm chấm điểm qua window nếu cần */
+      window.LY_EXAM_ENGINE = {
+        scorePart2: scorePart2,
+        validateShortFormat: validateShortFormat,
+        normalizeShortAnswer: normalizeShortAnswer
+      };
+
+      renderQuestions();
+    })();
+  </script>
+</body>
+</html>

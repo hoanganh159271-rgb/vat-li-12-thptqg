@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra cứu Hằng số Vật lí 12 &amp; Đổi đơn vị nhanh</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
+        <a href="../luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-sm">Vào phòng luyện đề</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Bảng Hằng số Vật lí 12 &amp; Máy tính đổi đơn vị nhanh</h1>
+    <p class="muted">Tra cứu nhanh bộ hằng số chuẩn đề thi THPTQG (GDPT 2018), đổi đơn vị hai chiều tức thì và kiểm tra thứ nguyên trước khi bấm máy tính.</p>
+
+    <!-- PHẦN 1: MÁY TÍNH ĐỔI ĐƠN VỊ TỨC THÌ -->
+    <section class="section-block" style="margin-top: 24px;">
+      <div class="section-head">
+        <h2>1. Máy tính đổi đơn vị tức thì (nhập vào ô bất kì)</h2>
+      </div>
+
+      <div class="grid-3">
+        <!-- Nhiệt độ -->
+        <div class="card">
+          <div class="q-head" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <h3>Nhiệt độ (°C ↔ K)</h3>
+            <label class="check-row" style="font-size: 0.85rem;">
+              <input type="checkbox" id="chk-kelvin-precise">
+              <span>Dùng +273,15</span>
+            </label>
+          </div>
+          <div class="control-group">
+            <label for="u-temp-c" class="control-label">Độ Celsius t (°C)</label>
+            <input id="u-temp-c" type="number" step="any" value="27">
+          </div>
+          <div class="control-group">
+            <label for="u-temp-k" class="control-label">Độ Kelvin T (K)</label>
+            <input id="u-temp-k" type="number" step="any" value="300">
+          </div>
+          <p class="muted" style="font-size: 0.85rem;">Chú ý: độ biến thiên ΔT(K) = Δt(°C), không cộng 273 vào hiệu!</p>
+        </div>
+
+        <!-- Áp suất -->
+        <div class="card">
+          <h3>Áp suất (Pa, kPa, bar, atm, mmHg)</h3>
+          <div class="control-group">
+            <label for="u-p-pa" class="control-label">Pascal (Pa)</label>
+            <input id="u-p-pa" type="number" step="any" value="101300">
+          </div>
+          <div class="grid-2" style="gap: 8px;">
+            <div class="control-group">
+              <label for="u-p-atm" class="control-label">atm (101 300 Pa)</label>
+              <input id="u-p-atm" type="number" step="any" value="1">
+            </div>
+            <div class="control-group">
+              <label for="u-p-bar" class="control-label">bar (10⁵ Pa)</label>
+              <input id="u-p-bar" type="number" step="any" value="1.013">
+            </div>
+            <div class="control-group">
+              <label for="u-p-kpa" class="control-label">kPa (10³ Pa)</label>
+              <input id="u-p-kpa" type="number" step="any" value="101.3">
+            </div>
+            <div class="control-group">
+              <label for="u-p-mmhg" class="control-label">mmHg (≈133,3 Pa)</label>
+              <input id="u-p-mmhg" type="number" step="any" value="760">
+            </div>
+          </div>
+        </div>
+
+        <!-- Thể tích & Diện tích -->
+        <div class="card">
+          <h3>Thể tích &amp; Diện tích khung dây</h3>
+          <div class="grid-3" style="gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr));">
+            <div class="control-group">
+              <label for="u-v-m3" class="control-label">m³</label>
+              <input id="u-v-m3" type="number" step="any" value="0.001">
+            </div>
+            <div class="control-group">
+              <label for="u-v-l" class="control-label">lít (dm³)</label>
+              <input id="u-v-l" type="number" step="any" value="1">
+            </div>
+            <div class="control-group">
+              <label for="u-v-cm3" class="control-label">cm³ (mL)</label>
+              <input id="u-v-cm3" type="number" step="any" value="1000">
+            </div>
+          </div>
+          <div class="grid-3" style="gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 6px;">
+            <div class="control-group">
+              <label for="u-s-m2" class="control-label">m²</label>
+              <input id="u-s-m2" type="number" step="any" value="0.005">
+            </div>
+            <div class="control-group">
+              <label for="u-s-cm2" class="control-label">cm²</label>
+              <input id="u-s-cm2" type="number" step="any" value="50">
+            </div>
+            <div class="control-group">
+              <label for="u-s-mm2" class="control-label">mm²</label>
+              <input id="u-s-mm2" type="number" step="any" value="5000">
+            </div>
+          </div>
+        </div>
+
+        <!-- Năng lượng -->
+        <div class="card">
+          <h3>Năng lượng (J ↔ eV ↔ MeV)</h3>
+          <div class="control-group">
+            <label for="u-e-j" class="control-label">Jun (J)</label>
+            <input id="u-e-j" type="number" step="any" value="1.6e-13">
+          </div>
+          <div class="grid-2" style="gap: 8px;">
+            <div class="control-group">
+              <label for="u-e-ev" class="control-label">eV</label>
+              <input id="u-e-ev" type="number" step="any" value="1000000">
+            </div>
+            <div class="control-group">
+              <label for="u-e-mev" class="control-label">MeV</label>
+              <input id="u-e-mev" type="number" step="any" value="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- Khối lượng hạt nhân -->
+        <div class="card">
+          <h3>Khối lượng hạt nhân (u ↔ MeV/c² ↔ kg)</h3>
+          <div class="control-group">
+            <label for="u-m-u" class="control-label">Đơn vị u (1 u = 931,5 MeV/c²)</label>
+            <input id="u-m-u" type="number" step="any" value="1">
+          </div>
+          <div class="grid-2" style="gap: 8px;">
+            <div class="control-group">
+              <label for="u-m-mev" class="control-label">MeV/c²</label>
+              <input id="u-m-mev" type="number" step="any" value="931.5">
+            </div>
+            <div class="control-group">
+              <label for="u-m-kg" class="control-label">kg</label>
+              <input id="u-m-kg" type="number" step="any" value="1.66055e-27">
+            </div>
+          </div>
+        </div>
+
+        <!-- Độ phóng xạ -->
+        <div class="card">
+          <h3>Độ phóng xạ (Bq ↔ MBq ↔ Ci)</h3>
+          <div class="control-group">
+            <label for="u-h-bq" class="control-label">Becquerel (Bq = phân rã/s)</label>
+            <input id="u-h-bq" type="number" step="any" value="37000000000">
+          </div>
+          <div class="grid-2" style="gap: 8px;">
+            <div class="control-group">
+              <label for="u-h-mbq" class="control-label">MBq (10⁶ Bq)</label>
+              <input id="u-h-mbq" type="number" step="any" value="37000">
+            </div>
+            <div class="control-group">
+              <label for="u-h-ci" class="control-label">Curie (1 Ci = 3,7×10¹⁰ Bq)</label>
+              <input id="u-h-ci" type="number" step="any" value="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: BẢNG HẰNG SỐ CHUẨN GDPT 2018 -->
+    <section class="section-block">
+      <h2>2. Bảng hằng số Vật lí chuẩn đề thi THPTQG (GDPT 2018)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tên hằng số</th>
+              <th>Kí hiệu</th>
+              <th>Giá trị chuẩn thi</th>
+              <th>Đơn vị SI</th>
+              <th>Lưu ý / Bẫy thường gặp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Hằng số khí lí tưởng</td><td class="mono">R</td><td class="mono">8,31</td><td class="mono">J/(mol·K)</td><td>Với hệ kPa và lít: p(kPa)·V(lít) = n·8,31·T(K)</td></tr>
+            <tr><td>Hằng số Boltzmann</td><td class="mono">k</td><td class="mono">1,38 × 10⁻²³</td><td class="mono">J/K</td><td>Liên hệ k = R / N_A; dùng trong E_đ = (3/2)kT</td></tr>
+            <tr><td>Số Avogadro</td><td class="mono">N_A</td><td class="mono">6,02 × 10²³</td><td class="mono">mol⁻¹</td><td>Số hạt = (m / M)·N_A (cẩn thận đơn vị g vs kg của m và M)</td></tr>
+            <tr><td>Mốc độ không tuyệt đối</td><td class="mono">T₀</td><td class="mono">273 (hoặc 273,15)</td><td class="mono">K</td><td>Dùng +273 trừ khi đề ghi chú 273,15</td></tr>
+            <tr><td>Áp suất chuẩn 1 atm</td><td class="mono">1 atm</td><td class="mono">1,013 × 10⁵</td><td class="mono">Pa</td><td>Phân biệt 1 bar = 10⁵ Pa; 1 mmHg ≈ 133,3 Pa</td></tr>
+            <tr><td>Điện tích nguyên tố</td><td class="mono">e</td><td class="mono">1,6 × 10⁻¹⁹</td><td class="mono">C</td><td>1 eV = 1,6×10⁻¹⁹ J; 1 MeV = 1,6×10⁻¹³ J</td></tr>
+            <tr><td>Tốc độ ánh sáng chân không</td><td class="mono">c</td><td class="mono">3 × 10⁸</td><td class="mono">m/s</td><td>λ = c / f đối với sóng điện từ</td></tr>
+            <tr><td>Đơn vị khối lượng nguyên tử</td><td class="mono">1 u</td><td class="mono">931,5 MeV/c²</td><td class="mono">≈ 1,66055×10⁻²⁷ kg</td><td>Nhân Δm(u) với 931,5 để ra trực tiếp MeV</td></tr>
+            <tr><td>Đơn vị độ phóng xạ Curie</td><td class="mono">1 Ci</td><td class="mono">3,7 × 10¹⁰</td><td class="mono">Bq</td><td>Khi tính H = λN ra Bq phải đổi T sang giây</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: BẢNG KIỂM TRA THỨ NGUYÊN -->
+    <section class="section-block">
+      <h2>3. Bảng kiểm tra thứ nguyên công thức trọng tâm 4 chương</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Chương</th>
+              <th>Công thức</th>
+              <th>Đơn vị SI vế phải</th>
+              <th>Đơn vị SI vế trái</th>
+              <th>Lỗi đơn vị hay gặp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Chương 1</td><td class="mono">Q = m·c·ΔT</td><td class="mono">kg · [J/(kg·K)] · K = J</td><td class="mono">J</td><td>Để m bằng gam hoặc cộng 273 vào ΔT</td></tr>
+            <tr><td>Chương 1</td><td class="mono">ΔU = A + Q; A = −pΔV</td><td class="mono">Pa · m³ = (N/m²)·m³ = J</td><td class="mono">J</td><td>Để p là atm, V là lít rồi không nhân 10⁻³</td></tr>
+            <tr><td>Chương 2</td><td class="mono">pV = (m/M)RT</td><td class="mono">(kg / (kg/mol))·[J/(mol·K)]·K = J</td><td class="mono">Pa·m³ = J</td><td>Để M là g/mol mà m là kg (lệch 1000 lần)</td></tr>
+            <tr><td>Chương 2</td><td class="mono">v_rms = √(3RT/M)</td><td class="mono">√(J / kg) = √(m²/s²) = m/s</td><td class="mono">m/s</td><td>Quên đổi M sang kg/mol (sai √1000 ≈ 31,6 lần)</td></tr>
+            <tr><td>Chương 3</td><td class="mono">Φ = N·B·S·cosα</td><td class="mono">1 · T · m² = Wb</td><td class="mono">Wb</td><td>Để S là cm² không nhân 10⁻⁴</td></tr>
+            <tr><td>Chương 3</td><td class="mono">E₀ = ω·N·B·S</td><td class="mono">(rad/s) · Wb = V</td><td class="mono">V</td><td>Quên 2π khi đổi từ tần số f sang ω</td></tr>
+            <tr><td>Chương 4</td><td class="mono">H = (ln2 / T)·N</td><td class="mono">(1/s) · hạt = Bq</td><td class="mono">Bq</td><td>Để T là ngày/giờ/năm không đổi sang giây</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      function cleanNum(val) {
+        if (!Number.isFinite(val)) return '';
+        var abs = Math.abs(val);
+        if (abs !== 0 && (abs < 1e-4 || abs >= 1e7)) {
+          return Number(val.toPrecision(6)).toExponential();
+        }
+        return String(Number(val.toPrecision(7)));
+      }
+
+      /* 1. Nhiệt độ */
+      var inpC = document.getElementById('u-temp-c');
+      var inpK = document.getElementById('u-temp-k');
+      var chkPrec = document.getElementById('chk-kelvin-precise');
+
+      function offsetK() { return chkPrec.checked ? 273.15 : 273; }
+      inpC.addEventListener('input', function () {
+        var v = parseFloat(inpC.value);
+        inpK.value = Number.isFinite(v) ? cleanNum(v + offsetK()) : '';
+      });
+      inpK.addEventListener('input', function () {
+        var v = parseFloat(inpK.value);
+        inpC.value = Number.isFinite(v) ? cleanNum(v - offsetK()) : '';
+      });
+      chkPrec.addEventListener('change', function () {
+        var v = parseFloat(inpC.value);
+        if (Number.isFinite(v)) inpK.value = cleanNum(v + offsetK());
+      });
+
+      /* Helper đồng bộ nhóm tỉ lệ tuyến tính */
+      function bindRatioGroup(items) {
+        items.forEach(function (src) {
+          src.el.addEventListener('input', function () {
+            var v = parseFloat(src.el.value);
+            if (!Number.isFinite(v)) return;
+            var base = v * src.toBase;
+            items.forEach(function (dst) {
+              if (dst !== src) {
+                dst.el.value = cleanNum(base / dst.toBase);
+              }
+            });
+          });
+        });
+      }
+
+      /* 2. Áp suất (chuẩn Pa) */
+      bindRatioGroup([
+        { el: document.getElementById('u-p-pa'), toBase: 1 },
+        { el: document.getElementById('u-p-atm'), toBase: 101300 },
+        { el: document.getElementById('u-p-bar'), toBase: 100000 },
+        { el: document.getElementById('u-p-kpa'), toBase: 1000 },
+        { el: document.getElementById('u-p-mmhg'), toBase: 133.3 }
+      ]);
+
+      /* 3. Thể tích (chuẩn m³) & Diện tích (chuẩn m²) */
+      bindRatioGroup([
+        { el: document.getElementById('u-v-m3'), toBase: 1 },
+        { el: document.getElementById('u-v-l'), toBase: 1e-3 },
+        { el: document.getElementById('u-v-cm3'), toBase: 1e-6 }
+      ]);
+
+      bindRatioGroup([
+        { el: document.getElementById('u-s-m2'), toBase: 1 },
+        { el: document.getElementById('u-s-cm2'), toBase: 1e-4 },
+        { el: document.getElementById('u-s-mm2'), toBase: 1e-6 }
+      ]);
+
+      /* 4. Năng lượng (chuẩn J) */
+      bindRatioGroup([
+        { el: document.getElementById('u-e-j'), toBase: 1 },
+        { el: document.getElementById('u-e-ev'), toBase: 1.6e-19 },
+        { el: document.getElementById('u-e-mev'), toBase: 1.6e-13 }
+      ]);
+
+      /* 5. Khối lượng hạt nhân (chuẩn u) */
+      bindRatioGroup([
+        { el: document.getElementById('u-m-u'), toBase: 1 },
+        { el: document.getElementById('u-m-mev'), toBase: 1 / 931.5 },
+        { el: document.getElementById('u-m-kg'), toBase: 1 / 1.66055e-27 }
+      ]);
+
+      /* 6. Độ phóng xạ (chuẩn Bq) */
+      bindRatioGroup([
+        { el: document.getElementById('u-h-bq'), toBase: 1 },
+        { el: document.getElementById('u-h-mbq'), toBase: 1e6 },
+        { el: document.getElementById('u-h-ci'), toBase: 3.7e10 }
+      ]);
+    })();
+  </script>
+</body>
+</html>
