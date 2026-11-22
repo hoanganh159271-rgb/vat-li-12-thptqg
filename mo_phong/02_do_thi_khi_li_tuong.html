@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô phỏng 02: Đồng bộ 3 hệ đồ thị Khí lí tưởng (p-V, p-T, V-T)</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
+        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Đổi đơn vị</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Mô phỏng Chương 2: Đồng bộ đồ thị Khí lí tưởng</h1>
+    <p class="muted">Quan sát đồng thời cùng một quá trình biến đổi trên cả 3 hệ trục (p–V), (p–T), (V–T) và kiểm nghiệm quy tắc so sánh độ dốc đường đẳng. Quy chuẩn: p(kPa)·V(lít) = n·8,31·T(K).</p>
+
+    <div class="card" style="margin-top: 20px;">
+      <div class="section-head" style="margin-bottom: 8px;">
+        <h3>Chọn chế độ khảo sát</h3>
+        <button type="button" id="btn-gas-reset" class="btn btn-sm">Đặt lại thông số</button>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Chọn loại quá trình khí lí tưởng">
+        <button type="button" class="tab-btn gas-mode" data-mode="isothermal" aria-selected="true">Đẳng nhiệt (T = const)</button>
+        <button type="button" class="tab-btn gas-mode" data-mode="isochoric" aria-selected="false">Đẳng tích (V = const)</button>
+        <button type="button" class="tab-btn gas-mode" data-mode="isobaric" aria-selected="false">Đẳng áp (p = const)</button>
+        <button type="button" class="tab-btn gas-mode" data-mode="cycle" aria-selected="false">Chu trình 1 → 2 → 3 → 1</button>
+        <button type="button" class="tab-btn gas-mode" data-mode="compare" aria-selected="false">So sánh đường đẳng</button>
+      </div>
+
+      <div id="gas-controls" class="grid-4" style="margin-top: 12px;"></div>
+    </div>
+
+    <section class="section-block" style="margin-top: 24px;">
+      <div class="grid-3">
+        <div class="card" style="padding: 18px;">
+          <h3>Hệ trục (p – V)</h3>
+          <div class="canvas-box">
+            <canvas id="cv-pv"></canvas>
+          </div>
+          <p id="cap-pv" class="muted" style="font-size: 0.9rem;"></p>
+        </div>
+
+        <div class="card" style="padding: 18px;">
+          <h3>Hệ trục (p – T)</h3>
+          <div class="canvas-box">
+            <canvas id="cv-pt"></canvas>
+          </div>
+          <p id="cap-pt" class="muted" style="font-size: 0.9rem;"></p>
+        </div>
+
+        <div class="card" style="padding: 18px;">
+          <h3>Hệ trục (V – T)</h3>
+          <div class="canvas-box">
+            <canvas id="cv-vt"></canvas>
+          </div>
+          <p id="cap-vt" class="muted" style="font-size: 0.9rem;"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block" style="margin-top: 24px;">
+      <div class="card">
+        <h3>Bảng thông số trạng thái &amp; Công nhiệt động</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Trạng thái / Đường</th>
+                <th>Áp suất p (kPa)</th>
+                <th>Thể tích V (lít)</th>
+                <th>Nhiệt độ T (K)</th>
+                <th>Nhiệt độ t (°C)</th>
+                <th>Ghi chú vật lí</th>
+              </tr>
+            </thead>
+            <tbody id="gas-tbody"></tbody>
+          </table>
+        </div>
+        <div id="gas-summary" class="panel-alt num"></div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="card">
+        <h2>Điều kiện mô hình &amp; Bẫy hay gặp (Chương 2)</h2>
+        <div class="grid-2">
+          <div class="panel-alt">
+            <h3>Điều kiện áp dụng &amp; Quy tắc đồ thị</h3>
+            <ul class="clean-list">
+              <li><strong>Phương trình trạng thái</strong>: p₁V₁/T₁ = p₂V₂/T₂ chỉ đúng khi số mol khí <em>n</em> không đổi (bình kín).</li>
+              <li><strong>Độ dốc trên (p–T)</strong>: p = (nR/V)·T ⇒ đường đẳng tích nằm <strong>trên (dốc hơn)</strong> có thể tích V <strong>nhỏ hơn</strong>.</li>
+              <li><strong>Độ dốc trên (V–T)</strong>: V = (nR/p)·T ⇒ đường đẳng áp nằm <strong>trên (dốc hơn)</strong> có áp suất p <strong>nhỏ hơn</strong>.</li>
+            </ul>
+          </div>
+          <div class="notice notice-danger">
+            <h3>3 bẫy đề thi cần cảnh giác</h3>
+            <ul class="clean-list">
+              <li><strong>Bẫy 1 (Đơn vị Kelvin)</strong>: Tuyệt đối không lấy tỉ số theo °C. Tăng từ 27 °C (300 K) lên 54 °C (327 K) thì áp suất chỉ tăng 1,09 lần, không phải 2 lần.</li>
+              <li><strong>Bẫy 2 (Đảo ngược thứ tự độ dốc)</strong>: Không tự nhớ máy móc "trên là lớn". Hãy thử kéo 1 đường thẳng đứng T = const cắt hai đường, đường nào có p cao hơn thì V nhỏ hơn.</li>
+              <li><strong>Bẫy 3 (Đổi đơn vị p·V)</strong>: 1 atm = 101,3 kPa; 1 lít = 10⁻³ m³. Khi tính công A = −pΔV ra Jun, nhớ 1 kPa·lít = 1 J.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var R = 8.31;
+      var mode = 'isothermal';
+
+      var params = {
+        n: 1.0,
+        T: 300,
+        V1: 20,
+        V2: 45,
+        V: 25,
+        T1: 280,
+        T2: 520,
+        p: 150,
+        cmpV1: 20,
+        cmpV2: 40,
+        cmpP1: 120,
+        cmpP2: 240,
+        cmpT1: 300,
+        cmpT2: 500
+      };
+
+      var CONTROLS_DEF = {
+        isothermal: [
+          { key: 'n', label: 'Số mol khí n', min: 0.5, max: 3.0, step: 0.1, unit: 'mol', dec: 1 },
+          { key: 'T', label: 'Nhiệt độ đẳng nhiệt T', min: 200, max: 600, step: 10, unit: 'K', dec: 0 },
+          { key: 'V1', label: 'Thể tích đầu V₁', min: 10, max: 60, step: 2, unit: 'lít', dec: 0 },
+          { key: 'V2', label: 'Thể tích cuối V₂', min: 10, max: 60, step: 2, unit: 'lít', dec: 0 }
+        ],
+        isochoric: [
+          { key: 'n', label: 'Số mol khí n', min: 0.5, max: 3.0, step: 0.1, unit: 'mol', dec: 1 },
+          { key: 'V', label: 'Thể tích không đổi V', min: 10, max: 60, step: 2, unit: 'lít', dec: 0 },
+          { key: 'T1', label: 'Nhiệt độ đầu T₁', min: 200, max: 550, step: 10, unit: 'K', dec: 0 },
+          { key: 'T2', label: 'Nhiệt độ cuối T₂', min: 200, max: 650, step: 10, unit: 'K', dec: 0 }
+        ],
+        isobaric: [
+          { key: 'n', label: 'Số mol khí n', min: 0.5, max: 3.0, step: 0.1, unit: 'mol', dec: 1 },
+          { key: 'p', label: 'Áp suất không đổi p', min: 50, max: 300, step: 10, unit: 'kPa', dec: 0 },
+          { key: 'T1', label: 'Nhiệt độ đầu T₁', min: 200, max: 550, step: 10, unit: 'K', dec: 0 },
+          { key: 'T2', label: 'Nhiệt độ cuối T₂', min: 200, max: 650, step: 10, unit: 'K', dec: 0 }
+        ],
+        cycle: [
+          { key: 'n', label: 'Số mol khí n', min: 0.5, max: 3.0, step: 0.1, unit: 'mol', dec: 1 },
+          { key: 'V1', label: 'Thể tích V₁ (đẳng tích 1→2)', min: 12, max: 40, step: 2, unit: 'lít', dec: 0 },
+          { key: 'T1', label: 'Nhiệt độ đáy T₁', min: 250, max: 350, step: 10, unit: 'K', dec: 0 },
+          { key: 'T2', label: 'Nhiệt độ đỉnh T₂ (đẳng nhiệt 2→3)', min: 400, max: 650, step: 10, unit: 'K', dec: 0 }
+        ],
+        compare: [
+          { key: 'n', label: 'Số mol khí n', min: 0.5, max: 3.0, step: 0.1, unit: 'mol', dec: 1 },
+          { key: 'cmpV1', label: 'Đẳng tích V₁ vs V₂ (V₂=40)', min: 12, max: 55, step: 2, unit: 'lít', dec: 0 },
+          { key: 'cmpP1', label: 'Đẳng áp p₁ vs p₂ (p₂=240)', min: 60, max: 300, step: 10, unit: 'kPa', dec: 0 },
+          { key: 'cmpT1', label: 'Đẳng nhiệt T₁ vs T₂ (T₂=500)', min: 220, max: 620, step: 10, unit: 'K', dec: 0 }
+        ]
+      };
+
+      var controlsEl = document.getElementById('gas-controls');
+      var modeBtns = document.querySelectorAll('.gas-mode');
+      var cvPV = document.getElementById('cv-pv');
+      var cvPT = document.getElementById('cv-pt');
+      var cvVT = document.getElementById('cv-vt');
+
+      function buildControls() {
+        var defs = CONTROLS_DEF[mode];
+        controlsEl.innerHTML = '';
+        defs.forEach(function (d) {
+          var box = document.createElement('div');
+          box.className = 'control-group';
+
+          var head = document.createElement('div');
+          head.className = 'control-head';
+
+          var lbl = document.createElement('label');
+          lbl.className = 'control-label';
+          lbl.setAttribute('for', 'gas-rng-' + d.key);
+          lbl.textContent = d.label;
+
+          var valEl = document.createElement('span');
+          valEl.className = 'control-val';
+          valEl.id = 'gas-val-' + d.key;
+          valEl.textContent = C.fmt(params[d.key], d.dec) + ' ' + d.unit;
+
+          head.appendChild(lbl);
+          head.appendChild(valEl);
+
+          var inp = document.createElement('input');
+          inp.type = 'range';
+          inp.id = 'gas-rng-' + d.key;
+          inp.min = d.min;
+          inp.max = d.max;
+          inp.step = d.step;
+          inp.value = params[d.key];
+          inp.addEventListener('input', function () {
+            params[d.key] = parseFloat(inp.value);
+            valEl.textContent = C.fmt(params[d.key], d.dec) + ' ' + d.unit;
+            renderAll();
+          });
+
+          box.appendChild(head);
+          box.appendChild(inp);
+          controlsEl.appendChild(box);
+        });
+      }
+
+      function drawDot(ctx, x, y, label, color) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = C.getColors().ink;
+        ctx.font = '700 12px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(label, x + 7, y - 4);
+        ctx.restore();
+      }
+
+      function renderAll() {
+        var colors = C.getColors();
+        var n = params.n;
+        var states = [];
+        var segs = [];
+        var summary = '';
+
+        if (mode === 'isothermal') {
+          var T = params.T;
+          var V1 = params.V1;
+          var V2 = params.V2;
+          var p1 = (n * R * T) / V1;
+          var p2 = (n * R * T) / V2;
+          states = [
+            { name: 'Trạng thái 1', p: p1, V: V1, T: T, note: 'Đầu đẳng nhiệt' },
+            { name: 'Trạng thái 2', p: p2, V: V2, T: T, note: 'Cuối đẳng nhiệt' }
+          ];
+          var A_iso = -n * R * T * Math.log(V2 / V1);
+          summary = 'Định luật Boyle: p₁V₁ = p₂V₂ = ' + C.fmt(p1 * V1, 1) + ' kPa·lít (J). Công khí nhận: A = -nRT·ln(V₂/V₁) = ' + C.fmt(A_iso, 1) + ' J.';
+        } else if (mode === 'isochoric') {
+          var V = params.V;
+          var T1 = params.T1;
+          var T2 = params.T2;
+          var p1c = (n * R * T1) / V;
+          var p2c = (n * R * T2) / V;
+          states = [
+            { name: 'Trạng thái 1', p: p1c, V: V, T: T1, note: 'Đầu đẳng tích' },
+            { name: 'Trạng thái 2', p: p2c, V: V, T: T2, note: 'Cuối đẳng tích' }
+          ];
+          summary = 'Đẳng tích: p₁/T₁ = p₂/T₂ = ' + C.fmt(p1c / T1, 4) + ' kPa/K. Vì ΔV = 0 nên công A = 0 J.';
+        } else if (mode === 'isobaric') {
+          var pConst = params.p;
+          var T1b = params.T1;
+          var T2b = params.T2;
+          var V1b = (n * R * T1b) / pConst;
+          var V2b = (n * R * T2b) / pConst;
+          states = [
+            { name: 'Trạng thái 1', p: pConst, V: V1b, T: T1b, note: 'Đầu đẳng áp' },
+            { name: 'Trạng thái 2', p: pConst, V: V2b, T: T2b, note: 'Cuối đẳng áp' }
+          ];
+          var A_bar = -pConst * (V2b - V1b);
+          summary = 'Định luật Charles: V₁/T₁ = V₂/T₂ = ' + C.fmt(V1b / T1b, 4) + ' lít/K. Công A = -pΔV = ' + (A_bar > 0 ? '+' : '') + C.fmt(A_bar, 1) + ' J.';
+        } else if (mode === 'cycle') {
+          var V1cy = params.V1;
+          var T1cy = params.T1;
+          var T2cy = Math.max(params.T1 + 40, params.T2);
+          var p1cy = (n * R * T1cy) / V1cy;
+          var p2cy = (n * R * T2cy) / V1cy;
+          var V3cy = V1cy * (T2cy / T1cy);
+          var p3cy = p1cy;
+          states = [
+            { name: 'Trạng thái 1', p: p1cy, V: V1cy, T: T1cy, note: '1→2: Đẳng tích' },
+            { name: 'Trạng thái 2', p: p2cy, V: V1cy, T: T2cy, note: '2→3: Đẳng nhiệt' },
+            { name: 'Trạng thái 3', p: p3cy, V: V3cy, T: T2cy, note: '3→1: Đẳng áp' }
+          ];
+          var A12 = 0;
+          var A23 = -n * R * T2cy * Math.log(V3cy / V1cy);
+          var A31 = -p1cy * (V1cy - V3cy);
+          var Acyc = A12 + A23 + A31;
+          summary = 'Chu trình kín 1→2→3→1: A₁₂ = 0 J | A₂₃ = ' + C.fmt(A23, 1) + ' J | A₃₁ = +' + C.fmt(A31, 1) + ' J ⇒ Tổng công khí nhận A_chu_trình = ' + C.fmt(Acyc, 1) + ' J (chính là phần diện tích khép kín trên p–V; khí sinh công thuần |A| = ' + C.fmt(Math.abs(Acyc), 1) + ' J).';
+        } else {
+          /* Compare mode */
+          states = [
+            { name: 'Đẳng tích V₁ vs V₂', p: (n * R * 400) / params.cmpV1, V: params.cmpV1, T: 400, note: 'So sánh với V₂ = 40 lít tại T = 400 K' },
+            { name: 'Đẳng áp p₁ vs p₂', p: params.cmpP1, V: (n * R * 400) / params.cmpP1, T: 400, note: 'So sánh với p₂ = 240 kPa tại T = 400 K' },
+            { name: 'Đẳng nhiệt T₁ vs T₂', p: (n * R * params.cmpT1) / 30, V: 30, T: params.cmpT1, note: 'So sánh với T₂ = 500 K tại V = 30 lít' }
+          ];
+          summary = 'Quy tắc so sánh độ dốc: Đường đẳng tích trên (p–T) dốc hơn ⇔ V nhỏ hơn; đường đẳng áp trên (V–T) dốc hơn ⇔ p nhỏ hơn; đường đẳng nhiệt trên (p–V) xa gốc hơn ⇔ T cao hơn.';
+        }
+
+        /* Cập nhật bảng */
+        var tbody = document.getElementById('gas-tbody');
+        tbody.innerHTML = states.map(function (st) {
+          return '<tr><td><strong>' + st.name + '</strong></td><td>' + C.fmt(st.p, 1) + '</td><td>' + C.fmt(st.V, 2) + '</td><td>' + C.fmt(st.T, 0) + '</td><td>' + C.fmt(st.T - 273, 0) + '</td><td>' + st.note + '</td></tr>';
+        }).join('');
+        document.getElementById('gas-summary').textContent = summary;
+
+        /* Xác định giới hạn trục chung cho đồng bộ */
+        var maxP = 350;
+        var maxV = 75;
+        var maxT = 700;
+        states.forEach(function (st) {
+          maxP = Math.max(maxP, st.p * 1.18);
+          maxV = Math.max(maxV, st.V * 1.18);
+          maxT = Math.max(maxT, st.T * 1.12);
+        });
+        maxP = Math.ceil(maxP / 50) * 50;
+        maxV = Math.ceil(maxV / 10) * 10;
+        maxT = Math.ceil(maxT / 100) * 100;
+
+        /* Vẽ từng Canvas */
+        drawPV(maxP, maxV, states, colors);
+        drawPT(maxP, maxT, states, colors);
+        drawVT(maxV, maxT, states, colors);
+      }
+
+      function drawPV(maxP, maxV, states, colors) {
+        var s = C.setupCanvas(cvPV, 280);
+        var ctx = s.ctx;
+        var ax = C.drawAxes(ctx, s.width, s.height, {
+          xMin: 0, xMax: maxV, yMin: 0, yMax: maxP,
+          xTicks: 4, yTicks: 4, xLabel: 'V (lít)', yLabel: 'p (kPa)',
+          xFormat: function (v) { return Math.round(v) + ''; },
+          yFormat: function (v) { return Math.round(v) + ''; }
+        });
+        var cap = document.getElementById('cap-pv');
+
+        if (mode === 'compare') {
+          var T1 = params.cmpT1;
+          var T2 = 500;
+          [[T1, colors.accent, 'T₁=' + T1 + 'K'], [T2, colors.warm, 'T₂=' + T2 + 'K']].forEach(function (item) {
+            ctx.save();
+            ctx.strokeStyle = item[1];
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            var started = false;
+            for (var vv = 6; vv <= maxV; vv += 1) {
+              var pp = (params.n * R * item[0]) / vv;
+              if (pp > maxP) continue;
+              if (!started) { ctx.moveTo(ax.toX(vv), ax.toY(pp)); started = true; }
+              else ctx.lineTo(ax.toX(vv), ax.toY(pp));
+            }
+            ctx.stroke();
+            ctx.fillStyle = item[1];
+            ctx.font = '700 12px ' + getComputedStyle(document.body).fontFamily;
+            var pLbl = (params.n * R * item[0]) / (maxV * 0.72);
+            ctx.fillText(item[2], ax.toX(maxV * 0.72), ax.toY(Math.min(maxP * 0.9, pLbl)) - 8);
+            ctx.restore();
+          });
+          /* Đường gióng V = 30 */
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = colors.muted;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(30), ax.toY(0));
+          ctx.lineTo(ax.toX(30), ax.toY(maxP));
+          ctx.stroke();
+          ctx.restore();
+          cap.textContent = (T1 > T2 ? 'T₁ > T₂: đường T₁ nằm xa gốc hơn.' : T1 < T2 ? 'T₁ < T₂: đường T₂ nằm xa gốc hơn.' : 'T₁ = T₂: hai đường trùng nhau.');
+          return;
+        }
+
+        if (mode === 'isothermal') {
+          var vLow = Math.min(states[0].V, states[1].V);
+          var vHigh = Math.max(states[0].V, states[1].V);
+          ctx.save();
+          ctx.strokeStyle = colors.accent;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          for (var k = 0; k <= 60; k++) {
+            var vk = vLow + (k / 60) * (vHigh - vLow);
+            var pk = (params.n * R * params.T) / vk;
+            if (k === 0) ctx.moveTo(ax.toX(vk), ax.toY(pk));
+            else ctx.lineTo(ax.toX(vk), ax.toY(pk));
+          }
+          ctx.stroke();
+          ctx.restore();
+          cap.textContent = 'Đường đẳng nhiệt là cung hypebol p·V = const.';
+        } else if (mode === 'isochoric') {
+          C.drawArrow(ctx, ax.toX(states[0].V), ax.toY(states[0].p), ax.toX(states[1].V), ax.toY(states[1].p), colors.accent, 3, 9);
+          cap.textContent = 'Đẳng tích trên (p–V) là đoạn thẳng đứng (A = 0).';
+        } else if (mode === 'isobaric') {
+          var x1 = ax.toX(states[0].V);
+          var x2 = ax.toX(states[1].V);
+          var yP = ax.toY(states[0].p);
+          var y0 = ax.toY(0);
+          ctx.save();
+          ctx.fillStyle = 'rgba(24, 78, 138, 0.14)';
+          ctx.fillRect(Math.min(x1, x2), yP, Math.abs(x2 - x1), y0 - yP);
+          ctx.restore();
+          C.drawArrow(ctx, x1, yP, x2, yP, colors.accent, 3, 9);
+          cap.textContent = 'Đẳng áp là đoạn ngang; diện tích tô màu là độ lớn công |A|.';
+        } else if (mode === 'cycle') {
+          var s1 = states[0], s2 = states[1], s3 = states[2];
+          /* Tô diện tích chu trình */
+          ctx.save();
+          ctx.fillStyle = 'rgba(21, 122, 76, 0.14)';
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(s1.V), ax.toY(s1.p));
+          ctx.lineTo(ax.toX(s2.V), ax.toY(s2.p));
+          for (var j = 1; j <= 40; j++) {
+            var vj = s2.V + (j / 40) * (s3.V - s2.V);
+            var pj = (params.n * R * s2.T) / vj;
+            ctx.lineTo(ax.toX(vj), ax.toY(pj));
+          }
+          ctx.lineTo(ax.toX(s1.V), ax.toY(s1.p));
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+
+          C.drawArrow(ctx, ax.toX(s1.V), ax.toY(s1.p), ax.toX(s2.V), ax.toY(s2.p), colors.cold, 2.8, 8);
+          ctx.save();
+          ctx.strokeStyle = colors.warm;
+          ctx.lineWidth = 2.8;
+          ctx.beginPath();
+          for (var m = 0; m <= 40; m++) {
+            var vm = s2.V + (m / 40) * (s3.V - s2.V);
+            var pm = (params.n * R * s2.T) / vm;
+            if (m === 0) ctx.moveTo(ax.toX(vm), ax.toY(pm));
+            else ctx.lineTo(ax.toX(vm), ax.toY(pm));
+          }
+          ctx.stroke();
+          ctx.restore();
+          C.drawArrow(ctx, ax.toX(s3.V), ax.toY(s3.p), ax.toX(s1.V), ax.toY(s1.p), colors.ok, 2.8, 8);
+          cap.textContent = 'Chu trình kín theo chiều kim đồng hồ: khí sinh công thuần.';
+        }
+
+        states.forEach(function (st, idx) {
+          drawDot(ctx, ax.toX(st.V), ax.toY(st.p), String(idx + 1), colors.warm);
+        });
+      }
+
+      function drawPT(maxP, maxT, states, colors) {
+        var s = C.setupCanvas(cvPT, 280);
+        var ctx = s.ctx;
+        var ax = C.drawAxes(ctx, s.width, s.height, {
+          xMin: 0, xMax: maxT, yMin: 0, yMax: maxP,
+          xTicks: 4, yTicks: 4, xLabel: 'T (K)', yLabel: 'p (kPa)',
+          xFormat: function (v) { return Math.round(v) + ''; },
+          yFormat: function (v) { return Math.round(v) + ''; }
+        });
+        var cap = document.getElementById('cap-pt');
+
+        if (mode === 'compare') {
+          var V1 = params.cmpV1;
+          var V2 = 40;
+          [[V1, colors.accent, 'V₁=' + V1 + 'L'], [V2, colors.warm, 'V₂=' + V2 + 'L']].forEach(function (item) {
+            var pEnd = (params.n * R * maxT) / item[0];
+            var tDraw = maxT;
+            if (pEnd > maxP) {
+              pEnd = maxP;
+              tDraw = (maxP * item[0]) / (params.n * R);
+            }
+            ctx.save();
+            ctx.strokeStyle = item[1];
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            ctx.moveTo(ax.toX(0), ax.toY(0));
+            ctx.lineTo(ax.toX(tDraw), ax.toY(pEnd));
+            ctx.stroke();
+            ctx.fillStyle = item[1];
+            ctx.font = '700 12px ' + getComputedStyle(document.body).fontFamily;
+            ctx.fillText(item[2], ax.toX(tDraw * 0.65), ax.toY(pEnd * 0.65) - 10);
+            ctx.restore();
+          });
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = colors.muted;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(400), ax.toY(0));
+          ctx.lineTo(ax.toX(400), ax.toY(maxP));
+          ctx.stroke();
+          ctx.restore();
+          cap.textContent = (V1 < V2 ? 'V₁ < V₂ ⇒ đường V₁ nằm TRÊN V₂.' : V1 > V2 ? 'V₁ > V₂ ⇒ đường V₁ nằm DƯỚI V₂.' : 'V₁ = V₂: hai đường trùng nhau.');
+          return;
+        }
+
+        if (mode === 'isothermal' || mode === 'isobaric') {
+          C.drawArrow(ctx, ax.toX(states[0].T), ax.toY(states[0].p), ax.toX(states[1].T), ax.toY(states[1].p), colors.accent, 3, 9);
+          cap.textContent = mode === 'isothermal' ? 'Đẳng nhiệt là đoạn thẳng đứng T = const.' : 'Đẳng áp là đoạn thẳng ngang p = const.';
+        } else if (mode === 'isochoric') {
+          var tMin = Math.min(states[0].T, states[1].T);
+          var pMin = Math.min(states[0].p, states[1].p);
+          ctx.save();
+          ctx.setLineDash([5, 5]);
+          ctx.strokeStyle = colors.muted;
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(0), ax.toY(0));
+          ctx.lineTo(ax.toX(tMin), ax.toY(pMin));
+          ctx.stroke();
+          ctx.restore();
+          C.drawArrow(ctx, ax.toX(states[0].T), ax.toY(states[0].p), ax.toX(states[1].T), ax.toY(states[1].p), colors.accent, 3, 9);
+          cap.textContent = 'Đẳng tích trên (p–T): kéo dài đi qua gốc (0 K; 0).';
+        } else if (mode === 'cycle') {
+          var s1 = states[0], s2 = states[1], s3 = states[2];
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = colors.muted;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(0), ax.toY(0));
+          ctx.lineTo(ax.toX(s1.T), ax.toY(s1.p));
+          ctx.stroke();
+          ctx.restore();
+          C.drawArrow(ctx, ax.toX(s1.T), ax.toY(s1.p), ax.toX(s2.T), ax.toY(s2.p), colors.cold, 2.8, 8);
+          C.drawArrow(ctx, ax.toX(s2.T), ax.toY(s2.p), ax.toX(s3.T), ax.toY(s3.p), colors.warm, 2.8, 8);
+          C.drawArrow(ctx, ax.toX(s3.T), ax.toY(s3.p), ax.toX(s1.T), ax.toY(s1.p), colors.ok, 2.8, 8);
+          cap.textContent = 'Tam giác trên (p–T): 1→2 hướng gốc 0 K, 2→3 thẳng đứng, 3→1 ngang.';
+        }
+
+        states.forEach(function (st, idx) {
+          drawDot(ctx, ax.toX(st.T), ax.toY(st.p), String(idx + 1), colors.warm);
+        });
+      }
+
+      function drawVT(maxV, maxT, states, colors) {
+        var s = C.setupCanvas(cvVT, 280);
+        var ctx = s.ctx;
+        var ax = C.drawAxes(ctx, s.width, s.height, {
+          xMin: 0, xMax: maxT, yMin: 0, yMax: maxV,
+          xTicks: 4, yTicks: 4, xLabel: 'T (K)', yLabel: 'V (lít)',
+          xFormat: function (v) { return Math.round(v) + ''; },
+          yFormat: function (v) { return Math.round(v) + ''; }
+        });
+        var cap = document.getElementById('cap-vt');
+
+        if (mode === 'compare') {
+          var p1 = params.cmpP1;
+          var p2 = 240;
+          [[p1, colors.accent, 'p₁=' + p1 + 'kPa'], [p2, colors.warm, 'p₂=' + p2 + 'kPa']].forEach(function (item) {
+            var vEnd = (params.n * R * maxT) / item[0];
+            var tDraw = maxT;
+            if (vEnd > maxV) {
+              vEnd = maxV;
+              tDraw = (maxV * item[0]) / (params.n * R);
+            }
+            ctx.save();
+            ctx.strokeStyle = item[1];
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            ctx.moveTo(ax.toX(0), ax.toY(0));
+            ctx.lineTo(ax.toX(tDraw), ax.toY(vEnd));
+            ctx.stroke();
+            ctx.fillStyle = item[1];
+            ctx.font = '700 12px ' + getComputedStyle(document.body).fontFamily;
+            ctx.fillText(item[2], ax.toX(tDraw * 0.62), ax.toY(vEnd * 0.62) - 10);
+            ctx.restore();
+          });
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = colors.muted;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(400), ax.toY(0));
+          ctx.lineTo(ax.toX(400), ax.toY(maxV));
+          ctx.stroke();
+          ctx.restore();
+          cap.textContent = (p1 < p2 ? 'p₁ < p₂ ⇒ đường p₁ nằm TRÊN p₂.' : p1 > p2 ? 'p₁ > p₂ ⇒ đường p₁ nằm DƯỚI p₂.' : 'p₁ = p₂: hai đường trùng nhau.');
+          return;
+        }
+
+        if (mode === 'isothermal' || mode === 'isochoric') {
+          C.drawArrow(ctx, ax.toX(states[0].T), ax.toY(states[0].V), ax.toX(states[1].T), ax.toY(states[1].V), colors.accent, 3, 9);
+          cap.textContent = mode === 'isothermal' ? 'Đẳng nhiệt là đoạn thẳng đứng T = const.' : 'Đẳng tích là đoạn thẳng ngang V = const.';
+        } else if (mode === 'isobaric') {
+          var tMin = Math.min(states[0].T, states[1].T);
+          var vMin = Math.min(states[0].V, states[1].V);
+          ctx.save();
+          ctx.setLineDash([5, 5]);
+          ctx.strokeStyle = colors.muted;
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(0), ax.toY(0));
+          ctx.lineTo(ax.toX(tMin), ax.toY(vMin));
+          ctx.stroke();
+          ctx.restore();
+          C.drawArrow(ctx, ax.toX(states[0].T), ax.toY(states[0].V), ax.toX(states[1].T), ax.toY(states[1].V), colors.accent, 3, 9);
+          cap.textContent = 'Đẳng áp trên (V–T): kéo dài đi qua gốc (0 K; 0).';
+        } else if (mode === 'cycle') {
+          var s1 = states[0], s2 = states[1], s3 = states[2];
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = colors.muted;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(0), ax.toY(0));
+          ctx.lineTo(ax.toX(s1.T), ax.toY(s1.V));
+          ctx.stroke();
+          ctx.restore();
+          C.drawArrow(ctx, ax.toX(s1.T), ax.toY(s1.V), ax.toX(s2.T), ax.toY(s2.V), colors.cold, 2.8, 8);
+          C.drawArrow(ctx, ax.toX(s2.T), ax.toY(s2.V), ax.toX(s3.T), ax.toY(s3.V), colors.warm, 2.8, 8);
+          C.drawArrow(ctx, ax.toX(s3.T), ax.toY(s3.V), ax.toX(s1.T), ax.toY(s1.V), colors.ok, 2.8, 8);
+          cap.textContent = 'Tam giác trên (V–T): 1→2 ngang, 2→3 thẳng đứng, 3→1 hướng gốc 0 K.';
+        }
+
+        states.forEach(function (st, idx) {
+          drawDot(ctx, ax.toX(st.T), ax.toY(st.V), String(idx + 1), colors.warm);
+        });
+      }
+
+      modeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          mode = btn.getAttribute('data-mode');
+          modeBtns.forEach(function (b) {
+            b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+          });
+          buildControls();
+          renderAll();
+        });
+      });
+
+      document.getElementById('btn-gas-reset').addEventListener('click', function () {
+        params = {
+          n: 1.0, T: 300, V1: 20, V2: 45, V: 25, T1: 280, T2: 520, p: 150,
+          cmpV1: 20, cmpV2: 40, cmpP1: 120, cmpP2: 240, cmpT1: 300, cmpT2: 500
+        };
+        buildControls();
+        renderAll();
+      });
+
+      buildControls();
+      renderAll();
+      window.addEventListener('resize', renderAll);
+      window.addEventListener('ly-theme-change', renderAll);
+    })();
+  </script>
+</body>
+</html>

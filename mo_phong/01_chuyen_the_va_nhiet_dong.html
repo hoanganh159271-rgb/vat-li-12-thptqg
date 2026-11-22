@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô phỏng 01: Chuyển thể &amp; Định luật I Nhiệt động lực học</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
+        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Đổi đơn vị</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Mô phỏng Chương 1: Chuyển thể &amp; Định luật I NĐLH</h1>
+    <p class="muted">Quan sát trực tiếp đồ thị nhiệt độ theo thời gian T(t) và kiểm nghiệm quy ước dấu chuẩn GDPT 2018: ΔU = A + Q.</p>
+
+    <div style="margin-top: 20px; margin-bottom: 24px;">
+      <div class="tabs" role="tablist" aria-label="Chọn chế độ mô phỏng Chương 1">
+        <button type="button" class="tab-btn" role="tab" id="tab-phase" aria-selected="true" aria-controls="panel-phase">Đồ thị chuyển thể T(t)</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-firstlaw" aria-selected="false" aria-controls="panel-firstlaw">Định luật I NĐLH (ΔU = A + Q)</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: CHUYỂN THỂ -->
+    <section id="panel-phase" role="tabpanel" aria-labelledby="tab-phase">
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Thông số đun nóng đẳng áp</h3>
+
+          <div class="control-group">
+            <label for="sel-substance" class="control-label">Chọn chất tinh khiết</label>
+            <select id="sel-substance">
+              <option value="water">Nước (t_nc = 0 °C, t_sôi = 100 °C)</option>
+              <option value="lead">Chì (t_nc = 327 °C, t_sôi = 1749 °C)</option>
+              <option value="aluminum">Nhôm (t_nc = 660 °C, t_sôi = 2470 °C)</option>
+              <option value="copper">Đồng (t_nc = 1084 °C, t_sôi = 2562 °C)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="rng-mass" class="control-label">Khối lượng m</label>
+              <span id="val-mass" class="control-val">0,50 kg</span>
+            </div>
+            <input id="rng-mass" type="range" min="0.1" max="2.0" step="0.05" value="0.5">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="rng-t0" class="control-label">Nhiệt độ ban đầu t₀</label>
+              <span id="val-t0" class="control-val">-20 °C</span>
+            </div>
+            <input id="rng-t0" type="range" min="-40" max="-5" step="5" value="-20">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="rng-power" class="control-label">Công suất nguồn nhiệt P</label>
+              <span id="val-power" class="control-val">1500 W</span>
+            </div>
+            <input id="rng-power" type="range" min="500" max="3000" step="100" value="1500">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="rng-scrub" class="control-label">Kiểm tra thời điểm t</label>
+              <span id="val-scrub" class="control-val">0 s (0%)</span>
+            </div>
+            <input id="rng-scrub" type="range" min="0" max="100" step="1" value="35">
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="btn-phase-reset" class="btn btn-sm">Đặt lại mặc định</button>
+          </div>
+
+          <div class="panel-alt">
+            <div class="notice-title">Hằng số vật lí của chất đang chọn</div>
+            <div id="sub-props" class="muted num" style="font-size: 0.92rem;"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Đồ thị nhiệt độ theo thời gian T(t)</h3>
+          <div class="canvas-box">
+            <canvas id="canvas-phase"></canvas>
+            <div class="canvas-legend">
+              <span class="legend-item"><span class="legend-swatch" id="sw-kin"></span>Đoạn nghiêng: tăng động năng phân tử (ΔT &gt; 0)</span>
+              <span class="legend-item"><span class="legend-swatch" id="sw-pot"></span>Đoạn ngang: chuyển thể, tăng thế năng phân tử (ΔT = 0)</span>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="stat-label">Trạng thái tại t</div>
+              <div id="st-stage" class="stat-value">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Nhiệt độ tức thời</div>
+              <div id="st-temp" class="stat-value">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Nhiệt lượng đã thu Q(t)</div>
+              <div id="st-qnow" class="stat-value">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Biến đổi vi mô chủ yếu</div>
+              <div id="st-micro" class="stat-value">—</div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Giai đoạn</th>
+                  <th>Quá trình</th>
+                  <th>Công thức</th>
+                  <th>Nhiệt lượng Q (kJ)</th>
+                  <th>Thời gian Δt (s)</th>
+                  <th>Độ dốc ΔT/Δt (K/s)</th>
+                </tr>
+              </thead>
+              <tbody id="phase-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: ĐỊNH LUẬT I NĐLH -->
+    <section id="panel-firstlaw" role="tabpanel" aria-labelledby="tab-firstlaw" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều chỉnh Công (A) &amp; Nhiệt lượng (Q)</h3>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="rng-q" class="control-label">Nhiệt lượng Q (nhận + / truyền -)</label>
+              <span id="val-q" class="control-val">+200 J</span>
+            </div>
+            <input id="rng-q" type="range" min="-500" max="500" step="10" value="200">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="rng-a" class="control-label">Công A (nhận/nén + / sinh/giãn -)</label>
+              <span id="val-a" class="control-val">-120 J</span>
+            </div>
+            <input id="rng-a" type="range" min="-500" max="500" step="10" value="-120">
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">Quá trình mẫu nhanh</span>
+            <div class="btn-group">
+              <button type="button" class="btn btn-sm preset-fl" data-q="0" data-a="250">Nén đoạn nhiệt</button>
+              <button type="button" class="btn btn-sm preset-fl" data-q="250" data-a="-250">Giãn đẳng nhiệt</button>
+              <button type="button" class="btn btn-sm preset-fl" data-q="300" data-a="0">Đun đẳng tích</button>
+              <button type="button" class="btn btn-sm preset-fl" data-q="350" data-a="-120">Nhận nhiệt &amp; giãn nở</button>
+            </div>
+          </div>
+
+          <div class="notice notice-warn">
+            <div class="notice-title">Quy ước dấu bắt buộc GDPT 2018</div>
+            <p>Sử dụng đúng <strong>ΔU = A + Q</strong>:</p>
+            <ul class="clean-list">
+              <li><strong>Q &gt; 0</strong>: khí nhận nhiệt | <strong>Q &lt; 0</strong>: khí truyền nhiệt ra ngoài.</li>
+              <li><strong>A &gt; 0</strong>: khí nhận công (bị nén, V giảm) | <strong>A &lt; 0</strong>: khí thực hiện công (giãn nở, V tăng).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Mô hình xi-lanh pít-tông &amp; Chuyển động phân tử</h3>
+          <div class="canvas-box">
+            <canvas id="canvas-firstlaw"></canvas>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="stat-label">Nhiệt lượng Q</div>
+              <div id="fl-q" class="stat-value">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Công A</div>
+              <div id="fl-a" class="stat-value">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Độ biến thiên ΔU = A + Q</div>
+              <div id="fl-du" class="stat-value">—</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Kết luận nội năng</div>
+              <div id="fl-state" class="stat-value">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 6 LỚP RÚT GỌN: ĐIỀU KIỆN MÔ HÌNH & BẪY HAY GẶP -->
+    <section class="section-block">
+      <div class="card">
+        <h2>Điều kiện mô hình &amp; Bẫy hay gặp (Chương 1)</h2>
+        <div class="grid-2">
+          <div class="panel-alt">
+            <h3>Điều kiện áp dụng công thức</h3>
+            <ul class="clean-list">
+              <li><strong>Hệ kín</strong>: khối lượng <em>m</em> của chất không đổi trong quá trình khảo sát; bỏ qua thất thoát nhiệt ra môi trường nếu hiệu suất <em>H</em> = 100%.</li>
+              <li><strong>Chuyển thể chất kết tinh</strong>: nóng chảy và sôi ở nhiệt độ xác định ứng với áp suất chuẩn; công thức Q = λm và Q = Lm chỉ tính riêng cho đoạn đẳng nhiệt chuyển thể.</li>
+              <li><strong>Khí lí tưởng</strong>: nội năng <em>U</em> chỉ phụ thuộc <em>T</em>, nên quá trình đẳng nhiệt (ΔT = 0) cho ΔU = 0 ⇒ A + Q = 0.</li>
+            </ul>
+          </div>
+          <div class="notice notice-danger">
+            <h3>3 bẫy đề thi cần cảnh giác</h3>
+            <ul class="clean-list">
+              <li><strong>Bẫy 1 (Dấu A)</strong>: Khí "thực hiện công 80 J" nghĩa là A = −80 J, tuyệt đối không thay +80 J hay viết ΔU = Q − A theo hệ Anh/Mỹ.</li>
+              <li><strong>Bẫy 2 (Nội năng chuyển thể)</strong>: Nước đang sôi nhiệt độ không đổi (100 °C) nhưng <strong>nội năng vẫn tăng</strong> vì thế năng phân tử tăng.</li>
+              <li><strong>Bẫy 3 (Độ dốc đồ thị T(t))</strong>: Độ dốc ΔT / Δt = P / (mc) tỉ lệ <strong>nghịch</strong> với c. Đoạn dốc hơn có nhiệt dung riêng c nhỏ hơn.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var SUBSTANCES = {
+        water: {
+          name: 'Nước',
+          tNc: 0, tBoil: 100,
+          t0Min: -40, t0Max: -5, t0Default: -20, tMaxTop: 140,
+          cSolid: 2100, cLiquid: 4180, cGas: 2010,
+          lambda: 334000, L: 2260000
+        },
+        lead: {
+          name: 'Chì',
+          tNc: 327, tBoil: 1749,
+          t0Min: 20, t0Max: 250, t0Default: 100, tMaxTop: 2000,
+          cSolid: 130, cLiquid: 140, cGas: 100,
+          lambda: 25000, L: 858000
+        },
+        aluminum: {
+          name: 'Nhôm',
+          tNc: 660, tBoil: 2470,
+          t0Min: 20, t0Max: 500, t0Default: 200, tMaxTop: 2800,
+          cSolid: 880, cLiquid: 1080, cGas: 770,
+          lambda: 397000, L: 10900000
+        },
+        copper: {
+          name: 'Đồng',
+          tNc: 1084, tBoil: 2562,
+          t0Min: 20, t0Max: 900, t0Default: 300, tMaxTop: 2900,
+          cSolid: 380, cLiquid: 490, cGas: 330,
+          lambda: 205000, L: 4730000
+        }
+      };
+
+      /* Tabs */
+      var tabPhase = document.getElementById('tab-phase');
+      var tabFirst = document.getElementById('tab-firstlaw');
+      var panelPhase = document.getElementById('panel-phase');
+      var panelFirst = document.getElementById('panel-firstlaw');
+      var activeTab = 'phase';
+
+      function switchTab(which) {
+        activeTab = which;
+        var isPhase = which === 'phase';
+        tabPhase.setAttribute('aria-selected', isPhase ? 'true' : 'false');
+        tabFirst.setAttribute('aria-selected', !isPhase ? 'true' : 'false');
+        panelPhase.hidden = !isPhase;
+        panelFirst.hidden = isPhase;
+        if (isPhase) renderPhase();
+        else renderFirstLawCanvas();
+      }
+      tabPhase.addEventListener('click', function () { switchTab('phase'); });
+      tabFirst.addEventListener('click', function () { switchTab('firstlaw'); });
+
+      /* TAB 1 LOGIC */
+      var selSub = document.getElementById('sel-substance');
+      var rngMass = document.getElementById('rng-mass');
+      var rngT0 = document.getElementById('rng-t0');
+      var rngPower = document.getElementById('rng-power');
+      var rngScrub = document.getElementById('rng-scrub');
+      var btnPhaseReset = document.getElementById('btn-phase-reset');
+      var canvasPhase = document.getElementById('canvas-phase');
+
+      function syncSubstanceRange() {
+        var s = SUBSTANCES[selSub.value];
+        rngT0.min = s.t0Min;
+        rngT0.max = s.t0Max;
+        rngT0.step = s.t0Max > 100 ? 20 : 5;
+        rngT0.value = s.t0Default;
+        document.getElementById('sub-props').innerHTML =
+          'c_rắn = ' + s.cSolid + ' | c_lỏng = ' + s.cLiquid + ' | c_hơi = ' + s.cGas + ' J/(kg·K)<br>' +
+          'λ = ' + C.fmtSci(s.lambda, 2) + ' J/kg | L = ' + C.fmtSci(s.L, 2) + ' J/kg';
+      }
+
+      function computePhaseData() {
+        var s = SUBSTANCES[selSub.value];
+        var m = parseFloat(rngMass.value);
+        var t0 = parseFloat(rngT0.value);
+        var P = parseFloat(rngPower.value);
+
+        var q1 = m * s.cSolid * (s.tNc - t0);
+        var q2 = m * s.lambda;
+        var q3 = m * s.cLiquid * (s.tBoil - s.tNc);
+        var q4 = m * s.L;
+        var q5 = m * s.cGas * (s.tMaxTop - s.tBoil);
+
+        var stages = [
+          { idx: 1, name: '1. Đun nóng rắn', formula: 'm·c_r·ΔT', Q: q1, dt: q1 / P, tStart: t0, tEnd: s.tNc, slope: P / (m * s.cSolid), kind: 'kin' },
+          { idx: 2, name: '2. Nóng chảy', formula: 'λ·m', Q: q2, dt: q2 / P, tStart: s.tNc, tEnd: s.tNc, slope: 0, kind: 'pot' },
+          { idx: 3, name: '3. Đun nóng lỏng', formula: 'm·c_l·ΔT', Q: q3, dt: q3 / P, tStart: s.tNc, tEnd: s.tBoil, slope: P / (m * s.cLiquid), kind: 'kin' },
+          { idx: 4, name: '4. Hóa hơi (sôi)', formula: 'L·m', Q: q4, dt: q4 / P, tStart: s.tBoil, tEnd: s.tBoil, slope: 0, kind: 'pot' },
+          { idx: 5, name: '5. Đun nóng hơi', formula: 'm·c_h·ΔT', Q: q5, dt: q5 / P, tStart: s.tBoil, tEnd: s.tMaxTop, slope: P / (m * s.cGas), kind: 'kin' }
+        ];
+
+        var accTime = 0;
+        var accQ = 0;
+        var pts = [{ time: 0, temp: t0 }];
+        stages.forEach(function (st) {
+          st.timeStart = accTime;
+          accTime += st.dt;
+          st.timeEnd = accTime;
+          accQ += st.Q;
+          pts.push({ time: accTime, temp: st.tEnd });
+        });
+
+        return { s: s, m: m, t0: t0, P: P, stages: stages, pts: pts, totalTime: accTime, totalQ: accQ };
+      }
+
+      function evalAtTime(data, t) {
+        for (var i = 0; i < data.stages.length; i++) {
+          var st = data.stages[i];
+          if (t <= st.timeEnd + 1e-6 || i === data.stages.length - 1) {
+            var frac = st.dt > 0 ? Math.max(0, Math.min(1, (t - st.timeStart) / st.dt)) : 1;
+            var temp = st.tStart + frac * (st.tEnd - st.tStart);
+            return { stage: st, temp: temp, qNow: data.P * t };
+          }
+        }
+        return { stage: data.stages[4], temp: data.s.tMaxTop, qNow: data.totalQ };
+      }
+
+      function renderPhase() {
+        var data = computePhaseData();
+        var pct = parseFloat(rngScrub.value);
+        var tNow = (pct / 100) * data.totalTime;
+        var cur = evalAtTime(data, tNow);
+
+        document.getElementById('val-mass').textContent = C.fmt(data.m, 2) + ' kg';
+        document.getElementById('val-t0').textContent = C.fmtTrim(data.t0, 0) + ' °C (' + C.fmtTrim(data.t0 + 273, 0) + ' K)';
+        document.getElementById('val-power').textContent = C.fmtTrim(data.P, 0) + ' W';
+        document.getElementById('val-scrub').textContent = C.fmt(tNow, 0) + ' s (' + pct + '%)';
+
+        document.getElementById('st-stage').textContent = cur.stage.name;
+        document.getElementById('st-temp').textContent = C.fmt(cur.temp, 1) + ' °C (' + C.fmt(cur.temp + 273, 1) + ' K)';
+        document.getElementById('st-qnow').textContent = C.fmt(cur.qNow / 1000, 1) + ' kJ';
+        document.getElementById('st-micro').textContent = cur.stage.kind === 'kin' ? 'Động năng TB tăng' : 'Thế năng phân tử tăng';
+
+        var colors = C.getColors();
+        document.getElementById('sw-kin').style.backgroundColor = colors.cold;
+        document.getElementById('sw-pot').style.backgroundColor = colors.phase;
+
+        /* Table */
+        var tbody = document.getElementById('phase-tbody');
+        var rowsHtml = '';
+        data.stages.forEach(function (st) {
+          var isCur = st.idx === cur.stage.idx;
+          rowsHtml += '<tr' + (isCur ? ' style="background-color: var(--accent-subtle); font-weight: 600;"' : '') + '>' +
+            '<td>' + st.name + '</td>' +
+            '<td>' + (st.kind === 'kin' ? 'Tăng nhiệt độ' : 'Chuyển thể đẳng nhiệt') + '</td>' +
+            '<td class="mono">' + st.formula + '</td>' +
+            '<td>' + C.fmt(st.Q / 1000, 2) + '</td>' +
+            '<td>' + C.fmt(st.dt, 1) + '</td>' +
+            '<td>' + (st.slope > 0 ? C.fmt(st.slope, 3) : '0 (Nằm ngang)') + '</td>' +
+          '</tr>';
+        });
+        rowsHtml += '<tr style="font-weight: 700;"><td colspan="3">Tổng toàn quá trình</td><td>' + C.fmt(data.totalQ / 1000, 2) + ' kJ</td><td>' + C.fmt(data.totalTime, 1) + ' s</td><td>—</td></tr>';
+        tbody.innerHTML = rowsHtml;
+
+        /* Draw Canvas */
+        var setup = C.setupCanvas(canvasPhase, 340);
+        var ctx = setup.ctx;
+        var yMin = Math.min(-50, Math.floor((data.t0 - 20) / 50) * 50);
+        if (data.t0 >= 0) yMin = 0;
+        var yMax = Math.ceil((data.s.tMaxTop + 50) / 50) * 50;
+
+        var ax = C.drawAxes(ctx, setup.width, setup.height, {
+          xMin: 0,
+          xMax: data.totalTime * 1.05,
+          yMin: yMin,
+          yMax: yMax,
+          xTicks: 5,
+          yTicks: 5,
+          xLabel: 't (s)',
+          yLabel: 't (°C)',
+          xFormat: function (v) { return Math.round(v) + ''; },
+          yFormat: function (v) { return Math.round(v) + ''; }
+        });
+
+        /* Đường gióng nhiệt độ nóng chảy & sôi */
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.grid;
+        ctx.lineWidth = 1;
+        [data.s.tNc, data.s.tBoil].forEach(function (tv) {
+          var yLine = ax.toY(tv);
+          ctx.beginPath();
+          ctx.moveTo(ax.pad.left, yLine);
+          ctx.lineTo(ax.pad.left + ax.plotW, yLine);
+          ctx.stroke();
+        });
+        ctx.restore();
+
+        /* Vẽ 5 đoạn màu phân biệt */
+        for (var i = 0; i < data.stages.length; i++) {
+          var st = data.stages[i];
+          var p1 = data.pts[i];
+          var p2 = data.pts[i + 1];
+          ctx.save();
+          ctx.strokeStyle = st.kind === 'kin' ? colors.cold : colors.phase;
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(ax.toX(p1.time), ax.toY(p1.temp));
+          ctx.lineTo(ax.toX(p2.time), ax.toY(p2.temp));
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        /* Đánh dấu điểm hiện tại */
+        var cx = ax.toX(tNow);
+        var cy = ax.toY(cur.temp);
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = colors.warm;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, ax.pad.top);
+        ctx.lineTo(cx, ax.pad.top + ax.plotH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = colors.warm;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = colors.bg;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      selSub.addEventListener('change', function () {
+        syncSubstanceRange();
+        renderPhase();
+      });
+      [rngMass, rngT0, rngPower, rngScrub].forEach(function (el) {
+        el.addEventListener('input', renderPhase);
+      });
+      btnPhaseReset.addEventListener('click', function () {
+        selSub.value = 'water';
+        rngMass.value = '0.5';
+        rngPower.value = '1500';
+        rngScrub.value = '35';
+        syncSubstanceRange();
+        renderPhase();
+      });
+
+      /* TAB 2: ĐỊNH LUẬT I NĐLH */
+      var rngQ = document.getElementById('rng-q');
+      var rngA = document.getElementById('rng-a');
+      var canvasFL = document.getElementById('canvas-firstlaw');
+      var presetBtns = document.querySelectorAll('.preset-fl');
+
+      var particles = [];
+      for (var p = 0; p < 26; p++) {
+        particles.push({
+          rx: Math.random(),
+          ry: Math.random(),
+          ang: Math.random() * Math.PI * 2
+        });
+      }
+
+      var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var lastTick = performance.now();
+
+      function updateFirstLawText() {
+        var Q = parseFloat(rngQ.value);
+        var A = parseFloat(rngA.value);
+        var dU = A + Q;
+
+        function fmtSigned(v) {
+          return (v > 0 ? '+' : '') + v + ' J';
+        }
+
+        document.getElementById('val-q').textContent = fmtSigned(Q);
+        document.getElementById('val-a').textContent = fmtSigned(A);
+        document.getElementById('fl-q').textContent = fmtSigned(Q) + (Q > 0 ? ' (Nhận nhiệt)' : Q < 0 ? ' (Truyền nhiệt)' : ' (Đoạn nhiệt)');
+        document.getElementById('fl-a').textContent = fmtSigned(A) + (A > 0 ? ' (Khí bị nén)' : A < 0 ? ' (Khí sinh công)' : ' (Đẳng tích)');
+        document.getElementById('fl-du').textContent = fmtSigned(dU);
+        document.getElementById('fl-state').textContent = dU > 0 ? 'Nội năng TĂNG' : dU < 0 ? 'Nội năng GIẢM' : 'Nội năng KHÔNG ĐỔI';
+      }
+
+      function renderFirstLawCanvas(dtSec) {
+        updateFirstLawText();
+        var Q = parseFloat(rngQ.value);
+        var A = parseFloat(rngA.value);
+        var dU = A + Q;
+
+        var setup = C.setupCanvas(canvasFL, 320);
+        var ctx = setup.ctx;
+        var W = setup.width;
+        var H = setup.height;
+        var colors = C.getColors();
+
+        ctx.fillStyle = colors.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        /* Vẽ xi-lanh: A > 0 (nén) pít-tông dịch trái; A < 0 (giãn) dịch phải */
+        var cylX = 48;
+        var cylY = 66;
+        var cylMaxW = Math.min(340, W - 160);
+        var cylH = 160;
+        var baseFrac = 0.62;
+        var pistonFrac = Math.max(0.28, Math.min(0.95, baseFrac - (A / 500) * 0.28));
+        var gasW = cylMaxW * pistonFrac;
+
+        /* Nền khí bên trong */
+        var uNorm = Math.max(0, Math.min(1, (dU + 1000) / 2000));
+        ctx.fillStyle = dU >= 0 ? 'rgba(194, 59, 34, 0.10)' : 'rgba(29, 99, 184, 0.10)';
+        ctx.fillRect(cylX, cylY, gasW, cylH);
+
+        /* Vỏ xi-lanh */
+        ctx.strokeStyle = colors.ink;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cylX + cylMaxW + 18, cylY);
+        ctx.lineTo(cylX, cylY);
+        ctx.lineTo(cylX, cylY + cylH);
+        ctx.lineTo(cylX + cylMaxW + 18, cylY + cylH);
+        ctx.stroke();
+
+        /* Cập nhật và vẽ các phân tử khí */
+        var speed = 0.25 + uNorm * 1.15;
+        var step = reducedMotion ? 0 : (dtSec || 0.016) * speed;
+        ctx.fillStyle = dU > 0 ? colors.warm : dU < 0 ? colors.cold : colors.accent;
+        for (var i = 0; i < particles.length; i++) {
+          var pt = particles[i];
+          if (step > 0) {
+            pt.rx += Math.cos(pt.ang) * step;
+            pt.ry += Math.sin(pt.ang) * step;
+            if (pt.rx < 0.04 || pt.rx > 0.96) {
+              pt.ang = Math.PI - pt.ang;
+              pt.rx = Math.max(0.04, Math.min(0.96, pt.rx));
+            }
+            if (pt.ry < 0.06 || pt.ry > 0.94) {
+              pt.ang = -pt.ang;
+              pt.ry = Math.max(0.06, Math.min(0.94, pt.ry));
+            }
+          }
+          ctx.beginPath();
+          ctx.arc(cylX + 6 + pt.rx * Math.max(20, gasW - 14), cylY + 6 + pt.ry * (cylH - 12), 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        /* Pít-tông và cần pít-tông */
+        var pistX = cylX + gasW;
+        ctx.fillStyle = colors.muted;
+        ctx.fillRect(pistX, cylY + 3, 16, cylH - 6);
+        ctx.fillRect(pistX + 16, cylY + cylH / 2 - 7, 74, 14);
+
+        /* Mũi tên Công A */
+        ctx.font = '600 13px ' + getComputedStyle(document.body).fontFamily;
+        if (A > 0) {
+          C.drawArrow(ctx, pistX + 105, cylY + cylH / 2 - 34, pistX + 32, cylY + cylH / 2 - 34, colors.ok, 3, 9);
+          ctx.fillStyle = colors.ok;
+          ctx.textAlign = 'left';
+          ctx.fillText('Nhận công A > 0 (Nén)', pistX + 24, cylY + cylH / 2 - 46);
+        } else if (A < 0) {
+          C.drawArrow(ctx, pistX + 32, cylY + cylH / 2 - 34, pistX + 105, cylY + cylH / 2 - 34, colors.phase, 3, 9);
+          ctx.fillStyle = colors.phase;
+          ctx.textAlign = 'left';
+          ctx.fillText('Sinh công A < 0 (Giãn)', pistX + 24, cylY + cylH / 2 - 46);
+        } else {
+          ctx.fillStyle = colors.muted;
+          ctx.textAlign = 'left';
+          ctx.fillText('Đẳng tích A = 0', pistX + 24, cylY + cylH / 2 - 36);
+        }
+
+        /* Mũi tên Nhiệt Q */
+        var qCenterX = cylX + Math.max(40, gasW * 0.5);
+        if (Q > 0) {
+          C.drawArrow(ctx, qCenterX, cylY + cylH + 44, qCenterX, cylY + cylH + 4, colors.warm, 3, 9);
+          ctx.fillStyle = colors.warm;
+          ctx.textAlign = 'center';
+          ctx.fillText('Nhận nhiệt Q = +' + Q + ' J', qCenterX, cylY + cylH + 62);
+        } else if (Q < 0) {
+          C.drawArrow(ctx, qCenterX, cylY + cylH + 4, qCenterX, cylY + cylH + 44, colors.cold, 3, 9);
+          ctx.fillStyle = colors.cold;
+          ctx.textAlign = 'center';
+          ctx.fillText('Truyền nhiệt Q = ' + Q + ' J', qCenterX, cylY + cylH + 62);
+        } else {
+          ctx.fillStyle = colors.muted;
+          ctx.textAlign = 'center';
+          ctx.fillText('Đoạn nhiệt Q = 0', qCenterX, cylY + cylH + 30);
+        }
+
+        /* Phương trình tổng kết trên Canvas */
+        ctx.fillStyle = colors.ink;
+        ctx.textAlign = 'left';
+        ctx.font = '700 15px ' + getComputedStyle(document.body).fontFamily;
+        ctx.fillText('ΔU = A + Q = (' + A + ') + (' + Q + ') = ' + (dU > 0 ? '+' : '') + dU + ' J', cylX, 34);
+      }
+
+      function animateFirstLaw(now) {
+        var dt = Math.min(0.05, (now - lastTick) / 1000);
+        lastTick = now;
+        if (activeTab === 'firstlaw') {
+          renderFirstLawCanvas(dt);
+        }
+        requestAnimationFrame(animateFirstLaw);
+      }
+
+      [rngQ, rngA].forEach(function (el) {
+        el.addEventListener('input', function () {
+          renderFirstLawCanvas(0);
+        });
+      });
+
+      presetBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          rngQ.value = btn.getAttribute('data-q');
+          rngA.value = btn.getAttribute('data-a');
+          renderFirstLawCanvas(0);
+        });
+      });
+
+      syncSubstanceRange();
+      renderPhase();
+      updateFirstLawText();
+      requestAnimationFrame(animateFirstLaw);
+
+      window.addEventListener('resize', function () {
+        if (activeTab === 'phase') renderPhase();
+        else renderFirstLawCanvas(0);
+      });
+      window.addEventListener('ly-theme-change', function () {
+        if (activeTab === 'phase') renderPhase();
+        else renderFirstLawCanvas(0);
+      });
+    })();
+  </script>
+</body>
+</html>
