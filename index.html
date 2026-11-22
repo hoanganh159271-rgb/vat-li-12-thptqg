@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ sinh thái ôn thi Vật lí 12 — GDPT 2018 (Ngoại tuyến)</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="./index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <button type="button" id="ly-export-json" class="btn btn-sm">Xuất JSON sao lưu</button>
+        <button type="button" id="ly-import-trigger" class="btn btn-sm">Nhập JSON</button>
+        <input type="file" id="ly-import-json" accept="application/json,.json" hidden>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <!-- Đầu trang tổng quan -->
+    <section class="section-block">
+      <div class="card">
+        <h1>Hệ sinh thái ôn thi Vật lí 12</h1>
+        <p class="muted">4 chương chuẩn GDPT 2018 · 4 phòng thí nghiệm Canvas · 1 đề mẫu 3 phần chuẩn THPTQG · Chạy 100% ngoại tuyến không cần Wi-Fi, lưu tiến độ tự động bằng bộ nhớ cục bộ.</p>
+        <div class="btn-group">
+          <a href="./luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-mobile-full">Vào phòng luyện đề THPTQG</a>
+          <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-mobile-full">Mở bảng hằng số &amp; đổi đơn vị</a>
+          <button type="button" class="btn btn-mobile-full doc-open-btn" data-doc="kho_bay">Đọc kho 12 bẫy Đúng/Sai</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Khu vực 1: Kho Kiến thức 4 chương & Lớp 11 -->
+    <section class="section-block">
+      <div class="section-head">
+        <h2>1. Kho kiến thức chuẩn hóa (Khung 6 lớp)</h2>
+        <span id="kb-progress-text" class="tag">Đã ôn: 0/5 tài liệu</span>
+      </div>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>Chương 1: Vật lí nhiệt</h3>
+          <p class="muted">Nội năng, Định luật I NĐLH (ΔU = A + Q), thang Celsius/Kelvin, chuyển thể và nhiệt ẩn nóng chảy/hóa hơi.</p>
+          <div class="panel-alt mono" style="font-size: 0.9rem;">ΔU = A + Q | Q = mcΔT | Q = λm | Q = Lm</div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c1"><span>Đã ôn xong Chương 1</span></label>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_01">Mở tài liệu Chương 1</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Chương 2: Khí lí tưởng</h3>
+          <p class="muted">Đẳng nhiệt Boyle, đẳng áp Charles, phương trình Clapeyron (pV = nRT) và áp suất động học phân tử.</p>
+          <div class="panel-alt mono" style="font-size: 0.9rem;">p₁V₁/T₁ = p₂V₂/T₂ | E_đ = (3/2)kT | v_rms = √(3RT/M)</div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c2"><span>Đã ôn xong Chương 2</span></label>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_02">Mở tài liệu Chương 2</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Chương 3: Từ trường</h3>
+          <p class="muted">Lực từ (F = BIL sinθ), từ thông Φ = NBScosα, định luật Lenz/Faraday, dòng xoay chiều và sóng điện từ.</p>
+          <div class="panel-alt mono" style="font-size: 0.9rem;">Φ = NBScosα | e = −ΔΦ/Δt | E = E₀/√2</div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c3"><span>Đã ôn xong Chương 3</span></label>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_03">Mở tài liệu Chương 3</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Chương 4: Vật lí hạt nhân</h3>
+          <p class="muted">Độ hụt khối, năng lượng liên kết riêng, phản ứng phân hạch/nhiệt hạch, định luật phóng xạ và độ phóng xạ Bq.</p>
+          <div class="panel-alt mono" style="font-size: 0.9rem;">N(t) = N₀·2^(-t/T) | H = λN | m_con = (A_con/A_mẹ)Δm_mẹ</div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c4"><span>Đã ôn xong Chương 4</span></label>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_04">Mở tài liệu Chương 4</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="card" style="margin-top: 16px; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <div>
+          <h3>Kiến thức nền lớp 11 (Dao động, Sóng, Điện học)</h3>
+          <p class="muted">Khung 6 lớp sẵn sàng cho 4 chuyên đề lớp 11 thường liên hệ trong đề THPTQG.</p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px;">
+          <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="l11"><span>Đã rà soát nền 11</span></label>
+          <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_00">Mở tài liệu lớp 11</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Khu vực 2: 4 Phòng thí nghiệm Mô phỏng Canvas -->
+    <section class="section-block">
+      <div class="section-head">
+        <h2>2. Phòng thí nghiệm mô phỏng tương tác (HTML5 Canvas)</h2>
+      </div>
+
+      <div id="sim-grid" class="grid-2">
+        <article class="card card-link-interactive">
+          <h3>01. Chuyển thể &amp; Định luật I NĐLH</h3>
+          <p class="muted">Vẽ đồ thị T(t) qua 5 giai đoạn theo chất/khối lượng/công suất và mô phỏng xi-lanh pít-tông ΔU = A + Q.</p>
+          <div style="margin-top: auto;">
+            <a href="./mo_phong/01_chuyen_the_va_nhiet_dong.html" class="btn btn-primary btn-sm">Mở mô phỏng chuyển thể</a>
+          </div>
+        </article>
+
+        <article class="card card-link-interactive">
+          <h3>02. Đồng bộ 3 đồ thị Khí lí tưởng</h3>
+          <p class="muted">Cập nhật đồng thời (p–V), (p–T), (V–T) cho các đẳng quá trình, chu trình kín và so sánh độ dốc đường đẳng.</p>
+          <div style="margin-top: auto;">
+            <a href="./mo_phong/02_do_thi_khi_li_tuong.html" class="btn btn-primary btn-sm">Mở mô phỏng khí lí tưởng</a>
+          </div>
+        </article>
+
+        <article class="card card-link-interactive">
+          <h3>03. Cảm ứng điện từ &amp; Dòng xoay chiều</h3>
+          <p class="muted">Khung dây quay trong từ trường đều, xác định chiều dòng Lenz và quan sát Φ(t) vuông pha với e(t).</p>
+          <div style="margin-top: auto;">
+            <a href="./mo_phong/03_cam_ung_dien_tu_ac.html" class="btn btn-primary btn-sm">Mở mô phỏng cảm ứng AC</a>
+          </div>
+        </article>
+
+        <article class="card card-link-interactive">
+          <h3>04. Đường cong phân rã &amp; Độ phóng xạ</h3>
+          <p class="muted">Vẽ đồng thời N(t) và hạt nhân con ΔN(t), đánh dấu giao điểm t = T, lưới 100 hạt và độ phóng xạ H(t).</p>
+          <div style="margin-top: auto;">
+            <a href="./mo_phong/04_phong_xa_hat_nhan.html" class="btn btn-primary btn-sm">Mở mô phỏng phóng xạ</a>
+          </div>
+        </article>
+        <!-- Thêm thẻ mô phỏng mới tại đây khi gọi /ly-mophong -->
+      </div>
+    </section>
+
+    <!-- Khu vực 3: Luyện đề, Tra cứu & Chẩn đoán -->
+    <section class="section-block">
+      <div class="section-head">
+        <h2>3. Luyện đề, Tra cứu &amp; Tài liệu chẩn đoán</h2>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <h3>Phòng thi THPTQG chuẩn 3 phần</h3>
+          <p class="muted">Bấm giờ làm đề hoặc lọc theo chương; chấm lũy tiến Đúng/Sai và kiểm tra ô trả lời ngắn 4 ký tự.</p>
+          <div style="margin-top: auto;">
+            <a href="./luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-sm">Làm đề luyện tập</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Hằng số &amp; Đổi đơn vị nhanh</h3>
+          <p class="muted">Đổi 2 chiều °C↔K, atm/bar/mmHg↔Pa, cm²↔m², lít↔m³, eV/MeV↔J, u↔MeV/c², Ci↔Bq và bảng thứ nguyên.</p>
+          <div style="margin-top: auto;">
+            <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Tra cứu hằng số</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Kho bẫy &amp; Nhật ký lỗi</h3>
+          <p class="muted">Truy cập nhanh các tệp tổng hợp bẫy lý thuyết, bảng nhật ký lỗi sai và checklist 3 phút trước giờ thi.</p>
+          <div class="btn-group" style="margin-top: auto;">
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kho_bay">Kho bẫy</button>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="nhat_ky">Nhật ký</button>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="checklist">Checklist</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Khu vực 4: Thống kê & Cảnh báo lỗi hay mắc từ localStorage -->
+    <section class="section-block">
+      <div class="card">
+        <div class="section-head" style="margin-bottom: 4px;">
+          <h2>4. Cảnh báo lỗi hay mắc &amp; Tiến độ tự học</h2>
+          <div class="btn-group">
+            <button type="button" id="dash-export-md" class="btn btn-sm">Tải Markdown Nhật ký lỗi</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-item">
+            <div class="stat-label">Số lượt làm đề</div>
+            <div id="dash-exam-count" class="stat-value">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Điểm lần gần nhất</div>
+            <div id="dash-latest-score" class="stat-value">—</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Tổng lỗi đã ghi nhận</div>
+            <div id="dash-err-count" class="stat-value">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Lỗi đơn vị / Điều kiện mô hình</div>
+            <div id="dash-subtag-count" class="stat-value">0 / 0</div>
+          </div>
+        </div>
+
+        <div id="dash-repeated-box" class="notice notice-warn" hidden>
+          <div class="notice-title">Cảnh báo lỗi lặp lại (&ge; 2 lần — cần vá ngay)</div>
+          <ul id="dash-repeated-list" class="clean-list"></ul>
+        </div>
+
+        <div id="dash-empty-box" class="panel-alt">
+          <div class="notice-title">Chưa có dữ liệu lỗi sai trên thiết bị này</div>
+          <p class="muted">Sau khi nộp bài trong Phòng luyện đề, hãy bấm <strong>"Đẩy câu sai vào Nhật ký lỗi"</strong> tại các câu làm nhầm để hệ thống thống kê theo 8 nhóm lỗi và tự động cảnh báo lỗi lặp.</p>
+          <div style="margin-top: 10px;">
+            <a href="./luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-sm">Bắt đầu làm đề mẫu</a>
+          </div>
+        </div>
+
+        <div id="dash-breakdown-wrap" hidden>
+          <h3>Phân bố 8 nhóm lỗi chẩn đoán</h3>
+          <div id="dash-group-grid" class="grid-4" style="margin-top: 10px;"></div>
+
+          <h3 style="margin-top: 20px;">Các lỗi vừa ghi nhận gần đây</h3>
+          <div class="table-wrap" style="margin-top: 8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Chương</th>
+                  <th>Câu hỏi</th>
+                  <th>Nhóm lỗi</th>
+                  <th>Thẻ phụ Lý</th>
+                  <th>Ghi chú</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="dash-recent-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Trình đọc tài liệu ngoại tuyến -->
+  <div id="doc-viewer-modal" class="doc-modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="doc-modal-title">
+    <div class="doc-modal-card">
+      <div class="doc-modal-head">
+        <div>
+          <h3 id="doc-modal-title" style="margin: 0;">Tài liệu học tập</h3>
+          <div id="doc-path-label" class="muted mono" style="font-size: 0.85rem;"></div>
+        </div>
+        <div class="doc-modal-controls">
+          <select id="doc-nav-select" class="doc-nav-select" aria-label="Chuyển tài liệu nhanh"></select>
+          <button type="button" id="doc-download-btn" class="btn btn-sm">Tải tệp .md gốc</button>
+          <button type="button" id="doc-modal-close" class="btn btn-primary btn-sm">Đóng</button>
+        </div>
+      </div>
+      <div id="doc-modal-body" class="doc-modal-body">
+        <div id="doc-modal-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/common.js"></script>
+  <script src="./assets/docs_data.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      var DOCS = window.LY_DOCS || {};
+
+      var docModal = document.getElementById('doc-viewer-modal');
+      var docTitle = document.getElementById('doc-modal-title');
+      var docPathLabel = document.getElementById('doc-path-label');
+      var docNavSelect = document.getElementById('doc-nav-select');
+      var docBody = document.getElementById('doc-modal-body');
+      var docContent = document.getElementById('doc-modal-content');
+      var docDownloadBtn = document.getElementById('doc-download-btn');
+      var docCloseBtn = document.getElementById('doc-modal-close');
+      var currentDocId = null;
+
+      Object.keys(DOCS).forEach(function (id) {
+        var opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = DOCS[id].title;
+        docNavSelect.appendChild(opt);
+      });
+
+      function openDocModal(docId) {
+        var doc = DOCS[docId];
+        if (!doc) return;
+        currentDocId = docId;
+        docTitle.textContent = doc.title;
+        docPathLabel.textContent = doc.path;
+        docNavSelect.value = docId;
+
+        var html = C.renderMarkdownOffline(doc.content);
+
+        if (docId === 'nhat_ky') {
+          var stats = C.getErrorStats();
+          if (stats.totalLogs > 0) {
+            html += '<hr class="doc-hr"><h2>Dữ liệu lỗi vừa lưu trên trình duyệt (localStorage)</h2>' +
+              C.renderMarkdownOffline(C.generateErrorLogMarkdown());
+          }
+        } else if (docId === 'checklist') {
+          var stCheck = C.getErrorStats();
+          if (stCheck.repeated.length > 0) {
+            var warnHtml = '<div class="notice notice-warn" style="margin-bottom: 16px;">' +
+              '<div class="notice-title">Cảnh báo lỗi cá nhân lặp lại (&ge; 2 lần từ localStorage)</div>' +
+              '<ul class="clean-list">' +
+              stCheck.repeated.map(function (item) {
+                var ch = C.CHAPTER_NAMES[item.chapter] || ('Chương ' + item.chapter);
+                var subStr = item.subtags.length ? ' [' + item.subtags.join(', ') + ']' : '';
+                return '<li><strong>' + ch + ' — ' + item.group + subStr + '</strong> (lặp ' + item.count + ' lần): ' + item.latestNote + '</li>';
+              }).join('') +
+              '</ul></div>';
+            html = warnHtml + html;
+          }
+        }
+
+        docContent.innerHTML = html;
+        docModal.hidden = false;
+        docBody.scrollTop = 0;
+      }
+
+      function closeDocModal() {
+        docModal.hidden = true;
+      }
+
+      document.querySelectorAll('.doc-open-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          openDocModal(btn.getAttribute('data-doc'));
+        });
+      });
+
+      docNavSelect.addEventListener('change', function () {
+        openDocModal(docNavSelect.value);
+      });
+
+      docCloseBtn.addEventListener('click', closeDocModal);
+      docModal.addEventListener('click', function (e) {
+        if (e.target === docModal) closeDocModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !docModal.hidden) closeDocModal();
+      });
+
+      docDownloadBtn.addEventListener('click', function () {
+        var doc = DOCS[currentDocId];
+        if (!doc) return;
+        var blob = new Blob([doc.content], { type: 'text/markdown;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = doc.path.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      });
+
+      function renderDashboard() {
+        var store = C.loadStore();
+        var stats = C.getErrorStats();
+
+        /* Tiến độ KB */
+        var kbChks = document.querySelectorAll('.kb-chk');
+        var doneCount = 0;
+        kbChks.forEach(function (cb) {
+          var k = cb.getAttribute('data-kb');
+          cb.checked = Boolean(store.kbProgress[k]);
+          if (cb.checked) doneCount += 1;
+        });
+        document.getElementById('kb-progress-text').textContent = 'Đã ôn: ' + doneCount + '/5 tài liệu';
+
+        /* Chỉ số tổng quan */
+        document.getElementById('dash-exam-count').textContent = String(stats.examCount);
+        document.getElementById('dash-latest-score').textContent = stats.latestExam
+          ? (C.fmt(stats.latestExam.totalScore, 2) + ' / ' + C.fmt(stats.latestExam.maxScore, 2))
+          : '—';
+        document.getElementById('dash-err-count').textContent = String(stats.totalLogs);
+        document.getElementById('dash-subtag-count').textContent =
+          stats.subtagCounts['Lỗi đơn vị/thứ nguyên'] + ' / ' + stats.subtagCounts['Quên điều kiện mô hình'];
+
+        /* Lỗi lặp >= 2 */
+        var repBox = document.getElementById('dash-repeated-box');
+        var repList = document.getElementById('dash-repeated-list');
+        if (stats.repeated.length > 0) {
+          repBox.hidden = false;
+          repList.innerHTML = stats.repeated.map(function (item) {
+            var ch = C.CHAPTER_NAMES[item.chapter] || ('Chương ' + item.chapter);
+            var subStr = item.subtags.length ? ' [' + item.subtags.join(', ') + ']' : '';
+            return '<li><strong>' + ch + ' — ' + item.group + subStr + '</strong> (lặp ' + item.count + ' lần): ' + item.latestNote + '</li>';
+          }).join('');
+        } else {
+          repBox.hidden = true;
+          repList.innerHTML = '';
+        }
+
+        /* Chi tiết 8 nhóm & bảng gần đây */
+        var emptyBox = document.getElementById('dash-empty-box');
+        var bdWrap = document.getElementById('dash-breakdown-wrap');
+        if (stats.totalLogs === 0 && stats.examCount === 0) {
+          emptyBox.hidden = false;
+          bdWrap.hidden = true;
+          return;
+        }
+        emptyBox.hidden = stats.totalLogs > 0;
+        bdWrap.hidden = stats.totalLogs === 0;
+
+        if (stats.totalLogs > 0) {
+          var groupGrid = document.getElementById('dash-group-grid');
+          groupGrid.innerHTML = C.ERROR_GROUPS.map(function (g) {
+            return '<div class="stat-item"><div class="stat-label">' + g + '</div><div class="stat-value">' + stats.groupCounts[g] + '</div></div>';
+          }).join('');
+
+          var tbody = document.getElementById('dash-recent-tbody');
+          tbody.innerHTML = '';
+          stats.recentLogs.forEach(function (log) {
+            var tr = document.createElement('tr');
+            var dt = log.createdAt ? log.createdAt.slice(0, 10) : '—';
+            var ch = C.CHAPTER_NAMES[log.chapter] || ('Chương ' + log.chapter);
+            var subs = log.subtags && log.subtags.length ? log.subtags.join(', ') : '—';
+
+            tr.innerHTML =
+              '<td>' + dt + '</td>' +
+              '<td>' + ch + '</td>' +
+              '<td>' + log.questionTitle + '</td>' +
+              '<td><span class="tag tag-warm">' + log.group + '</span></td>' +
+              '<td>' + subs + '</td>' +
+              '<td>' + (log.note || '—') + '</td>' +
+              '<td></td>';
+
+            var delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'btn btn-sm';
+            delBtn.textContent = 'Xóa';
+            delBtn.addEventListener('click', function () {
+              C.deleteErrorLog(log.id);
+              renderDashboard();
+            });
+            tr.lastElementChild.appendChild(delBtn);
+            tbody.appendChild(tr);
+          });
+        }
+      }
+
+      document.querySelectorAll('.kb-chk').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+          C.toggleKbCheck(cb.getAttribute('data-kb'), cb.checked);
+          renderDashboard();
+        });
+      });
+
+      document.getElementById('dash-export-md').addEventListener('click', function () {
+        var md = C.generateErrorLogMarkdown();
+        var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'nhat_ky_loi_sai_' + new Date().toISOString().slice(0, 10) + '.md';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      });
+
+      C.initShell({ onImportSuccess: renderDashboard });
+      renderDashboard();
+    })();
+  </script>
+</body>
+</html>
