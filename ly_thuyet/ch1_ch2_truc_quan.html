@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lý thuyết chuyên sâu &amp; Trực quan Chương 1–2 — Vật lí 12 GDPT 2018</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .theory-shell {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-top: 22px;
+      align-items: start;
+    }
+    @media (min-width: 960px) {
+      .theory-shell {
+        grid-template-columns: 290px minmax(0, 1fr);
+      }
+      .theory-toc {
+        position: sticky;
+        top: 76px;
+      }
+    }
+    .toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .toc-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background-color: var(--surface-alt);
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 550;
+      min-height: 44px;
+      text-decoration: none;
+    }
+    .toc-link:hover {
+      border-color: var(--accent);
+      background-color: var(--accent-subtle);
+      text-decoration: none;
+    }
+    .theory-body {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      min-width: 0;
+    }
+    .topic-card {
+      scroll-margin-top: 84px;
+    }
+    .book-map {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .layer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 720px) {
+      .layer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .layer-box {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background-color: var(--surface-alt);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .energy-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .bar-track {
+      height: 12px;
+      border-radius: 999px;
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .bar-fill-kin {
+      height: 100%;
+      background-color: var(--phys-warm);
+      transition: width 120ms ease;
+    }
+    .bar-fill-pot {
+      height: 100%;
+      background-color: var(--phys-cold);
+      transition: width 120ms ease;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Bảng điều khiển</a>
+        <a href="../mo_phong/05_thuc_hanh_nhiet_sgk.html" class="btn btn-sm">PTN Nhiệt SGK</a>
+        <a href="../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html" class="btn btn-sm">PTN Khí &amp; Vi mô</a>
+        <a href="../luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-primary btn-sm">Bài tập Nguồn thật</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <div class="card">
+      <h1>Lý thuyết bản chất &amp; Trực quan: Chương 1 &amp; Chương 2</h1>
+      <p class="muted">Hệ thống hóa trọn vẹn 8 chuyên đề cốt lõi theo chương trình GDPT 2018 (đối chiếu cả 3 bộ sách Kết nối tri thức, Chân trời sáng tạo và Cánh diều), kèm mô phỏng phân tử trực tiếp và lối tắt tới phòng thí nghiệm + bài tập từng dạng.</p>
+    </div>
+
+    <div class="theory-shell">
+      <!-- MỤC LỤC BÊN TRÁI -->
+      <aside class="card theory-toc">
+        <h3>Mục lục 8 chuyên đề</h3>
+        <div class="toc-list">
+          <a href="#cd-1" class="toc-link"><span>1.1 Cấu trúc chất &amp; Chuyển thể</span><span class="tag tag-warm">Ch1</span></a>
+          <a href="#cd-2" class="toc-link"><span>1.2 Nội năng &amp; ĐL I NĐLH</span><span class="tag tag-warm">Ch1</span></a>
+          <a href="#cd-3" class="toc-link"><span>1.3 Nhiệt độ &amp; Thang đo K–°C</span><span class="tag tag-warm">Ch1</span></a>
+          <a href="#cd-4" class="toc-link"><span>1.4 Nhiệt dung, Nhiệt ẩn &amp; TN</span><span class="tag tag-warm">Ch1</span></a>
+          <a href="#cd-5" class="toc-link"><span>2.1 Mô hình động học chất khí</span><span class="tag tag-cold">Ch2</span></a>
+          <a href="#cd-6" class="toc-link"><span>2.2 Đẳng quá trình &amp; ĐL chất khí</span><span class="tag tag-cold">Ch2</span></a>
+          <a href="#cd-7" class="toc-link"><span>2.3 Clapeyron, Pít-tông &amp; Đồ thị</span><span class="tag tag-cold">Ch2</span></a>
+          <a href="#cd-8" class="toc-link"><span>2.4 Áp suất động học &amp; v_rms</span><span class="tag tag-cold">Ch2</span></a>
+        </div>
+        <div class="btn-group" style="margin-top: 14px;">
+          <a href="../luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-sm" style="width: 100%;">Làm 28 câu Nguồn thật</a>
+          <a href="../luyen_tap/phong_thi_thptqg.html?mode=exam50" class="btn btn-primary btn-sm" style="width: 100%;">Thi thử 50 phút Ch1–C2</a>
+        </div>
+      </aside>
+
+      <!-- NỘI DUNG 8 CHUYÊN ĐỀ -->
+      <div class="theory-body">
+        <!-- CHUYÊN ĐỀ 1.1 + MÔ PHỎNG VI MÔ 3 THỂ -->
+        <article id="cd-1" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>1.1 Cấu trúc của chất &amp; Bản chất vi mô sự chuyển thể</h2>
+            <span class="tag tag-warm">Chương 1 · Dạng 1</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 1</span>
+            <span class="tag">CTST: Bài 1</span>
+            <span class="tag">Cánh diều: Chủ đề 1 – Bài 1</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Mô hình vi mô 3 thể</strong>
+              <p class="muted"><strong>Rắn kết tinh:</strong> hạt xếp trật tự mạng tinh thể, dao động nhiệt quanh vị trí cân bằng cố định. <strong>Lỏng:</strong> lực liên kết yếu hơn, hạt vừa dao động vừa trượt qua nhau. <strong>Khí:</strong> khoảng cách rất xa kích thước hạt, lực hút rất nhỏ, chuyển động hỗn loạn va chạm đàn hồi.</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Điều kiện &amp; Quy luật chuyển thể</strong>
+              <p class="muted">Rắn → Lỏng (<em>nóng chảy</em>), Lỏng → Hơi/Khí (<em>hóa hơi</em> gồm bay hơi ở mọi t° và sôi tại t° sôi), Rắn → Khí (<em>thăng hoa</em>) đều <strong>thu nhiệt</strong>. Chiều ngược lại (đông đặc, ngưng tụ, ngưng kết) đều <strong>tỏa nhiệt</strong>.</p>
+            </div>
+            <div class="layer-box">
+              <strong>3. Vì sao đang nóng chảy/sôi nhiệt độ đứng yên?</strong>
+              <p class="muted">Toàn bộ nhiệt lượng nhận vào dùng để phá vỡ liên kết phân tử (tăng khoảng cách ⇒ <strong>tăng thế năng tương tác E_t</strong>), không làm tăng tốc độ chuyển động nhiệt trung bình (<strong>E_đ giữ nguyên</strong> ⇒ nhiệt độ giữ nguyên).</p>
+            </div>
+            <div class="notice notice-danger">
+              <strong>4. Bẫy đề thi cực hay dính</strong>
+              <p class="muted">Cho rằng "nước đá đang tan ở 0 °C có nhiệt độ không đổi nên nội năng không đổi" → <strong>SAI</strong>. Nội năng U = E_đ + E_t; E_đ giữ nguyên nhưng E_t tăng mạnh nên ΔU &gt; 0.</p>
+            </div>
+          </div>
+
+          <!-- MÔ PHỎNG NHÚNG 1: VI MÔ 3 THỂ -->
+          <div class="panel-alt">
+            <h3 style="margin-top: 0;">Mô phỏng trực quan vi mô: Gia nhiệt khối H₂O từ −20 °C lên 120 °C</h3>
+            <div class="control-group" style="margin-top: 8px;">
+              <div class="control-head">
+                <label for="rng-micro-heat" class="control-label">Kéo thanh nhiệt lượng Q cấp vào hệ</label>
+                <span id="val-micro-heat" class="control-val">Nước đá: −20 °C</span>
+              </div>
+              <input id="rng-micro-heat" type="range" min="0" max="100" step="1" value="10">
+            </div>
+
+            <div class="lab-layout" style="margin-top: 12px; gap: 16px;">
+              <div class="canvas-box">
+                <canvas id="cv-micro-matter"></canvas>
+              </div>
+              <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                <div>
+                  <div class="tag" id="micro-phase-tag">Thể rắn kết tinh</div>
+                  <p id="micro-desc" class="muted" style="margin-top: 8px; font-size: 0.94rem;"></p>
+                </div>
+                <div class="energy-bars">
+                  <div class="bar-row">
+                    <div class="bar-head"><span>Động năng TB phân tử E_đ (gắn với T)</span><span id="lbl-ekin" class="num">25%</span></div>
+                    <div class="bar-track"><div id="bar-ekin" class="bar-fill-kin" style="width: 25%;"></div></div>
+                  </div>
+                  <div class="bar-row">
+                    <div class="bar-head"><span>Thế năng tương tác E_t (gắn với khoảng cách hạt)</span><span id="lbl-epot" class="num">10%</span></div>
+                    <div class="bar-track"><div id="bar-epot" class="bar-fill-pot" style="width: 10%;"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/01_chuyen_the_va_nhiet_dong.html" class="btn btn-sm">Mở Đồ thị chuyển thể T(t)</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D1" class="btn btn-primary btn-sm">Luyện ngay Dạng 1</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 1.2: NỘI NĂNG & ĐL I NĐLH -->
+        <article id="cd-2" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>1.2 Nội năng &amp; Định luật I Nhiệt động lực học</h2>
+            <span class="tag tag-warm">Chương 1 · Dạng 2</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 2</span>
+            <span class="tag">CTST: Bài 3</span>
+            <span class="tag">Cánh diều: Chủ đề 1 – Bài 2</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Công thức chuẩn GDPT 2018</strong>
+              <p class="mono" style="font-size: 1.05rem; font-weight: 700;">ΔU = A + Q</p>
+              <p class="muted"><strong>Quy ước "Nhận (+), Xuất (−)":</strong><br>• Q &gt; 0: vật nhận nhiệt | Q &lt; 0: vật tỏa/truyền nhiệt.<br>• A &gt; 0: vật nhận công (bị nén) | A &lt; 0: vật thực hiện công (giãn nở).</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Công cơ học của khí &amp; Đồ thị (p–V)</strong>
+              <p class="mono">A_đẳng_áp = −p·ΔV = −p(V₂ − V₁)</p>
+              <p class="muted">Độ lớn công |A| đúng bằng <strong>diện tích hình phẳng</strong> dưới đường quá trình trên (p–V). Chu trình thuận chiều kim đồng hồ trên (OpV) có tổng A &lt; 0 (sinh công); ngược chiều có A &gt; 0.</p>
+            </div>
+            <div class="layer-box">
+              <strong>3. Trường hợp đặc biệt cần thuộc nhanh</strong>
+              <p class="muted">• <strong>Đẳng tích (V = const):</strong> A = 0 ⇒ ΔU = Q.<br>• <strong>Đoạn nhiệt / Vỏ cách nhiệt / Nén cực nhanh:</strong> Q = 0 ⇒ ΔU = A.<br>• <strong>Khí lí tưởng đẳng nhiệt (T = const):</strong> U chỉ phụ thuộc T ⇒ ΔU = 0 ⇒ Q = −A.</p>
+            </div>
+            <div class="notice notice-danger">
+              <strong>4. Bẫy dấu &amp; Đơn vị SI</strong>
+              <p class="muted">Không dùng quy ước Anh/Mỹ ΔU = Q − W! Khi tính A = −p·ΔV ra Jun (J): nếu dùng p theo Pa và V theo m³ (1 lít = 10⁻³ m³) hoặc dùng mẹo <strong>1 kPa·lít = 1 J</strong>.</p>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/01_chuyen_the_va_nhiet_dong.html" class="btn btn-sm">Mở Mô phỏng Xi-lanh ΔU = A + Q</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D2" class="btn btn-primary btn-sm">Luyện ngay Dạng 2</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 1.3: THANG NHIỆT ĐỘ + MÔ PHỎNG NHÚNG 2 -->
+        <article id="cd-3" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>1.3 Nhiệt độ, Thang Kelvin–Celsius &amp; Nhiệt kế tuyến tính</h2>
+            <span class="tag tag-warm">Chương 1 · Dạng 1</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 3</span>
+            <span class="tag">CTST: Bài 2</span>
+            <span class="tag">Cánh diều: Chủ đề 1 – Bài 3</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Quy đổi thang đo chuẩn THPTQG</strong>
+              <p class="mono" style="font-weight: 700;">T(K) = t(°C) + 273  (hoặc +273,15)</p>
+              <p class="muted">Mốc 0 K (−273 °C) là độ không tuyệt đối. Hai thang chia độ bằng nhau (1 độ chia K = 1 độ chia °C), do đó <strong>độ biến thiên nhiệt độ ΔT(K) = Δt(°C)</strong>.</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Phương pháp giải nhiệt kế tuyến tính / nhiệt kế sai</strong>
+              <p class="mono">(t − 0) / (100 − 0) = (X − X₀) / (X₁₀₀ − X₀)</p>
+              <p class="muted">Mọi đại lượng đo nhiệt kế (chiều dài cột thủy ngân l, điện trở R, thang °X, °Y) phụ thuộc tuyến tính theo nhiệt độ đều giữ nguyên tỉ lệ chia đoạn giữa hai mốc 0 °C và 100 °C.</p>
+            </div>
+          </div>
+
+          <!-- MÔ PHỎNG NHÚNG 2: THƯỚC ĐO SONG SONG -->
+          <div class="panel-alt">
+            <h3 style="margin-top: 0;">Thước đối chiếu song song: Celsius (°C) ↔ Kelvin (K) ↔ Thang tuyến tính °X</h3>
+            <div class="control-group" style="margin-top: 8px;">
+              <div class="control-head">
+                <label for="rng-scale-c" class="control-label">Kéo nhiệt độ t (°C)</label>
+                <span id="val-scale-c" class="control-val">27 °C</span>
+              </div>
+              <input id="rng-scale-c" type="range" min="-273" max="150" step="1" value="27">
+            </div>
+            <div class="canvas-box" style="margin-top: 10px;">
+              <canvas id="cv-temp-scales"></canvas>
+            </div>
+            <div id="scale-readout" class="stat-grid" style="margin-top: 10px;"></div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Mở Bảng đổi đơn vị</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D1" class="btn btn-primary btn-sm">Luyện ngay Dạng 1</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 1.4: NHIỆT DUNG RIÊNG, NHIỆT ẨN & THỰC HÀNH SGK -->
+        <article id="cd-4" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>1.4 Nhiệt dung riêng, Nhiệt ẩn chuyển thể &amp; Thực hành SGK</h2>
+            <span class="tag tag-warm">Chương 1 · Dạng 3</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 4, 5, 6</span>
+            <span class="tag">CTST: Bài 4</span>
+            <span class="tag">Cánh diều: Chủ đề 1 – Bài 4</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Hệ công thức &amp; Đơn vị SI</strong>
+              <p class="muted">• Tăng/giảm nhiệt cùng thể: <strong>Q = m·c·ΔT</strong> (c: J/(kg·K)).<br>• Nóng chảy ở t° nóng chảy: <strong>Q = λ·m</strong> (λ: J/kg).<br>• Hóa hơi ở t° sôi: <strong>Q = L·m</strong> (L: J/kg).<br>• Nguồn nhiệt hiệu suất H: <strong>H·P·τ = Q_ích</strong>.</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Quy tắc vàng giải Cân bằng nhiệt có nước đá</strong>
+              <p class="muted">Bước 1: Tính Q_tỏa_max (hạ toàn bộ nước nóng + nhiệt lượng kế về 0 °C).<br>Bước 2: So với Q_tan_hết = λ·m_đá.<br>• Nếu Q_tỏa_max &lt; Q_tan_hết ⇒ đá còn dư, t_cb = 0 °C.<br>• Nếu Q_tỏa_max ≥ Q_tan_hết ⇒ đá tan hết, viết cân bằng tìm t_cb &gt; 0 °C.</p>
+            </div>
+            <div class="layer-box">
+              <strong>3. Công thức thực hành SGK (Oát kế &amp; Bình NLK)</strong>
+              <p class="muted">• Đo c: <strong>c = P̄·(τ_N − τ_M) / [m·(t_N − t_M)]</strong>.<br>• Đo λ: <strong>λ = P̄·(τ_N − τ_M) / m_đá</strong> (trong đoạn giữ 0 °C).<br>• Đo L: <strong>L = P̄·Δτ / (m₁ − m₂)</strong> (theo cân điện tử).</p>
+            </div>
+            <div class="notice notice-danger">
+              <strong>4. Sai số thực nghiệm hay hỏi Đúng/Sai</strong>
+              <p class="muted">Do thất thoát nhiệt ra vỏ bình và môi trường, nhiệt điện P̄Δτ thực tế cấp vào lớn hơn phần nước thực sự nhận ⇒ giá trị đo thực nghiệm c_đo, λ_đo, L_đo thường <strong>lớn hơn</strong> trị số lí thuyết một chút.</p>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/05_thuc_hanh_nhiet_sgk.html" class="btn btn-primary btn-sm">Mở Phòng Thí Nghiệm Đo c, λ, L (SGK)</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D3" class="btn btn-sm">Luyện ngay Dạng 3</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 2.1: MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ -->
+        <article id="cd-5" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>2.1 Thuyết động học phân tử chất khí &amp; Giới hạn khí lí tưởng</h2>
+            <span class="tag tag-cold">Chương 2 · Dạng 4 &amp; Dạng 6</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 8</span>
+            <span class="tag">CTST: Bài 5</span>
+            <span class="tag">Cánh diều: Chủ đề 2 – Bài 1</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Ba trụ cột của Mô hình khí lí tưởng</strong>
+              <p class="muted">• Kích thước phân tử rất nhỏ so với khoảng cách trung bình giữa chúng → coi mỗi phân tử là <strong>chất điểm</strong> (bỏ qua thể tích riêng).<br>• Bỏ qua lực tương tác phân tử ngoài lúc va chạm → giữa 2 va chạm hạt chuyển động <strong>thẳng đều</strong>.<br>• Va chạm giữa các phân tử và với thành bình là <strong>va chạm hoàn toàn đàn hồi</strong>.</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Khi nào khí thực gần khí lí tưởng?</strong>
+              <p class="muted">Ở <strong>nhiệt độ cao và áp suất thấp</strong> (xa điểm ngưng tụ/hóa lỏng). Khi nén tới áp suất quá cao hoặc hạ nhiệt độ rất thấp gần điểm hóa lỏng, thể tích riêng và lực hút phân tử không còn bỏ qua được.</p>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html" class="btn btn-primary btn-sm">Mở Mô phỏng Va chạm Phân tử 60fps</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 2.2: ĐẲNG QUÁ TRÌNH & THÍ NGHIỆM BOYLE – CHARLES -->
+        <article id="cd-6" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>2.2 Các đẳng quá trình &amp; Thí nghiệm Định luật Boyle – Charles</h2>
+            <span class="tag tag-cold">Chương 2 · Dạng 4</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 9, 10</span>
+            <span class="tag">CTST: Bài 6</span>
+            <span class="tag">Cánh diều: Chủ đề 2 – Bài 2</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Bảng 3 định luật cho lượng khí XÁC ĐỊNH (n = const)</strong>
+              <p class="muted">• <strong>Đẳng nhiệt (ĐL Boyle, T = const):</strong> p₁V₁ = p₂V₂ (nén/giãn thật <em>chậm</em>).<br>• <strong>Đẳng áp (ĐL Charles, p = const):</strong> V₁/T₁ = V₂/T₂.<br>• <strong>Đẳng tích (V = const):</strong> p₁/T₁ = p₂/T₂.</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Kiểm chứng thực nghiệm trong SGK</strong>
+              <p class="muted">• Thí nghiệm Boyle: vẽ đồ thị p(1/V) thu được đường thẳng đi qua gốc tọa độ.<br>• Thí nghiệm Charles: ống thủy tinh chứa giọt nước màu giữ áp suất bằng p_kq; đường V(t °C) kéo dài cắt trục hoành tại đúng <strong>−273 °C (0 K)</strong>.</p>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html#tab-lab2" class="btn btn-primary btn-sm">Mở Phòng Thí Nghiệm Boyle &amp; Charles</a>
+            <a href="../mo_phong/02_do_thi_khi_li_tuong.html" class="btn btn-sm">Đồng bộ 3 đồ thị (p–V, p–T, V–T)</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D4" class="btn btn-sm">Luyện ngay Dạng 4</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 2.3: CLAPEYRON, PÍT-TÔNG & ĐỒ THỊ -->
+        <article id="cd-7" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>2.3 Phương trình Clapeyron, Bài toán Pít-tông / Bơm khí &amp; Đồ thị</h2>
+            <span class="tag tag-cold">Chương 2 · Dạng 4 &amp; Dạng 5</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 11, 13</span>
+            <span class="tag">CTST: Bài 7</span>
+            <span class="tag">Cánh diều: Chủ đề 2 – Bài 2</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Phương trình trạng thái &amp; Clapeyron</strong>
+              <p class="mono">p₁V₁/T₁ = p₂V₂/T₂ (khi n không đổi) | pV = nRT = (m/M)RT</p>
+              <p class="muted">Khi <strong>bơm khí, xả van hoặc nối bình thông nhau</strong> (n thay đổi), tuyệt đối không dùng p₁V₁/T₁ = p₂V₂/T₂ trực tiếp mà phải dùng bảo toàn tổng số mol: n_trước = n_sau (hoặc n₀ + n_bơm = n_cuối).</p>
+            </div>
+            <div class="layer-box">
+              <strong>2. Áp suất khí giam bởi pít-tông / cột thủy ngân h</strong>
+              <p class="muted">• Nằm ngang: p = p₀.<br>• Thẳng đứng miệng <strong>LÊN</strong>: p = p₀ + mg/S (hoặc p₀ + h cmHg).<br>• Thẳng đứng miệng <strong>XUỐNG</strong>: p = p₀ − mg/S (hoặc p₀ − h cmHg).</p>
+            </div>
+            <div class="layer-box">
+              <strong>3. Mẹo đọc 3 đồ thị không bao giờ lộn</strong>
+              <p class="muted">• Trên (p–V): đẳng nhiệt xa gốc hơn ⇒ T cao hơn.<br>• Trên (p–T): p = (nR/V)·T ⇒ đường dốc hơn có <strong>V nhỏ hơn</strong>.<br>• Trên (V–T): V = (nR/p)·T ⇒ đường dốc hơn có <strong>p nhỏ hơn</strong>.</p>
+            </div>
+            <div class="notice notice-danger">
+              <strong>4. Bẫy đơn vị hằng số R = 8,31 J/(mol·K)</strong>
+              <p class="muted">Phải đổi p ra <strong>Pa</strong>, V ra <strong>m³</strong>, M ra <strong>kg/mol</strong>, T ra <strong>K</strong>. Riêng tính nhanh: p(kPa)·V(lít) = n·8,31·T(K) và 1 atm = 1,013×10⁵ Pa.</p>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html#tab-piston" class="btn btn-primary btn-sm">Mở Mô phỏng Xi-lanh Pít-tông &amp; Ống Hg</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D5" class="btn btn-sm">Luyện ngay Dạng 5</a>
+          </div>
+        </article>
+
+        <!-- CHUYÊN ĐỀ 2.4: ÁP SUẤT ĐỘNG HỌC & ĐỘNG NĂNG PHÂN TỬ -->
+        <article id="cd-8" class="card topic-card">
+          <div class="q-head" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2>2.4 Áp suất động học phân tử, E_đ = (3/2)kT &amp; Tốc độ v_rms</h2>
+            <span class="tag tag-cold">Chương 2 · Dạng 6</span>
+          </div>
+          <div class="book-map">
+            <span class="tag">KNTT: Bài 12</span>
+            <span class="tag">CTST: Bài 8</span>
+            <span class="tag">Cánh diều: Chủ đề 2 – Bài 3</span>
+          </div>
+
+          <div class="layer-grid">
+            <div class="layer-box">
+              <strong>1. Liên hệ Vi mô ↔ Vĩ mô</strong>
+              <p class="mono">p = (1/3)·μ·m·v²_tb = (2/3)·μ·E_đ = (1/3)·ρ·v²_rms</p>
+              <p class="mono">E_đ = (3/2)·k·T (k = 1,38×10⁻²³ J/K) | p = μ·k·T</p>
+              <p class="mono">v_rms = √(3kT/m) = √(3RT/M)</p>
+            </div>
+            <div class="notice notice-danger">
+              <strong>2. Hai bẫy trọng tâm của Dạng 6</strong>
+              <p class="muted">• <strong>Bẫy 1:</strong> H₂ và O₂ ở cùng nhiệt độ T có động năng tịnh tiến trung bình E_đ <strong>bằng nhau</strong>, nhưng H₂ nhẹ hơn 16 lần nên v_rms lớn gấp 4 lần!<br>• <strong>Bẫy 2:</strong> Trong v_rms = √(3RT/M), bắt buộc đổi M từ g/mol sang <strong>kg/mol</strong> (O₂ = 0,032; He = 0,004).</p>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <a href="../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html" class="btn btn-primary btn-sm">Thử hỗn hợp H₂ + O₂ trong Mô phỏng Vi mô</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=D6" class="btn btn-sm">Luyện ngay Dạng 6</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      /* ================= MÔ PHỎNG NHÚNG 1: VI MÔ 3 THỂ H₂O ================= */
+      var rngHeat = document.getElementById('rng-micro-heat');
+      var valHeat = document.getElementById('val-micro-heat');
+      var phaseTag = document.getElementById('micro-phase-tag');
+      var microDesc = document.getElementById('micro-desc');
+      var barKin = document.getElementById('bar-ekin');
+      var barPot = document.getElementById('bar-epot');
+      var lblKin = document.getElementById('lbl-ekin');
+      var lblPot = document.getElementById('lbl-epot');
+      var cvMicro = document.getElementById('cv-micro-matter');
+
+      var N_PARTICLES = 36;
+      var particles = [];
+      for (var i = 0; i < N_PARTICLES; i++) {
+        var row = Math.floor(i / 6);
+        var col = i % 6;
+        particles.push({
+          gx: col,
+          gy: row,
+          x: 0.25 + col * 0.1,
+          y: 0.48 + row * 0.085,
+          vx: (Math.random() - 0.5) * 0.012,
+          vy: (Math.random() - 0.5) * 0.012,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+
+      function computeThermalState(u) {
+        /* u in [0..100]: 0-15 Solid (-20..0), 15-40 Melting (0), 40-62 Liquid (0..100), 62-88 Boiling (100), 88-100 Vapor (100..120) */
+        if (u <= 15) {
+          var f = u / 15;
+          return {
+            stage: 'solid',
+            tempC: -20 + f * 20,
+            meltFrac: 0,
+            boilFrac: 0,
+            kinPct: 12 + f * 18,
+            potPct: 10,
+            tag: 'Thể rắn kết tinh (Nước đá)',
+            desc: 'Các phân tử dao động tại chỗ quanh nút mạng tinh thể. Nhận nhiệt làm tăng biên độ dao động → E_đ tăng, T tăng từ −20 °C lên 0 °C.'
+          };
+        }
+        if (u <= 40) {
+          var fm = (u - 15) / 25;
+          return {
+            stage: 'melting',
+            tempC: 0,
+            meltFrac: fm,
+            boilFrac: 0,
+            kinPct: 30,
+            potPct: 10 + fm * 35,
+            tag: 'Đang nóng chảy ở 0 °C (Rắn + Lỏng)',
+            desc: 'Nhiệt độ dừng ở 0 °C nên E_đ giữ nguyên (30%), nhiệt lượng cấp vào dùng phá vỡ liên kết tinh thể → E_t tăng mạnh, nội năng tăng.'
+          };
+        }
+        if (u <= 62) {
+          var fl = (u - 40) / 22;
+          return {
+            stage: 'liquid',
+            tempC: fl * 100,
+            meltFrac: 1,
+            boilFrac: 0,
+            kinPct: 30 + fl * 42,
+            potPct: 45 + fl * 5,
+            tag: 'Thể lỏng (Nước đang nóng lên)',
+            desc: 'Phân tử trượt linh động qua nhau gần đáy bình. Nhiệt độ tăng từ 0 °C lên 100 °C → tốc độ chuyển động nhiệt (E_đ) tăng đều.'
+          };
+        }
+        if (u <= 88) {
+          var fb = (u - 62) / 26;
+          return {
+            stage: 'boiling',
+            tempC: 100,
+            meltFrac: 1,
+            boilFrac: fb,
+            kinPct: 72,
+            potPct: 50 + fb * 45,
+            tag: 'Đang sôi ở 100 °C (Lỏng + Hơi)',
+            desc: 'Nhiệt độ dừng ở 100 °C nên E_đ đứng yên (72%), các phân tử thắng hẳn lực liên kết để tách ra làm hơi → E_t tăng vọt.'
+          };
+        }
+        var fv = (u - 88) / 12;
+        return {
+          stage: 'gas',
+          tempC: 100 + fv * 20,
+          meltFrac: 1,
+          boilFrac: 1,
+          kinPct: 72 + fv * 23,
+          potPct: 95,
+          tag: 'Thể khí / Hơi nước quá nhiệt',
+          desc: 'Toàn bộ phân tử đã tách xa nhau, bay hỗn loạn tự do khắp thể tích bình chứa và va chạm đàn hồi vào thành bình.'
+        };
+      }
+
+      var lastTs = performance.now();
+      function updateMicroUI(state) {
+        valHeat.textContent = state.tag.split(' (')[0] + ': ' + C.fmt(state.tempC, 0) + ' °C (' + C.fmt(state.tempC + 273, 0) + ' K)';
+        phaseTag.textContent = state.tag;
+        phaseTag.className = 'tag ' + (state.stage === 'melting' || state.stage === 'boiling' ? 'tag-phase' : (state.stage === 'solid' ? 'tag-cold' : 'tag-warm'));
+        microDesc.textContent = state.desc;
+        barKin.style.width = Math.round(state.kinPct) + '%';
+        barPot.style.width = Math.round(state.potPct) + '%';
+        lblKin.textContent = Math.round(state.kinPct) + '%';
+        lblPot.textContent = Math.round(state.potPct) + '%';
+      }
+
+      function stepMicro(now) {
+        var dt = Math.min(0.04, (now - lastTs) / 1000);
+        lastTs = now;
+        var u = Number(rngHeat.value);
+        var st = computeThermalState(u);
+        var cols = C.getColors();
+        var setup = C.setupCanvas(cvMicro, 250);
+        var ctx = setup.ctx;
+        var W = setup.width;
+        var H = setup.height;
+
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bgAlt;
+        ctx.fillRect(0, 0, W, H);
+
+        var pad = 16;
+        var bw = W - pad * 2;
+        var bh = H - pad * 2;
+        ctx.strokeStyle = cols.ink;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(pad, pad, bw, bh);
+
+        /* Vẽ mực nước nền ở trạng thái lỏng/nóng chảy/sôi */
+        if (st.meltFrac > 0 && st.boilFrac < 1) {
+          var liquidTop = pad + bh * (0.48 + st.boilFrac * 0.42);
+          ctx.fillStyle = cols.grid;
+          ctx.fillRect(pad + 1, liquidTop, bw - 2, pad + bh - liquidTop - 1);
+        }
+
+        var gasCount = Math.round(st.boilFrac * N_PARTICLES);
+        var solidCount = Math.round((1 - st.meltFrac) * N_PARTICLES);
+        var timeSec = now * 0.001;
+        var speedScale = (0.35 + st.kinPct / 45) * dt * 1.4;
+
+        for (var i = 0; i < N_PARTICLES; i++) {
+          var p = particles[i];
+          var isGas = i < gasCount;
+          var isSolid = !isGas && (N_PARTICLES - 1 - i) < solidCount;
+
+          if (isSolid) {
+            var anchorX = pad + bw * (0.26 + p.gx * 0.095);
+            var anchorY = pad + bh * (0.46 + p.gy * 0.088);
+            var amp = 1.6 + (st.kinPct / 30) * 2.2;
+            p.px = anchorX + Math.sin(timeSec * 14 + p.phase) * amp;
+            p.py = anchorY + Math.cos(timeSec * 13 + p.phase * 1.3) * amp;
+            ctx.fillStyle = cols.cold;
+          } else if (isGas) {
+            p.x += p.vx * speedScale * 48;
+            p.y += p.vy * speedScale * 48;
+            if (p.x < 0.04) { p.x = 0.04; p.vx = Math.abs(p.vx); }
+            if (p.x > 0.96) { p.x = 0.96; p.vx = -Math.abs(p.vx); }
+            if (p.y < 0.06) { p.y = 0.06; p.vy = Math.abs(p.vy); }
+            if (p.y > 0.94) { p.y = 0.94; p.vy = -Math.abs(p.vy); }
+            p.px = pad + bw * p.x;
+            p.py = pad + bh * p.y;
+            ctx.fillStyle = cols.warm;
+          } else {
+            /* Lỏng: giới hạn nửa dưới bình */
+            p.x += p.vx * speedScale * 22;
+            p.y += p.vy * speedScale * 18;
+            if (p.x < 0.08) { p.x = 0.08; p.vx = Math.abs(p.vx); }
+            if (p.x > 0.92) { p.x = 0.92; p.vx = -Math.abs(p.vx); }
+            if (p.y < 0.54) { p.y = 0.54; p.vy = Math.abs(p.vy); }
+            if (p.y > 0.94) { p.y = 0.94; p.vy = -Math.abs(p.vy); }
+            p.px = pad + bw * p.x;
+            p.py = pad + bh * p.y;
+            ctx.fillStyle = cols.accent;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.px, p.py, 5.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(stepMicro);
+      }
+
+      rngHeat.addEventListener('input', function () {
+        updateMicroUI(computeThermalState(Number(rngHeat.value)));
+      });
+      updateMicroUI(computeThermalState(Number(rngHeat.value)));
+      requestAnimationFrame(stepMicro);
+
+      /* ================= MÔ PHỎNG NHÚNG 2: THƯỚC ĐO SONG SONG ================= */
+      var rngScale = document.getElementById('rng-scale-c');
+      var valScale = document.getElementById('val-scale-c');
+      var cvScale = document.getElementById('cv-temp-scales');
+      var scaleReadout = document.getElementById('scale-readout');
+
+      function drawScales() {
+        var tC = Number(rngScale.value);
+        var TK = tC + 273;
+        var tX = -10 + 2 * tC; /* Thang mau: 0 C = -10 X, 100 C = 190 X */
+        valScale.textContent = tC + ' °C';
+
+        var cols = C.getColors();
+        var setup = C.setupCanvas(cvScale, 175);
+        var ctx = setup.ctx;
+        var W = setup.width;
+        var H = setup.height;
+
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        var left = 96;
+        var right = W - 28;
+        var span = Math.max(120, right - left);
+        function toX(cVal) {
+          return left + ((cVal - (-273)) / (150 - (-273))) * span;
+        }
+
+        var rows = [
+          { y: 38, label: 'Celsius (°C)', fmt: function (c) { return c + '°'; }, color: cols.cold },
+          { y: 88, label: 'Kelvin (K)', fmt: function (c) { return (c + 273) + ' K'; }, color: cols.accent },
+          { y: 138, label: 'Thang °X', fmt: function (c) { return (-10 + 2 * c) + '°X'; }, color: cols.phase }
+        ];
+        var ticks = [-273, -100, 0, 100, 150];
+
+        rows.forEach(function (r) {
+          ctx.fillStyle = cols.ink;
+          ctx.font = '600 13px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(r.label, 12, r.y + 4);
+
+          ctx.strokeStyle = cols.grid;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(left, r.y);
+          ctx.lineTo(right, r.y);
+          ctx.stroke();
+
+          ticks.forEach(function (tv) {
+            var tx = toX(tv);
+            ctx.strokeStyle = cols.muted;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(tx, r.y - 6);
+            ctx.lineTo(tx, r.y + 6);
+            ctx.stroke();
+
+            ctx.fillStyle = cols.muted;
+            ctx.font = '11px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(r.fmt(tv), tx, r.y + 20);
+          });
+        });
+
+        /* Đường gióng con trỏ hiện tại */
+        var curX = toX(tC);
+        ctx.strokeStyle = cols.warm;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(curX, 16);
+        ctx.lineTo(curX, H - 14);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        rows.forEach(function (r) {
+          ctx.fillStyle = r.color;
+          ctx.beginPath();
+          ctx.arc(curX, r.y, 6, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        scaleReadout.innerHTML =
+          '<div class="stat-item"><div class="stat-label">Thang Celsius</div><div class="stat-value">' + tC + ' °C</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Thang Kelvin (t + 273)</div><div class="stat-value">' + TK + ' K</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Thang X (−10 → 190 °X)</div><div class="stat-value">' + tX + ' °X</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Chú ý biến thiên</div><div class="stat-value" style="font-size: 0.98rem;">ΔT(K) = Δt(°C)</div></div>';
+      }
+
+      rngScale.addEventListener('input', drawScales);
+      window.addEventListener('resize', drawScales);
+      window.addEventListener('ly-theme-change', drawScales);
+      drawScales();
+    })();
+  </script>
+</body>
+</html>
