@@ -326,7 +326,7 @@
         Object.keys(tabMap).forEach(function (k) {
           var isSel = k === name;
           tabMap[k].btn.setAttribute('aria-selected', isSel ? 'true' : 'false');
-          tabMap[k].panel.hidden = !sel;
+          tabMap[k].panel.hidden = !isSel;
         });
         renderActive();
       }
