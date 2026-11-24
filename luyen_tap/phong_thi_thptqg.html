@@ -202,7 +202,7 @@
         <button type="button" class="mode-tab" role="tab" data-mode="chuyen_de" id="tab-chuyen_de" aria-selected="false">2. Luyện theo Dạng bài (6 chuyên đề)</button>
         <button type="button" class="mode-tab" role="tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-selected="false">3. Chuyên cày Bẫy Đúng/Sai &amp; Trả lời ngắn</button>
         <button type="button" class="mode-tab" role="tab" data-mode="on_cau_sai" id="tab-on_cau_sai" aria-selected="false">4. Ôn lại Câu Từng Sai (0)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="nguon_that" id="tab-nguon_that" aria-selected="false">Nguồn thật: Bộ, SGK &amp; Đề tỉnh hot (56 câu)</button>
+        <button type="button" class="mode-tab" role="tab" data-mode="nguon_that" id="tab-nguon_that" aria-selected="false">Nguồn thật: Bộ, Sở &amp; Hay–Khó (76 câu)</button>
         <button type="button" class="mode-tab" role="tab" data-mode="de_mau" id="tab-de_mau" aria-selected="false">Đề mẫu 4 chương (Ch1–Ch4)</button>
       </div>
 
@@ -281,7 +281,8 @@
           <div>
             <label for="sel-nguon-nhom" class="control-label" style="display: block; margin-bottom: 4px;">Lọc Nguồn tài liệu</label>
             <select id="sel-nguon-nhom" style="min-width: 240px;">
-              <option value="all">Tất cả nguồn thật (56 câu)</option>
+              <option value="all">Tất cả nguồn thật (76 câu)</option>
+              <option value="hay_kho_vdc">Tuyển tập Hay &amp; Khó — Vận dụng cao 9+ (20 câu)</option>
               <option value="de_tinh_hot">Đề các Sở GD &amp; Trường chuyên hot 2025–2026 (28 câu)</option>
               <option value="bo_gd">Đề Bộ GD&amp;ĐT 2025 (Tham khảo &amp; Chính thức)</option>
               <option value="sgk_kntt">SGK Vật lí 12 Kết nối tri thức</option>
@@ -304,7 +305,7 @@
             </select>
           </div>
           <div style="align-self: flex-end;">
-            <span id="nguon-count-tag" class="tag">Đang hiển thị: 56 câu</span>
+            <span id="nguon-count-tag" class="tag">Đang hiển thị: 76 câu</span>
           </div>
         </div>
 
@@ -421,6 +422,7 @@
   <script src="./data_de_thi_c1_c2.js"></script>
   <script src="./data_nguon_thuc_te_c1_c2.js"></script>
   <script src="./data_de_tinh_hot_c1_c2.js"></script>
+  <script src="./data_hay_kho_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -430,7 +432,12 @@
       var EXAM_C12 = window.LY_EXAM_C1_C2 || { phan1: [], phan2: [], phan3: [], durationMin: 50 };
       var NGUON_BANK = window.LY_NGUON_THUC_TE_C1_C2 || { questions: [] };
       var DE_TINH_BANK = window.LY_DE_TINH_HOT_C1_C2 || { questions: [] };
-      var ALL_NGUON_QUESTIONS = [].concat(NGUON_BANK.questions || [], DE_TINH_BANK.questions || []);
+      var HAY_KHO_BANK = window.LY_HAY_KHO_C1_C2 || { questions: [] };
+      var ALL_NGUON_QUESTIONS = [].concat(
+        NGUON_BANK.questions || [],
+        DE_TINH_BANK.questions || [],
+        HAY_KHO_BANK.questions || []
+      );
       C.initShell();
 
       /* Tạo từ điển tra cứu toàn bộ câu hỏi theo ID để hỗ trợ Mode 4 Ôn câu từng sai */
@@ -1179,7 +1186,7 @@
           chuyen_de: 'Ngân hàng 36 câu chuyên đề chia theo 6 dạng trọng tâm Chương 1 & 2. Chọn dạng muốn cày, mở gợi ý trước khi xem lời giải.',
           bay_ds_tln: 'Kho tốc độ cao gồm toàn bộ 28 câu Phần II (Đúng/Sai) & Phần III (Trả lời ngắn) của Chương 1 & 2.',
           on_cau_sai: 'Tự động gom các câu làm sai từ bộ nhớ cục bộ. Làm đúng trọn vẹn mới gỡ khỏi danh sách sai.',
-          nguon_that: '56 câu hỏi 100% nguồn thật: 28 câu từ Đề Bộ GD&ĐT 2025 & SGK KNTT/CTST + 28 câu mới tổng hợp từ Đề thi thử 2025–2026 các Sở GD&ĐT và Trường chuyên hot trên cả nước.',
+          nguon_that: '76 câu hỏi 100% nguồn thật: 28 câu Bộ GD&ĐT & SGK + 28 câu Đề các Sở/Chuyên hot + 20 câu Tuyển tập Hay & Khó (Vận dụng cao 9+).',
           de_mau: 'Đề mẫu tổng hợp đủ cả 4 chương (Vật lí nhiệt, Khí lí tưởng, Từ trường, Vật lí hạt nhân).'
         };
         leftControls.innerHTML = '<span class="muted" style="font-size: 0.92rem;">' + modeDesc[appState.mode] + '</span>';
