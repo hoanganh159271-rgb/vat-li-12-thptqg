@@ -69,3 +69,26 @@
 6. **Bẫy thường gặp**:
    - Cho $\text{H}_2$ và $\text{O}_2$ ở cùng nhiệt độ $T$, học sinh hay nhầm $\overline{E_\text{đ}}$ khác nhau vì khối lượng phân tử khác nhau $\to$ **SAI**, cùng nhiệt độ $T$ thì $\overline{E_\text{đ}}$ bằng nhau, chỉ có $v_{\text{rms}}$ tỉ lệ nghịch với $\sqrt{M}$.
    - Quên đổi $M$ từ $\text{g/mol}$ sang $\text{kg/mol}$ (chia $1000$) khi bấm $\sqrt{3RT/M}$, làm sai đáp số đúng $\sqrt{1000} \approx 31{,}6$ lần!
+
+---
+
+### Chủ đề 2.3: Thực hành Boyle–Charles & Mô hình Pít-tông / Ống thủy ngân / Bơm khí
+
+1. **Bản chất hiện tượng & mô hình vật lí**:
+   - Pít-tông hoặc giọt/cột thủy ngân ở trạng thái cân bằng cơ học truyền cân bằng lực sang áp suất khí bị giam; các phân tử va chạm giữ áp suất trong và ngoài cân bằng với trọng lượng nút chặn.
+2. **Công thức & ý nghĩa từng đại lượng**:
+   - Xi-lanh pít-tông tiết diện $S$, khối lượng $m$:
+     - Nằm ngang: $p = p_0$.
+     - Thẳng đứng miệng lên: $p = p_0 + \dfrac{mg}{S}$.
+     - Thẳng đứng miệng xuống: $p = p_0 - \dfrac{mg}{S}$.
+   - Ống thủy tinh giam khí bởi cột $\text{Hg}$ dài $h$: $p = p_0$ (ngang), $p = p_0 + h$ (miệng lên), $p = p_0 - h$ (miệng xuống, đơn vị $\text{cmHg}$).
+   - Bơm/thoát khí đẳng nhiệt ($T = \text{const}$): bảo toàn tổng tích $(pV)$ tức $n_0 + n_{\text{bơm}} = n_{\text{cuối}}$.
+3. **Thứ nguyên & đơn vị SI**:
+   - $S$: $\text{m}^2$ ($1\ \text{cm}^2 = 10^{-4}\ \text{m}^2$); $p_0 = 76\ \text{cmHg} \approx 1{,}013 \times 10^5\ \text{Pa}$.
+4. **Điều kiện áp dụng & giới hạn mô hình**:
+   - Thí nghiệm kiểm chứng Boyle đòi hỏi dịch chuyển pít-tông **từ từ** để nhiệt độ khí kịp cân bằng với môi trường. Thí nghiệm Charles giữ giọt nước màu trong ống hở để $p = p_0$ không đổi.
+5. **Ý nghĩa hình học của đồ thị**:
+   - Đồ thị thực nghiệm Boyle $p$ theo $\dfrac{1}{V}$ là đường thẳng đi qua gốc tọa độ; đồ thị Charles $V$ theo $t(^\circ\text{C})$ kéo dài cắt trục hoành tại $-273^\circ\text{C}$ ($0\ \text{K}$).
+6. **Bẫy thường gặp**:
+   - Nén nhanh pít-tông trong thí nghiệm Boyle làm khí nóng lên ($\Delta U > 0$), vi phạm điều kiện đẳng nhiệt.
+   - Bơm khí vào bình đã chứa sẵn khí ở $1\ \text{atm}$ nhưng quên cộng lượng khí có sẵn ban đầu.

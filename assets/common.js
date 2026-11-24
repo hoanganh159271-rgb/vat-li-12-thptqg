@@ -28,6 +28,15 @@
     '4': 'Chương 4: Vật lí hạt nhân'
   };
 
+  var DANG_BAI_LIST = [
+    { id: 'D1', chuong: '1', ten: 'Dạng 1: Thang nhiệt độ (°C ↔ K), nhiệt kế & cấu trúc chất' },
+    { id: 'D2', chuong: '1', ten: 'Dạng 2: Định luật I NĐLH (ΔU = A + Q) & đồ thị quá trình' },
+    { id: 'D3', chuong: '1', ten: 'Dạng 3: Nhiệt dung riêng, nhiệt ẩn & cân bằng nhiệt có chuyển thể' },
+    { id: 'D4', chuong: '2', ten: 'Dạng 4: Đẳng quá trình (Boyle, Charles, Đẳng tích) & Clapeyron' },
+    { id: 'D5', chuong: '2', ten: 'Dạng 5: Xi-lanh pít-tông, ống thủy ngân & đồ thị (p–V, p–T, V–T)' },
+    { id: 'D6', chuong: '2', ten: 'Dạng 6: Mô hình động học phân tử, E_đ = (3/2)kT & v_rms' }
+  ];
+
   function defaultStore() {
     return {
       version: 1,
@@ -39,7 +48,22 @@
         l11: false
       },
       examHistory: [],
-      errorLogs: []
+      errorLogs: [],
+      solvedCorrect: {},
+      wrongQueue: {}
+    };
+  }
+
+  function normalizeStore(rawObj) {
+    var base = defaultStore();
+    var src = (rawObj && typeof rawObj === 'object') ? rawObj : {};
+    return {
+      version: 1,
+      kbProgress: Object.assign(base.kbProgress, src.kbProgress || {}),
+      examHistory: Array.isArray(src.examHistory) ? src.examHistory : [],
+      errorLogs: Array.isArray(src.errorLogs) ? src.errorLogs : [],
+      solvedCorrect: (src.solvedCorrect && typeof src.solvedCorrect === 'object' && !Array.isArray(src.solvedCorrect)) ? src.solvedCorrect : {},
+      wrongQueue: (src.wrongQueue && typeof src.wrongQueue === 'object' && !Array.isArray(src.wrongQueue)) ? src.wrongQueue : {}
     };
   }
 
@@ -47,14 +71,7 @@
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultStore();
-      var parsed = JSON.parse(raw);
-      var base = defaultStore();
-      return {
-        version: 1,
-        kbProgress: Object.assign(base.kbProgress, parsed.kbProgress || {}),
-        examHistory: Array.isArray(parsed.examHistory) ? parsed.examHistory : [],
-        errorLogs: Array.isArray(parsed.errorLogs) ? parsed.errorLogs : []
-      };
+      return normalizeStore(JSON.parse(raw));
     } catch (e) {
       return defaultStore();
     }
@@ -214,6 +231,75 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
+  function recordQuestionOutcome(qMeta, isCorrect) {
+    if (!qMeta || !qMeta.id) return loadStore();
+    var store = loadStore();
+    var qid = String(qMeta.id);
+    if (isCorrect) {
+      store.solvedCorrect[qid] = {
+        dang_bai: String(qMeta.dang_bai || ''),
+        chuong: String(qMeta.chuong || qMeta.chapter || '1'),
+        phan: String(qMeta.phan || 'I'),
+        solvedAt: new Date().toISOString()
+      };
+      if (store.wrongQueue[qid]) {
+        delete store.wrongQueue[qid];
+      }
+    } else {
+      var prev = store.wrongQueue[qid];
+      var rawPrompt = String(qMeta.promptShort || qMeta.prompt || qMeta.stem || qid).replace(/\s+/g, ' ').trim();
+      if (rawPrompt.length > 140) rawPrompt = rawPrompt.slice(0, 137) + '...';
+      var trapText = qMeta.bayCanTranh || (qMeta.loi_giai && qMeta.loi_giai.bay) || '';
+      store.wrongQueue[qid] = {
+        id: qid,
+        chuong: String(qMeta.chuong || qMeta.chapter || '1'),
+        dang_bai: String(qMeta.dang_bai || ''),
+        phan: String(qMeta.phan || 'I'),
+        muc_do: String(qMeta.muc_do || 'Hiểu'),
+        promptShort: rawPrompt,
+        wrongCount: prev ? (prev.wrongCount + 1) : 1,
+        lastWrongAt: new Date().toISOString(),
+        bayCanTranh: String(trapText)
+      };
+    }
+    saveStore(store);
+    return store;
+  }
+
+  function getWrongQueue() {
+    var store = loadStore();
+    return Object.keys(store.wrongQueue).map(function (k) {
+      return store.wrongQueue[k];
+    }).sort(function (a, b) {
+      return String(b.lastWrongAt || '').localeCompare(String(a.lastWrongAt || ''));
+    });
+  }
+
+  function getSolvedMap() {
+    return loadStore().solvedCorrect;
+  }
+
+  function generateWrongQueueMarkdown() {
+    var list = getWrongQueue();
+    var lines = [
+      '# Danh sách câu từng làm sai (Cập nhật từ Phòng luyện tập)',
+      '',
+      '| Mã câu | Chương | Dạng | Phần | Số lần sai | Tóm tắt câu hỏi | Bẫy cần nhớ |',
+      '| :--- | :--- | :--- | :--- | :---: | :--- | :--- |'
+    ];
+    if (list.length === 0) {
+      lines.push('| - | - | - | - | 0 | Hiện không còn câu sai tồn đọng | - |');
+    } else {
+      list.forEach(function (w) {
+        var ch = CHAPTER_NAMES[w.chuong] || ('Chương ' + w.chuong);
+        var promptTxt = String(w.promptShort || '-').replace(/\|/g, '/');
+        var trapTxt = String(w.bayCanTranh || '-').replace(/\|/g, '/').replace(/\r?\n/g, ' ');
+        lines.push('| ' + w.id + ' | ' + ch + ' | ' + (w.dang_bai || '-') + ' | ' + (w.phan || '-') + ' | ' + (w.wrongCount || 1) + ' | ' + promptTxt + ' | ' + trapTxt + ' |');
+      });
+    }
+    return lines.join('\n');
+  }
+
   function importBackupJSON(file, callback) {
     if (!file) return;
     var reader = new FileReader();
@@ -225,11 +311,7 @@
           callback(new Error('Tệp JSON không đúng cấu trúc sao lưu.'));
           return;
         }
-        var merged = Object.assign(defaultStore(), {
-          kbProgress: Object.assign(defaultStore().kbProgress, data.kbProgress || {}),
-          examHistory: Array.isArray(data.examHistory) ? data.examHistory : [],
-          errorLogs: Array.isArray(data.errorLogs) ? data.errorLogs : []
-        });
+        var merged = normalizeStore(data);
         saveStore(merged);
         if (parsed.theme === 'dark' || parsed.theme === 'light') {
           setTheme(parsed.theme);
@@ -908,12 +990,17 @@
     ERROR_GROUPS: ERROR_GROUPS,
     PHYSICS_SUBTAGS: PHYSICS_SUBTAGS,
     CHAPTER_NAMES: CHAPTER_NAMES,
+    DANG_BAI_LIST: DANG_BAI_LIST,
     loadStore: loadStore,
     saveStore: saveStore,
     toggleKbCheck: toggleKbCheck,
     addErrorLog: addErrorLog,
     deleteErrorLog: deleteErrorLog,
     recordExamResult: recordExamResult,
+    recordQuestionOutcome: recordQuestionOutcome,
+    getWrongQueue: getWrongQueue,
+    getSolvedMap: getSolvedMap,
+    generateWrongQueueMarkdown: generateWrongQueueMarkdown,
     getErrorStats: getErrorStats,
     generateErrorLogMarkdown: generateErrorLogMarkdown,
     exportBackupJSON: exportBackupJSON,

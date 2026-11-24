@@ -1,5 +1,5 @@
 /* Service Worker — Hỗ trợ chạy 100% ngoại tuyến & tự cập nhật khi có mạng */
-var CACHE_NAME = 'vatli12-gdpt2018-v1';
+var CACHE_NAME = 'vatli12-gdpt2018-v3';
 
 var PRECACHE_URLS = [
   './',
@@ -9,11 +9,17 @@ var PRECACHE_URLS = [
   './assets/common.js',
   './assets/docs_data.js',
   './assets/icon.svg',
+  './ly_thuyet/ch1_ch2_truc_quan.html',
   './mo_phong/01_chuyen_the_va_nhiet_dong.html',
   './mo_phong/02_do_thi_khi_li_tuong.html',
   './mo_phong/03_cam_ung_dien_tu_ac.html',
   './mo_phong/04_phong_xa_hat_nhan.html',
+  './mo_phong/05_thuc_hanh_nhiet_sgk.html',
+  './mo_phong/06_thuc_hanh_khi_va_dong_hoc.html',
   './luyen_tap/data_cau_hoi.js',
+  './luyen_tap/data_chuyen_de_c1_c2.js',
+  './luyen_tap/data_de_thi_c1_c2.js',
+  './luyen_tap/data_nguon_thuc_te_c1_c2.js',
   './luyen_tap/phong_thi_thptqg.html',
   './tra_cuu/hang_so_va_doi_don_vi.html'
 ];

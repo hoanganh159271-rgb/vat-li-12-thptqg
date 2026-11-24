@@ -74,3 +74,22 @@
    - Khẳng định "đang nóng chảy / đang sôi nhiệt độ không đổi nên nội năng không đổi" $\to$ **SAI**, thế năng phân tử tăng nên nội năng tăng.
    - Thấy đoạn đồ thị $T(t)$ dốc hơn lại kết luận $c$ lớn hơn $\to$ **SAI**, độ dốc tỉ lệ **nghịch** với $c$.
    - Dùng $\Delta t(^\circ\text{C})$ lại cộng thêm $273$ vào hiệu nhiệt độ $\to$ **SAI**, chỉ nhiệt độ tuyệt đối $T$ mới cộng $273$, còn $\Delta T = T_2 - T_1 = t_2 - t_1$.
+
+---
+
+### Chủ đề 1.3: Thực hành đo $c$, $\lambda$, $L$ chuẩn SGK & Sai số thực nghiệm
+
+1. **Bản chất hiện tượng & mô hình vật lí**:
+   - Dùng dây điện trở đặt chìm trong nhiệt lượng kế (hoặc bình đun trên cân điện tử) cung cấp nhiệt lượng đo qua oát kế và thời gian: $Q_{\text{điện}} = \overline{P}\cdot\Delta\tau$.
+2. **Công thức & ý nghĩa từng đại lượng**:
+   - Đo nhiệt dung riêng nước: $c = \dfrac{\overline{P}(\tau_N - \tau_M)}{m(t_N - t_M)}$.
+   - Đo nhiệt nóng chảy riêng nước đá (tại $0^\circ\text{C}$): $\lambda = \dfrac{\overline{P}(\tau_N - \tau_M)}{m_{\text{đá}}}$.
+   - Đo nhiệt hóa hơi riêng nước (tại $100^\circ\text{C}$): $L = \dfrac{\overline{P}\cdot\tau}{m_1 - m_2}$.
+3. **Thứ nguyên & đơn vị SI**:
+   - $\overline{P}$ ($\text{W}$), $\tau$ ($\text{s}$), $m$ ($\text{kg}$), $c$ ($\text{J}/(\text{kg}\cdot\text{K})$), $\lambda$ và $L$ ($\text{J/kg}$).
+4. **Điều kiện áp dụng & giới hạn mô hình**:
+   - Nước đá khi đưa vào đo $\lambda$ phải được lau khô nước bám ngoài và giữ cho nước bao quanh ở $0^\circ\text{C}$; khi đo $c$ cần khuấy nhẹ đều tay.
+5. **Ý nghĩa hình học của đồ thị**:
+   - Trên đồ thị $t(\tau)$ khi đo $c$: hệ số góc đoạn thẳng $k = \dfrac{\Delta t}{\Delta\tau} = \dfrac{\overline{P}}{mc} \Rightarrow c = \dfrac{\overline{P}}{m\cdot k}$.
+6. **Bẫy thường gặp**:
+   - Khi có hao phí nhiệt ra vỏ bình và môi trường, nhiệt điện $\overline{P}\Delta\tau > Q_{\text{nước}}$ nên trị số đo được ($c_{\text{đo}}, \lambda_{\text{đo}}, L_{\text{đo}}$) thường **lớn hơn** giá trị chuẩn trong bảng hằng số.
