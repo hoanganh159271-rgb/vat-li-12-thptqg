@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phòng Thí nghiệm Thực hành Nhiệt học (SGK GDPT 2018)</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Bảng điều khiển</a>
+        <a href="../ly_thuyet/ch1_ch2_truc_quan.html#cd-4" class="btn btn-sm">Lý thuyết Nhiệt ẩn</a>
+        <a href="../luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-primary btn-sm">Bài tập Thực hành SGK</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Phòng Thí Nghiệm Thực Hành Chương 1 (Chuẩn SGK GDPT 2018)</h1>
+    <p class="muted">Thực hành ảo đầy đủ bộ dụng cụ Oát kế – Bình nhiệt lượng kế vỏ xốp – Nhiệt kế điện tử – Cân điện tử cho 3 bài thí nghiệm bắt buộc đo c, λ và L.</p>
+
+    <div style="margin-top: 18px; margin-bottom: 22px;">
+      <div class="tabs" role="tablist" aria-label="Chọn bài thực hành Chương 1">
+        <button type="button" class="tab-btn" role="tab" id="tab-exp-c" aria-selected="true">1. Đo Nhiệt dung riêng nước (c)</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-exp-lambda" aria-selected="false">2. Đo Nhiệt nóng chảy riêng đá (λ)</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-exp-L" aria-selected="false">3. Đo Nhiệt hóa hơi riêng nước (L)</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: ĐO NHIỆT DUNG RIÊNG NƯỚC (c) -->
+    <section id="panel-exp-c">
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều khiển Thí nghiệm Đo c</h3>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="c-mass" class="control-label">Khối lượng nước m</label>
+              <span id="c-mass-val" class="control-val">0,15 kg</span>
+            </div>
+            <input id="c-mass" type="range" min="0.10" max="0.50" step="0.05" value="0.15">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="c-power" class="control-label">Công suất biến thế nguồn P</label>
+              <span id="c-power-val" class="control-val">16 W</span>
+            </div>
+            <input id="c-power" type="range" min="10" max="50" step="1" value="16">
+          </div>
+
+          <div class="control-group">
+            <label for="c-env" class="control-label">Điều kiện thí nghiệm</label>
+            <select id="c-env">
+              <option value="real">Thực tế (hao phí ~4% ra vỏ bình + sai số đọc)</option>
+              <option value="ideal">Lí tưởng (cách nhiệt tuyệt đối 100%)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="c-speed" class="control-label">Tốc độ thời gian thực nghiệm</label>
+            <select id="c-speed">
+              <option value="1">1× (Thời gian thực)</option>
+              <option value="10">10× (Nhanh)</option>
+              <option value="30" selected>30× (Siêu tốc ghi bảng)</option>
+            </select>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="c-toggle" class="btn btn-primary btn-sm">Bật nguồn điện</button>
+            <button type="button" id="c-record" class="btn btn-sm">Ghi điểm đo</button>
+            <button type="button" id="c-reset" class="btn btn-sm">Đặt lại</button>
+          </div>
+
+          <button type="button" id="c-preset-sgk" class="btn btn-sm" style="width: 100%;">Nạp bảng số liệu gốc SGK KNTT (m = 0,15 kg)</button>
+
+          <div id="c-calc-box" class="panel-alt num" style="font-size: 0.92rem;">
+            Hãy bật nguồn rồi bấm <strong>Ghi điểm đo</strong> ít nhất 2 lần (hoặc nạp bảng mẫu SGK) để hệ thống vẽ đồ thị t(τ) và tính c_đo.
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Bộ dụng cụ đo (Oát kế &amp; Bình NLK)</h3>
+              <div class="canvas-box">
+                <canvas id="cv-c-setup"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Đồ thị thực nghiệm t(τ)</h3>
+              <div class="canvas-box">
+                <canvas id="cv-c-graph"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Bảng số liệu đo Nhiệt dung riêng nước</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Lần đo</th><th>Thời gian τ (s)</th><th>Công suất P (W)</th><th>Nhiệt độ t (°C)</th></tr>
+                </thead>
+                <tbody id="c-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: ĐO NHIỆT NÓNG CHẢY RIÊNG NƯỚC ĐÁ (λ) -->
+    <section id="panel-exp-lambda" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều khiển Thí nghiệm Đo λ</h3>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="l-mass" class="control-label">Khối lượng nước đá khô m_đá</label>
+              <span id="l-mass-val" class="control-val">0,10 kg</span>
+            </div>
+            <input id="l-mass" type="range" min="0.05" max="0.25" step="0.01" value="0.10">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="l-power" class="control-label">Công suất nguồn điện P</label>
+              <span id="l-power-val" class="control-val">60 W</span>
+            </div>
+            <input id="l-power" type="range" min="20" max="100" step="5" value="60">
+          </div>
+
+          <div class="control-group">
+            <label for="l-env" class="control-label">Điều kiện thí nghiệm</label>
+            <select id="l-env">
+              <option value="real">Thực tế (nhận thêm ít nhiệt môi trường / sai số)</option>
+              <option value="ideal">Lí tưởng (H = 100%)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="l-speed" class="control-label">Tốc độ thời gian</label>
+            <select id="l-speed">
+              <option value="1">1×</option>
+              <option value="10">10×</option>
+              <option value="30" selected>30×</option>
+            </select>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="l-toggle" class="btn btn-primary btn-sm">Bật nguồn điện</button>
+            <button type="button" id="l-record" class="btn btn-sm">Ghi điểm đo</button>
+            <button type="button" id="l-reset" class="btn btn-sm">Đặt lại</button>
+          </div>
+
+          <button type="button" id="l-preset-sgk" class="btn btn-sm" style="width: 100%;">Nạp dữ liệu mẫu đoạn nóng chảy 0 °C</button>
+
+          <div id="l-calc-box" class="panel-alt num" style="font-size: 0.92rem;">
+            Quan sát đoạn đồ thị nằm ngang ở 0,0 °C cho đến khi đá vừa tan hết để xác định τ_M và τ_N.
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Bình NLK chứa hỗn hợp Nước + Đá</h3>
+              <div class="canvas-box">
+                <canvas id="cv-l-setup"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Đồ thị t(τ) tìm thời gian tan hoàn toàn</h3>
+              <div class="canvas-box">
+                <canvas id="cv-l-graph"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Bảng số liệu đo Nhiệt nóng chảy riêng nước đá</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Lần đo</th><th>Thời gian τ (s)</th><th>Công suất P (W)</th><th>Nhiệt độ t (°C)</th><th>Trạng thái đá</th></tr>
+                </thead>
+                <tbody id="l-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐO NHIỆT HÓA HƠI RIÊNG NƯỚC (L) -->
+    <section id="panel-exp-L" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều khiển Thí nghiệm Đo L (Cân điện tử)</h3>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="v-mass" class="control-label">Khối lượng nước sôi ban đầu m₁</label>
+              <span id="v-mass-val" class="control-val">0,25 kg</span>
+            </div>
+            <input id="v-mass" type="range" min="0.15" max="0.40" step="0.05" value="0.25">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="v-power" class="control-label">Công suất đun sôi liên tục P</label>
+              <span id="v-power-val" class="control-val">500 W</span>
+            </div>
+            <input id="v-power" type="range" min="200" max="1000" step="50" value="500">
+          </div>
+
+          <div class="control-group">
+            <label for="v-env" class="control-label">Điều kiện thí nghiệm</label>
+            <select id="v-env">
+              <option value="real">Thực tế (hao phí nhiệt ra môi trường ~5%)</option>
+              <option value="ideal">Lí tưởng (100% nhiệt dùng để hóa hơi)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="v-speed" class="control-label">Tốc độ thời gian</label>
+            <select id="v-speed">
+              <option value="1">1×</option>
+              <option value="10">10×</option>
+              <option value="30" selected>30×</option>
+            </select>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="v-toggle" class="btn btn-primary btn-sm">Bật nguồn đun sôi</button>
+            <button type="button" id="v-record" class="btn btn-sm">Ghi số chỉ cân</button>
+            <button type="button" id="v-reset" class="btn btn-sm">Đặt lại</button>
+          </div>
+
+          <button type="button" id="v-preset-sgk" class="btn btn-sm" style="width: 100%;">Nạp dữ liệu mẫu hóa hơi 100 °C</button>
+
+          <div id="v-calc-box" class="panel-alt num" style="font-size: 0.92rem;">
+            Bật nguồn khi nước ở 100,0 °C, quan sát số chỉ cân điện tử giảm dần m₁ → m₂ rồi bấm Ghi số chỉ cân.
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Bình đun hở đặt trên Cân điện tử</h3>
+              <div class="canvas-box">
+                <canvas id="cv-v-setup"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Đồ thị lượng nước bay hơi Δm(τ)</h3>
+              <div class="canvas-box">
+                <canvas id="cv-v-graph"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Bảng số liệu đo Nhiệt hóa hơi riêng của nước</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Lần đo</th><th>Thời gian τ (s)</th><th>Công suất P (W)</th><th>Khối lượng còn m (kg)</th><th>Đã hóa hơi Δm (g)</th></tr>
+                </thead>
+                <tbody id="v-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHÂN TÍCH SAI SỐ & BẪY ĐÚNG/SAI -->
+    <section class="section-block">
+      <div class="card">
+        <h2>Phân tích sai số thực nghiệm &amp; Bẫy Đúng/Sai thường ra trong đề thi</h2>
+        <div class="grid-2">
+          <div class="panel-alt">
+            <h3>Tại sao trị số đo thực nghiệm thường lớn hơn lí thuyết?</h3>
+            <ul class="clean-list">
+              <li>Do một phần điện năng P·τ bị thất thoát làm nóng vỏ nhiệt lượng kế, que khuấy, nhiệt kế và tỏa ra không khí, nên phần nhiệt lượng thực tế chất thu được nhỏ hơn P·τ.</li>
+              <li>Khi dùng công thức lí tưởng c = P·Δτ / (m·Δt), tử số P·Δτ lớn hơn Q_nước nên kéo giá trị <strong>c_đo, λ_đo, L_đo cao hơn</strong> số liệu chuẩn trong bảng hằng số.</li>
+            </ul>
+          </div>
+          <div class="notice notice-danger">
+            <h3>3 thao tác bắt buộc tránh mất điểm câu Đúng/Sai</h3>
+            <ul class="clean-list">
+              <li><strong>Thí nghiệm đo c:</strong> Khuấy nhẹ nước liên tục để nhiệt độ đồng đều, chọn khoảng đo ở đoạn tuyến tính ổn định sau 1 phút đầu.</li>
+              <li><strong>Thí nghiệm đo λ:</strong> Phải dùng giấy thấm lau khô nước bám ngoài viên nước đá trước khi cân, và đảm bảo đá đang ở đúng 0 °C.</li>
+              <li><strong>Thí nghiệm đo L:</strong> Chỉ bắt đầu bấm giờ đo Δm khi nước đã sôi đều ở 100 °C và mở nắp bình cho hơi thoát ra tự do trên cân điện tử.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var activeTab = 'c';
+      var tabMap = {
+        c: { btn: document.getElementById('tab-exp-c'), panel: document.getElementById('panel-exp-c') },
+        lambda: { btn: document.getElementById('tab-exp-lambda'), panel: document.getElementById('panel-exp-lambda') },
+        L: { btn: document.getElementById('tab-exp-L'), panel: document.getElementById('panel-exp-L') }
+      };
+
+      function switchTab(name) {
+        activeTab = name;
+        Object.keys(tabMap).forEach(function (k) {
+          var isSel = k === name;
+          tabMap[k].btn.setAttribute('aria-selected', isSel ? 'true' : 'false');
+          tabMap[k].panel.hidden = !sel;
+        });
+        renderActive();
+      }
+      tabMap.c.btn.addEventListener('click', function () { switchTab('c'); });
+      tabMap.lambda.btn.addEventListener('click', function () { switchTab('lambda'); });
+      tabMap.L.btn.addEventListener('click', function () { switchTab('L'); });
+
+      /* Tiện ích vẽ hộp dụng cụ chung */
+      function drawMeterBox(ctx, x, y, w, h, title, line1, line2, cols, active) {
+        ctx.fillStyle = cols.bgAlt;
+        ctx.strokeStyle = active ? cols.warm : cols.ink;
+        ctx.lineWidth = active ? 2 : 1.5;
+        ctx.fillRect(x, y, w, h);
+        ctx.strokeRect(x, y, w, h);
+
+        ctx.fillStyle = cols.ink;
+        ctx.font = '600 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(title, x + w / 2, y + 16);
+
+        ctx.fillStyle = cols.accent;
+        ctx.font = '700 12px monospace';
+        ctx.fillText(line1, x + w / 2, y + 34);
+        if (line2) {
+          ctx.fillStyle = cols.muted;
+          ctx.font = '11px monospace';
+          ctx.fillText(line2, x + w / 2, y + 49);
+        }
+      }
+
+      /* ================= 1. ĐO NHIỆT DUNG RIÊNG NƯỚC (c) ================= */
+      var cTrueWater = 4180;
+      var stC = { running: false, tau: 0, temp: 24.5, t0: 24.5, rows: [], curP: 16 };
+      var cMassEl = document.getElementById('c-mass');
+      var cPowerEl = document.getElementById('c-power');
+      var cEnvEl = document.getElementById('c-env');
+      var cSpeedEl = document.getElementById('c-speed');
+      var cToggleBtn = document.getElementById('c-toggle');
+      var cTbody = document.getElementById('c-tbody');
+      var cCalcBox = document.getElementById('c-calc-box');
+
+      function resetC() {
+        stC.running = false;
+        stC.tau = 0;
+        stC.t0 = 24.5;
+        stC.temp = 24.5;
+        stC.curP = Number(cPowerEl.value);
+        stC.rows = [];
+        cToggleBtn.textContent = 'Bật nguồn điện';
+        updateCRowsUI();
+        renderC();
+      }
+
+      function updateCRowsUI() {
+        cTbody.innerHTML = '';
+        if (!stC.rows.length) {
+          cTbody.innerHTML = '<tr><td colspan="4" class="muted">Chưa có điểm đo. Bật nguồn và bấm "Ghi điểm đo".</td></tr>';
+          cCalcBox.innerHTML = 'Hãy bật nguồn rồi bấm <strong>Ghi điểm đo</strong> ít nhất 2 lần (hoặc nạp bảng mẫu SGK) để hệ thống vẽ đồ thị t(τ) và tính c_đo.';
+          return;
+        }
+        stC.rows.forEach(function (r, idx) {
+          var tr = document.createElement('tr');
+          tr.className = 'num';
+          tr.innerHTML = '<td>' + (idx + 1) + '</td><td>' + r.tau.toFixed(0) + '</td><td>' + C.fmt(r.p, 2) + '</td><td>' + C.fmt(r.t, 1) + '</td>';
+          cTbody.appendChild(tr);
+        });
+        if (stC.rows.length >= 2) {
+          var rFirst = stC.rows[0];
+          var rLast = stC.rows[stC.rows.length - 1];
+          var m = stC.presetMass || Number(cMassEl.value);
+          var pAvg = stC.rows.reduce(function (s, x) { return s + x.p; }, 0) / stC.rows.length;
+          var dTau = rLast.tau - rFirst.tau;
+          var dT = rLast.t - rFirst.t;
+          if (dTau > 0 && dT > 0.05) {
+            var cMeas = (pAvg * dTau) / (m * dT);
+            var errPct = ((cMeas - cTrueWater) / cTrueWater) * 100;
+            cCalcBox.innerHTML =
+              '<strong>Kết quả tính (lần 1 → ' + stC.rows.length + '):</strong> P̄ = ' + C.fmt(pAvg, 2) + ' W | Δτ = ' + dTau.toFixed(0) + ' s | Δt = ' + C.fmt(dT, 1) + ' °C | m = ' + C.fmt(m, 2) + ' kg<br>' +
+              '<strong>c_đo = ' + Math.round(cMeas) + ' J/(kg·K)</strong> (Chuẩn: 4180 | Sai lệch: ' + (errPct >= 0 ? '+' : '') + C.fmt(errPct, 1) + '%)';
+          }
+        }
+      }
+
+      function drawSetupC() {
+        var cols = C.getColors();
+        var s = C.setupCanvas(document.getElementById('cv-c-setup'), 245);
+        var ctx = s.ctx, W = s.width, H = s.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        drawMeterBox(ctx, 12, 16, 118, 56, 'Oát kế điện tử', 'P = ' + C.fmt(stC.curP, 1) + ' W', 'τ = ' + Math.round(stC.tau) + ' s', cols, stC.running);
+        drawMeterBox(ctx, 12, 86, 118, 56, 'Nhiệt kế (±0,1°C)', C.fmt(stC.temp, 1) + ' °C', C.fmt(stC.temp + 273, 1) + ' K', cols, false);
+
+        /* Bình nhiệt lượng kế vỏ xốp */
+        var bx = Math.max(145, W - 150), by = 36, bw = 122, bh = 180;
+        ctx.strokeStyle = cols.ink;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(bx, by, bw, bh);
+        ctx.fillStyle = cols.bgAlt;
+        ctx.fillRect(bx + 2, by + 2, bw - 4, bh - 4);
+
+        /* Nước trong bình */
+        ctx.fillStyle = cols.grid;
+        ctx.fillRect(bx + 8, by + 48, bw - 16, bh - 56);
+
+        /* Dây điện trở nhiệt */
+        ctx.strokeStyle = stC.running ? cols.warm : cols.muted;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(bx + 36, by + 6);
+        ctx.lineTo(bx + 36, by + 135);
+        for (var k = 0; k < 5; k++) {
+          ctx.lineTo(bx + 36 + (k % 2 === 0 ? 12 : -12), by + 138 + k * 5);
+        }
+        ctx.lineTo(bx + 44, by + 165);
+        ctx.lineTo(bx + 44, by + 6);
+        ctx.stroke();
+
+        /* Đầu đo nhiệt kế & que khuấy */
+        ctx.strokeStyle = cols.cold;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bx + 84, by + 6);
+        ctx.lineTo(bx + 84, by + 152);
+        ctx.stroke();
+
+        /* Dây nối sang Oát kế */
+        ctx.strokeStyle = cols.accent;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(130, 44);
+        ctx.lineTo(bx + 36, 44);
+        ctx.moveTo(130, 114);
+        ctx.lineTo(bx + 84, 114);
+        ctx.stroke();
+      }
+
+      function drawGraphC() {
+        var cols = C.getColors();
+        var cv = document.getElementById('cv-c-graph');
+        var s = C.setupCanvas(cv, 245);
+        var gCtx = s.ctx;
+        var maxTau = stC.rows.length ? Math.max(450, stC.rows[stC.rows.length - 1].tau * 1.1) : 450;
+        var minT = stC.rows.length ? Math.floor(Math.min(20, stC.rows[0].t - 2)) : 20;
+        var maxT = stC.rows.length ? Math.ceil(Math.max(40, stC.rows[stC.rows.length - 1].t + 3)) : 40;
+        var ax = C.drawAxes(gCtx, s.width, s.height, {
+          xMin: 0, xMax: maxTau, yMin: minT, yMax: maxT,
+          xLabel: 'τ (s)', yLabel: 't (°C)', xTicks: 5, yTicks: 5
+        });
+        if (stC.rows.length >= 2) {
+          gCtx.strokeStyle = cols.warm;
+          gCtx.lineWidth = 2.2;
+          gCtx.beginPath();
+          stC.rows.forEach(function (r, idx) {
+            var px = ax.toX(r.tau), py = ax.toY(r.t);
+            if (idx === 0) gCtx.moveTo(px, py);
+            else gCtx.lineTo(px, py);
+          });
+          gCtx.stroke();
+        }
+        stC.rows.forEach(function (r) {
+          gCtx.fillStyle = cols.accent;
+          gCtx.beginPath();
+          gCtx.arc(ax.toX(r.tau), ax.toY(r.t), 4, 0, Math.PI * 2);
+          gCtx.fill();
+        });
+      }
+
+      function renderC() {
+        document.getElementById('c-mass-val').textContent = C.fmt(Number(cMassEl.value), 2) + ' kg';
+        document.getElementById('c-power-val').textContent = cPowerEl.value + ' W';
+        drawSetupC();
+        drawGraphC();
+      }
+
+      cMassEl.addEventListener('input', function () { stC.presetMass = null; resetC(); });
+      cPowerEl.addEventListener('input', function () { stC.curP = Number(cPowerEl.value); renderC(); });
+      cToggleBtn.addEventListener('click', function () {
+        stC.running = !stC.running;
+        cToggleBtn.textContent = stC.running ? 'Tạm dừng nguồn' : 'Tiếp tục đun';
+      });
+      document.getElementById('c-record').addEventListener('click', function () {
+        stC.presetMass = null;
+        stC.rows.push({ tau: stC.tau, p: stC.curP, t: stC.temp });
+        updateCRowsUI();
+        renderC();
+      });
+      document.getElementById('c-reset').addEventListener('click', function () { stC.presetMass = null; resetC(); });
+      document.getElementById('c-preset-sgk').addEventListener('click', function () {
+        stC.running = false;
+        cToggleBtn.textContent = 'Bật nguồn điện';
+        cMassEl.value = '0.15';
+        stC.presetMass = 0.15;
+        stC.rows = [
+          { tau: 60, p: 15.04, t: 25.2 },
+          { tau: 120, p: 15.07, t: 25.4 },
+          { tau: 180, p: 15.03, t: 27.0 },
+          { tau: 240, p: 15.94, t: 28.7 },
+          { tau: 300, p: 15.84, t: 31.2 },
+          { tau: 360, p: 15.94, t: 32.3 },
+          { tau: 420, p: 15.94, t: 33.8 }
+        ];
+        stC.tau = 420;
+        stC.temp = 33.8;
+        stC.curP = 15.94;
+        updateCRowsUI();
+        renderC();
+      });
+
+      /* ================= 2. ĐO NHIỆT NÓNG CHẢY RIÊNG ĐÁ (λ) ================= */
+      var lTrue = 3.34e5;
+      var stL = { running: false, tau: 0, qMelted: 0, temp: 0.0, rows: [] };
+      var lMassEl = document.getElementById('l-mass');
+      var lPowerEl = document.getElementById('l-power');
+      var lEnvEl = document.getElementById('l-env');
+      var lSpeedEl = document.getElementById('l-speed');
+      var lToggleBtn = document.getElementById('l-toggle');
+      var lTbody = document.getElementById('l-tbody');
+      var lCalcBox = document.getElementById('l-calc-box');
+
+      function resetL() {
+        stL = { running: false, tau: 0, qMelted: 0, temp: 0.0, rows: [] };
+        lToggleBtn.textContent = 'Bật nguồn điện';
+        updateLRowsUI();
+        renderL();
+      }
+
+      function updateLRowsUI() {
+        lTbody.innerHTML = '';
+        if (!stL.rows.length) {
+          lTbody.innerHTML = '<tr><td colspan="5" class="muted">Chưa có điểm đo.</td></tr>';
+          lCalcBox.innerHTML = 'Quan sát đoạn đồ thị nằm ngang ở 0,0 °C cho đến khi đá vừa tan hết để xác định τ_M và τ_N.';
+          return;
+        }
+        stL.rows.forEach(function (r, idx) {
+          var tr = document.createElement('tr');
+          tr.className = 'num';
+          tr.innerHTML = '<td>' + (idx + 1) + '</td><td>' + Math.round(r.tau) + '</td><td>' + C.fmt(r.p, 1) + '</td><td>' + C.fmt(r.t, 1) + '</td><td>' + r.state + '</td>';
+          lTbody.appendChild(tr);
+        });
+        var meltRows = stL.rows.filter(function (r) { return r.t <= 0.2; });
+        if (meltRows.length >= 2) {
+          var first = meltRows[0], last = meltRows[meltRows.length - 1];
+          var dTau = last.tau - first.tau;
+          var mIce = Number(lMassEl.value);
+          var pAvg = meltRows.reduce(function (s, x) { return s + x.p; }, 0) / meltRows.length;
+          if (dTau > 0) {
+            var lamMeas = (pAvg * dTau) / mIce;
+            var errPct = ((lamMeas - lTrue) / lTrue) * 100;
+            lCalcBox.innerHTML =
+              '<strong>Ước tính từ đoạn 0 °C (τ_M = ' + Math.round(first.tau) + ' s → τ_N = ' + Math.round(last.tau) + ' s):</strong><br>' +
+              'λ_đo = (' + C.fmt(pAvg, 1) + ' × ' + Math.round(dTau) + ') / ' + C.fmt(mIce, 2) + ' = <strong>' + C.fmt(lamMeas / 1e5, 2) + '×10⁵ J/kg</strong> (Chuẩn: 3,34×10⁵ | ' + (errPct >= 0 ? '+' : '') + C.fmt(errPct, 1) + '%)';
+          }
+        }
+      }
+
+      function drawSetupL() {
+        var cols = C.getColors();
+        var s = C.setupCanvas(document.getElementById('cv-l-setup'), 245);
+        var ctx = s.ctx, W = s.width, H = s.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        var mIce = Number(lMassEl.value);
+        var needQ = mIce * lTrue;
+        var remainFrac = Math.max(0, 1 - stL.qMelted / needQ);
+        var pNow = Number(lPowerEl.value);
+
+        drawMeterBox(ctx, 12, 16, 118, 56, 'Oát kế', 'P = ' + pNow + ' W', 'τ = ' + Math.round(stL.tau) + ' s', cols, stL.running);
+        drawMeterBox(ctx, 12, 86, 118, 56, 'Nhiệt kế', C.fmt(stL.temp, 1) + ' °C', 'Đá còn: ' + Math.round(remainFrac * 100) + '%', cols, false);
+
+        var bx = Math.max(145, W - 150), by = 36, bw = 122, bh = 180;
+        ctx.strokeStyle = cols.ink;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(bx, by, bw, bh);
+        ctx.fillStyle = cols.bgAlt;
+        ctx.fillRect(bx + 2, by + 2, bw - 4, bh - 4);
+
+        ctx.fillStyle = cols.grid;
+        ctx.fillRect(bx + 8, by + 56, bw - 16, bh - 64);
+
+        /* Các viên đá thu nhỏ dần */
+        if (remainFrac > 0.01) {
+          var sz = 14 + remainFrac * 16;
+          ctx.fillStyle = cols.cold;
+          ctx.fillRect(bx + 24, by + 62, sz, sz * 0.8);
+          ctx.fillRect(bx + 62, by + 66, sz * 0.9, sz * 0.75);
+        }
+
+        /* Dây điện trở */
+        ctx.strokeStyle = stL.running ? cols.warm : cols.muted;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(bx + 34, by + 6);
+        ctx.lineTo(bx + 34, by + 150);
+        ctx.lineTo(bx + 54, by + 150);
+        ctx.lineTo(bx + 54, by + 6);
+        ctx.stroke();
+      }
+
+      function drawGraphL() {
+        var cols = C.getColors();
+        var s = C.setupCanvas(document.getElementById('cv-l-graph'), 245);
+        var gCtx = s.ctx;
+        var maxTau = stL.rows.length ? Math.max(600, stL.rows[stL.rows.length - 1].tau * 1.1) : 600;
+        var ax = C.drawAxes(gCtx, s.width, s.height, {
+          xMin: 0, xMax: maxTau, yMin: -2, yMax: 25,
+          xLabel: 'τ (s)', yLabel: 't (°C)', xTicks: 5, yTicks: 5
+        });
+        if (stL.rows.length >= 2) {
+          gCtx.strokeStyle = cols.phase;
+          gCtx.lineWidth = 2.2;
+          gCtx.beginPath();
+          stL.rows.forEach(function (r, idx) {
+            var px = ax.toX(r.tau), py = ax.toY(r.t);
+            if (idx === 0) gCtx.moveTo(px, py);
+            else gCtx.lineTo(px, py);
+          });
+          gCtx.stroke();
+        }
+        stL.rows.forEach(function (r) {
+          gCtx.fillStyle = cols.accent;
+          gCtx.beginPath();
+          gCtx.arc(ax.toX(r.tau), ax.toY(r.t), 4, 0, Math.PI * 2);
+          gCtx.fill();
+        });
+      }
+
+      function renderL() {
+        document.getElementById('l-mass-val').textContent = C.fmt(Number(lMassEl.value), 2) + ' kg';
+        document.getElementById('l-power-val').textContent = lPowerEl.value + ' W';
+        drawSetupL();
+        drawGraphL();
+      }
+
+      lMassEl.addEventListener('input', resetL);
+      lPowerEl.addEventListener('input', renderL);
+      lToggleBtn.addEventListener('click', function () {
+        stL.running = !stL.running;
+        lToggleBtn.textContent = stL.running ? 'Tạm dừng nguồn' : 'Tiếp tục đun';
+      });
+      document.getElementById('l-record').addEventListener('click', function () {
+        var needQ = Number(lMassEl.value) * lTrue;
+        var stateStr = stL.qMelted < needQ ? 'Đang nóng chảy (0 °C)' : 'Đã tan hết → nước ấm lên';
+        stL.rows.push({ tau: stL.tau, p: Number(lPowerEl.value), t: stL.temp, state: stateStr });
+        updateLRowsUI();
+        renderL();
+      });
+      document.getElementById('l-reset').addEventListener('click', resetL);
+      document.getElementById('l-preset-sgk').addEventListener('click', function () {
+        stL.running = false;
+        lToggleBtn.textContent = 'Bật nguồn điện';
+        lMassEl.value = '0.10';
+        lPowerEl.value = '60';
+        /* m = 0.10 kg, Q = 33400 J, P = 60 W -> ~557 s ly thuyet, ~575 s thuc te */
+        stL.rows = [
+          { tau: 0, p: 60.0, t: 0.0, state: 'Bắt đầu ở 0 °C' },
+          { tau: 180, p: 60.0, t: 0.0, state: 'Đang nóng chảy (0 °C)' },
+          { tau: 360, p: 60.0, t: 0.0, state: 'Đang nóng chảy (0 °C)' },
+          { tau: 575, p: 60.0, t: 0.0, state: 'Vừa tan hết hoàn toàn' },
+          { tau: 680, p: 60.0, t: 10.5, state: 'Nước lỏng ấm lên' }
+        ];
+        stL.tau = 680;
+        stL.qMelted = 0.10 * lTrue + 1;
+        stL.temp = 10.5;
+        updateLRowsUI();
+        renderL();
+      });
+
+      /* ================= 3. ĐO NHIỆT HÓA HƠI RIÊNG NƯỚC (L) ================= */
+      var vTrue = 2.26e6;
+      var stV = { running: false, tau: 0, evapKg: 0, rows: [] };
+      var vMassEl = document.getElementById('v-mass');
+      var vPowerEl = document.getElementById('v-power');
+      var vEnvEl = document.getElementById('v-env');
+      var vSpeedEl = document.getElementById('v-speed');
+      var vToggleBtn = document.getElementById('v-toggle');
+      var vTbody = document.getElementById('v-tbody');
+      var vCalcBox = document.getElementById('v-calc-box');
+
+      function resetV() {
+        stV = { running: false, tau: 0, evapKg: 0, rows: [] };
+        vToggleBtn.textContent = 'Bật nguồn đun sôi';
+        updateVRowsUI();
+        renderV();
+      }
+
+      function updateVRowsUI() {
+        vTbody.innerHTML = '';
+        if (!stV.rows.length) {
+          vTbody.innerHTML = '<tr><td colspan="5" class="muted">Chưa có điểm đo.</td></tr>';
+          vCalcBox.innerHTML = 'Bật nguồn khi nước ở 100,0 °C, quan sát số chỉ cân điện tử giảm dần m₁ → m₂ rồi bấm Ghi số chỉ cân.';
+          return;
+        }
+        stV.rows.forEach(function (r, idx) {
+          var tr = document.createElement('tr');
+          tr.className = 'num';
+          tr.innerHTML = '<td>' + (idx + 1) + '</td><td>' + Math.round(r.tau) + '</td><td>' + C.fmt(r.p, 1) + '</td><td>' + C.fmt(r.mRemain, 4) + '</td><td>' + C.fmt(r.dm * 1000, 1) + '</td>';
+          vTbody.appendChild(tr);
+        });
+        if (stV.rows.length >= 2) {
+          var first = stV.rows[0], last = stV.rows[stV.rows.length - 1];
+          var dTau = last.tau - first.tau;
+          var dMass = first.mRemain - last.mRemain;
+          var pAvg = stV.rows.reduce(function (s, x) { return s + x.p; }, 0) / stV.rows.length;
+          if (dTau > 0 && dMass > 0.001) {
+            var Lmeas = (pAvg * dTau) / dMass;
+            var errPct = ((Lmeas - vTrue) / vTrue) * 100;
+            vCalcBox.innerHTML =
+              '<strong>Kết quả đo Δm = ' + C.fmt(dMass * 1000, 1) + ' g trong Δτ = ' + Math.round(dTau) + ' s:</strong><br>' +
+              'L_đo = (' + C.fmt(pAvg, 1) + ' × ' + Math.round(dTau) + ') / ' + C.fmt(dMass, 4) + ' = <strong>' + C.fmt(Lmeas / 1e6, 2) + '×10⁶ J/kg</strong> (Chuẩn: 2,26×10⁶ | ' + (errPct >= 0 ? '+' : '') + C.fmt(errPct, 1) + '%)';
+          }
+        }
+      }
+
+      function drawSetupV() {
+        var cols = C.getColors();
+        var s = C.setupCanvas(document.getElementById('cv-v-setup'), 245);
+        var ctx = s.ctx, W = s.width, H = s.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        var mStart = Number(vMassEl.value);
+        var mRemain = Math.max(0.01, mStart - stV.evapKg);
+        var pNow = Number(vPowerEl.value);
+
+        drawMeterBox(ctx, 12, 16, 122, 56, 'Oát kế', 'P = ' + pNow + ' W', 'τ = ' + Math.round(stV.tau) + ' s', cols, stV.running);
+        drawMeterBox(ctx, 12, 86, 122, 56, 'Cân điện tử', C.fmt(mRemain, 4) + ' kg', 'Bay hơi: ' + C.fmt(stV.evapKg * 1000, 1) + ' g', cols, false);
+
+        /* Đế cân điện tử */
+        var bx = Math.max(150, W - 148);
+        ctx.fillStyle = cols.ink;
+        ctx.fillRect(bx - 10, 196, 132, 22);
+        ctx.fillStyle = cols.bg;
+        ctx.font = '600 11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(C.fmt(mRemain * 1000, 1) + ' g', bx + 56, 211);
+
+        /* Bình đun mở nắp */
+        ctx.strokeStyle = cols.ink;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(bx + 10, 62);
+        ctx.lineTo(bx + 10, 194);
+        ctx.lineTo(bx + 102, 194);
+        ctx.lineTo(bx + 102, 62);
+        ctx.stroke();
+
+        var levelFrac = mRemain / mStart;
+        var waterH = 98 * levelFrac;
+        ctx.fillStyle = cols.grid;
+        ctx.fillRect(bx + 12, 192 - waterH, 88, waterH);
+
+        /* Vệt hơi bốc lên */
+        if (stV.running) {
+          ctx.strokeStyle = cols.warm;
+          ctx.lineWidth = 1.6;
+          for (var w = 0; w < 3; w++) {
+            var sx = bx + 32 + w * 22;
+            ctx.beginPath();
+            ctx.moveTo(sx, 54);
+            ctx.quadraticCurveTo(sx - 6, 38, sx + 4, 20);
+            ctx.stroke();
+          }
+        }
+      }
+
+      function drawGraphV() {
+        var cols = C.getColors();
+        var s = C.setupCanvas(document.getElementById('cv-v-graph'), 245);
+        var gCtx = s.ctx;
+        var maxTau = stV.rows.length ? Math.max(300, stV.rows[stV.rows.length - 1].tau * 1.1) : 300;
+        var maxDm = stV.rows.length ? Math.max(30, stV.rows[stV.rows.length - 1].dm * 1000 * 1.2) : 60;
+        var ax = C.drawAxes(gCtx, s.width, s.height, {
+          xMin: 0, xMax: maxTau, yMin: 0, yMax: maxDm,
+          xLabel: 'τ (s)', yLabel: 'Δm (g)', xTicks: 5, yTicks: 5
+        });
+        if (stV.rows.length >= 2) {
+          gCtx.strokeStyle = cols.warm;
+          gCtx.lineWidth = 2.2;
+          gCtx.beginPath();
+          stV.rows.forEach(function (r, idx) {
+            var px = ax.toX(r.tau), py = ax.toY(r.dm * 1000);
+            if (idx === 0) gCtx.moveTo(px, py);
+            else gCtx.lineTo(px, py);
+          });
+          gCtx.stroke();
+        }
+        stV.rows.forEach(function (r) {
+          gCtx.fillStyle = cols.accent;
+          gCtx.beginPath();
+          gCtx.arc(ax.toX(r.tau), ax.toY(r.dm * 1000), 4, 0, Math.PI * 2);
+          gCtx.fill();
+        });
+      }
+
+      function renderV() {
+        document.getElementById('v-mass-val').textContent = C.fmt(Number(vMassEl.value), 2) + ' kg';
+        document.getElementById('v-power-val').textContent = vPowerEl.value + ' W';
+        drawSetupV();
+        drawGraphV();
+      }
+
+      vMassEl.addEventListener('input', resetV);
+      vPowerEl.addEventListener('input', renderV);
+      vToggleBtn.addEventListener('click', function () {
+        stV.running = !stV.running;
+        vToggleBtn.textContent = stV.running ? 'Tạm dừng nguồn' : 'Tiếp tục đun';
+      });
+      document.getElementById('v-record').addEventListener('click', function () {
+        var mStart = Number(vMassEl.value);
+        stV.rows.push({ tau: stV.tau, p: Number(vPowerEl.value), mRemain: Math.max(0.01, mStart - stV.evapKg), dm: stV.evapKg });
+        updateVRowsUI();
+        renderV();
+      });
+      document.getElementById('v-reset').addEventListener('click', resetV);
+      document.getElementById('v-preset-sgk').addEventListener('click', function () {
+        stV.running = false;
+        vToggleBtn.textContent = 'Bật nguồn đun sôi';
+        vMassEl.value = '0.25';
+        vPowerEl.value = '500';
+        /* P = 500 W, H = 95% => toc do bay hoi ~ 0.210 g/s */
+        stV.rows = [
+          { tau: 0, p: 500, mRemain: 0.2500, dm: 0 },
+          { tau: 60, p: 500, mRemain: 0.2374, dm: 0.0126 },
+          { tau: 120, p: 500, mRemain: 0.2248, dm: 0.0252 },
+          { tau: 180, p: 500, mRemain: 0.2122, dm: 0.0378 }
+        ];
+        stV.tau = 180;
+        stV.evapKg = 0.0378;
+        updateVRowsUI();
+        renderV();
+      });
+
+      /* Vòng lặp mô phỏng thời gian thực */
+      var lastTime = performance.now();
+      function tick(now) {
+        var dtReal = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        if (stC.running && activeTab === 'c') {
+          var speedC = Number(cSpeedEl.value);
+          var dtSim = dtReal * speedC;
+          stC.tau += dtSim;
+          var eff = cEnvEl.value === 'real' ? 0.96 : 1.0;
+          stC.curP = Number(cPowerEl.value);
+          var mC = stC.presetMass || Number(cMassEl.value);
+          stC.temp += (stC.curP * eff * dtSim) / (mC * cTrueWater);
+          if (stC.temp >= 98) stC.running = false;
+          renderC();
+        }
+        if (stL.running && activeTab === 'lambda') {
+          var dtL = dtReal * Number(lSpeedEl.value);
+          stL.tau += dtL;
+          var effL = lEnvEl.value === 'real' ? 0.96 : 1.0;
+          var pL = Number(lPowerEl.value);
+          var mIce = Number(lMassEl.value);
+          var qNeed = mIce * lTrue;
+          if (stL.qMelted < qNeed) {
+            stL.qMelted += pL * effL * dtL;
+            if (stL.qMelted >= qNeed) {
+              var extraQ = stL.qMelted - qNeed;
+              stL.temp = extraQ / (mIce * cTrueWater);
+            }
+          } else {
+            stL.temp += (pL * effL * dtL) / (mIce * cTrueWater);
+          }
+          if (stL.temp >= 25) stL.running = false;
+          renderL();
+        }
+        if (stV.running && activeTab === 'L') {
+          var dtV = dtReal * Number(vSpeedEl.value);
+          stV.tau += dtV;
+          var effV = vEnvEl.value === 'real' ? 0.95 : 1.0;
+          var pV = Number(vPowerEl.value);
+          stV.evapKg += (pV * effV * dtV) / vTrue;
+          if (stV.evapKg >= Number(vMassEl.value) - 0.02) stV.running = false;
+          renderV();
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function renderActive() {
+        if (activeTab === 'c') renderC();
+        else if (activeTab === 'lambda') renderL();
+        else renderV();
+      }
+
+      window.addEventListener('resize', renderActive);
+      window.addEventListener('ly-theme-change', renderActive);
+      resetC();
+      resetL();
+      resetV();
+      requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>

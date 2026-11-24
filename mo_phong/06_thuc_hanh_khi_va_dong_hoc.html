@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phòng Thí nghiệm Chương 2: Vi mô Động học, Thực hành Boyle–Charles &amp; Pít-tông</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Bảng điều khiển</a>
+        <a href="../ly_thuyet/ch1_ch2_truc_quan.html#cd-6" class="btn btn-sm">Lý thuyết Khí lí tưởng</a>
+        <a href="../luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-primary btn-sm">Bài tập Khí SGK</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Phòng Thí Nghiệm Chương 2: Vi mô Động học &amp; Thực hành Khí lí tưởng</h1>
+    <p class="muted">Quan sát trực tiếp phân tử khí va chạm đàn hồi tạo áp suất, thực hành bộ dụng cụ Boyle–Charles SGK (kèm ngoại suy 0 K tại −273 °C) và phân tích lực cân bằng pít-tông / cột thủy ngân.</p>
+
+    <div style="margin-top: 18px; margin-bottom: 22px;">
+      <div class="tabs" role="tablist" aria-label="Chọn mô phỏng Chương 2">
+        <button type="button" class="tab-btn" role="tab" id="tab-kinetic" aria-selected="true">1. Vi mô Động học phân tử &amp; v_rms</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-lab2" aria-selected="false">2. Thực hành Boyle &amp; Charles (SGK)</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-piston" aria-selected="false">3. Cân bằng Xi-lanh Pít-tông &amp; Ống Hg</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: MÔ PHỎNG VI MÔ ĐỘNG HỌC PHÂN TỬ -->
+    <section id="panel-kinetic">
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Thông số buồng khí lí tưởng</h3>
+
+          <div class="control-group">
+            <label for="kin-gas" class="control-label">Chọn loại khí khảo sát</label>
+            <select id="kin-gas">
+              <option value="He">Heli (He, M = 4 g/mol)</option>
+              <option value="N2" selected>Nitơ (N₂, M = 28 g/mol)</option>
+              <option value="O2">Oxi (O₂, M = 32 g/mol)</option>
+              <option value="MIX">Hỗn hợp H₂ (xanh, M=2) + O₂ (đỏ, M=32)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="kin-temp" class="control-label">Nhiệt độ tuyệt đối T</label>
+              <span id="kin-temp-val" class="control-val">300 K (27 °C)</span>
+            </div>
+            <input id="kin-temp" type="range" min="200" max="600" step="10" value="300">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="kin-vol" class="control-label">Thể tích buồng khí V</label>
+              <span id="kin-vol-val" class="control-val">12,0 lít</span>
+            </div>
+            <input id="kin-vol" type="range" min="5" max="25" step="0.5" value="12">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="kin-mol" class="control-label">Số mol khí n</label>
+              <span id="kin-mol-val" class="control-val">0,50 mol</span>
+            </div>
+            <input id="kin-mol" type="range" min="0.2" max="1.5" step="0.05" value="0.5">
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="kin-pause" class="btn btn-sm">Tạm dừng hạt</button>
+            <button type="button" id="kin-reset" class="btn btn-sm">Đặt lại</button>
+          </div>
+
+          <div class="notice notice-warn">
+            <strong>Điểm mấu chốt Dạng 6:</strong> Ở chế độ <em>Hỗn hợp H₂ + O₂</em>, dù hai khí có cùng nhiệt độ T nên <strong>E_đ bằng nhau</strong>, nhưng H₂ nhẹ hơn 16 lần nên bay nhanh gấp <strong>4 lần</strong> O₂!
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Buồng khí 2D (Va chạm đàn hồi lên pít-tông)</h3>
+              <div class="canvas-box">
+                <canvas id="cv-kin-box"></canvas>
+                <div class="canvas-legend">
+                  <span class="legend-item"><span class="legend-swatch" id="sw-light"></span>Phân tử chính / nhẹ hơn (H₂)</span>
+                  <span class="legend-item"><span class="legend-swatch" id="sw-heavy"></span>Phân tử nặng hơn (O₂ khi chọn hỗn hợp)</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Phổ phân bố tốc độ &amp; Tốc độ v_rms</h3>
+              <div class="canvas-box">
+                <canvas id="cv-kin-hist"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="stat-grid" id="kin-stats"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: THỰC HÀNH BOYLE & CHARLES -->
+    <section id="panel-lab2" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Chọn bài Thực hành SGK Chương 2</h3>
+
+          <div class="btn-group">
+            <button type="button" id="exp2-mode-boyle" class="btn btn-primary btn-sm">Định luật Boyle (T = const)</button>
+            <button type="button" id="exp2-mode-charles" class="btn btn-sm">Định luật Charles (p = const)</button>
+          </div>
+
+          <div id="boyle-controls" style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+            <div class="control-group">
+              <div class="control-head">
+                <label for="b-vol" class="control-label">Kéo thể tích V trong xi-lanh (từ từ)</label>
+                <span id="b-vol-val" class="control-val">22,0 cm³</span>
+              </div>
+              <input id="b-vol" type="range" min="12" max="24" step="0.5" value="22">
+            </div>
+            <div class="btn-group">
+              <button type="button" id="b-record" class="btn btn-primary btn-sm">Ghi điểm đo (p, V)</button>
+              <button type="button" id="b-preset" class="btn btn-sm">Nạp bảng mẫu SGK KNTT</button>
+              <button type="button" id="b-clear" class="btn btn-sm">Xóa bảng</button>
+            </div>
+          </div>
+
+          <div id="charles-controls" hidden style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+            <div class="control-group">
+              <div class="control-head">
+                <label for="ch-temp" class="control-label">Nhiệt độ bể nước t (°C)</label>
+                <span id="ch-temp-val" class="control-val">27 °C (300 K)</span>
+              </div>
+              <input id="ch-temp" type="range" min="20" max="90" step="1" value="27">
+            </div>
+            <div class="btn-group">
+              <button type="button" id="ch-record" class="btn btn-primary btn-sm">Ghi điểm đo (t, V)</button>
+              <button type="button" id="ch-preset" class="btn btn-sm">Nạp bảng mẫu chuẩn (27–87 °C)</button>
+              <button type="button" id="ch-clear" class="btn btn-sm">Xóa bảng</button>
+            </div>
+          </div>
+
+          <div id="exp2-summary" class="panel-alt num" style="font-size: 0.92rem;"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="grid-2">
+            <div class="card">
+              <h3 id="exp2-setup-title">Bộ dụng cụ Xi-lanh &amp; Áp kế (Boyle)</h3>
+              <div class="canvas-box">
+                <canvas id="cv-exp2-setup"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h3 id="exp2-graph-title">Đồ thị kiểm chứng tuyến tính</h3>
+              <div class="canvas-box">
+                <canvas id="cv-exp2-graph"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Bảng số liệu thực nghiệm</h3>
+            <div class="table-wrap">
+              <table>
+                <thead id="exp2-thead"></thead>
+                <tbody id="exp2-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CÂN BẰNG XI-LANH PÍT-TÔNG & ỐNG THỦY NGÂN -->
+    <section id="panel-piston" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Cấu hình Hệ giam giữ khí</h3>
+
+          <div class="control-group">
+            <label for="pis-system" class="control-label">Chọn loại hệ</label>
+            <select id="pis-system">
+              <option value="piston">Xi-lanh có pít-tông nặng</option>
+              <option value="hg">Ống thủy tinh giam cột thủy ngân (Hg)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="pis-orient" class="control-label">Tư thế đặt ống / xi-lanh</label>
+            <select id="pis-orient">
+              <option value="horiz">Nằm ngang</option>
+              <option value="up" selected>Thẳng đứng — Miệng hướng LÊN</option>
+              <option value="down">Thẳng đứng — Miệng hướng XUỐNG</option>
+            </select>
+          </div>
+
+          <div id="pis-sub-piston" style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="control-group">
+              <div class="control-head">
+                <label for="pis-mass" class="control-label">Khối lượng pít-tông m</label>
+                <span id="pis-mass-val" class="control-val">5 kg</span>
+              </div>
+              <input id="pis-mass" type="range" min="1" max="20" step="1" value="5">
+            </div>
+
+            <div class="control-group">
+              <div class="control-head">
+                <label for="pis-extra" class="control-label">Quả cân đặt thêm M</label>
+                <span id="pis-extra-val" class="control-val">0 kg</span>
+              </div>
+              <input id="pis-extra" type="range" min="0" max="40" step="5" value="0">
+            </div>
+
+            <div class="control-group">
+              <div class="control-head">
+                <label for="pis-area" class="control-label">Tiết diện S</label>
+                <span id="pis-area-val" class="control-val">50 cm²</span>
+              </div>
+              <input id="pis-area" type="range" min="20" max="100" step="10" value="50">
+            </div>
+          </div>
+
+          <div id="pis-sub-hg" hidden style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="control-group">
+              <div class="control-head">
+                <label for="hg-len" class="control-label">Chiều dài cột thủy ngân h</label>
+                <span id="hg-len-val" class="control-val">19 cm</span>
+              </div>
+              <input id="hg-len" type="range" min="5" max="30" step="1" value="19">
+            </div>
+            <div class="control-group">
+              <div class="control-head">
+                <label for="hg-l0" class="control-label">Cột khí ở tư thế ngang (300 K)</label>
+                <span id="hg-l0-val" class="control-val">20 cm</span>
+              </div>
+              <input id="hg-l0" type="range" min="10" max="30" step="1" value="20">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="pis-temp" class="control-label">Nhiệt độ T (K)</label>
+              <span id="pis-temp-val" class="control-val">300 K (27 °C)</span>
+            </div>
+            <input id="pis-temp" type="range" min="250" max="500" step="10" value="300">
+          </div>
+
+          <div id="pis-formula-box" class="panel-alt num" style="font-size: 0.92rem;"></div>
+        </div>
+
+        <div class="card">
+          <h3>Phân tích vectơ lực &amp; Trạng thái cân bằng</h3>
+          <div class="canvas-box">
+            <canvas id="cv-piston"></canvas>
+            <div class="canvas-legend">
+              <span class="legend-item"><span class="legend-swatch" id="sw-f0"></span>Lực khí quyển p₀·S</span>
+              <span class="legend-item"><span class="legend-swatch" id="sw-fg"></span>Trọng lực nút chặn (m+M)g / cột Hg</span>
+              <span class="legend-item"><span class="legend-swatch" id="sw-fgas"></span>Áp lực khối khí bên trong p·S</span>
+            </div>
+          </div>
+          <div id="pis-stats" class="stat-grid" style="margin-top: 10px;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var R = 8.31, kB = 1.38e-23, NA = 6.02e23;
+      var activeTab = 'kinetic';
+
+      var tabs = {
+        kinetic: { btn: document.getElementById('tab-kinetic'), panel: document.getElementById('panel-kinetic') },
+        lab2: { btn: document.getElementById('tab-lab2'), panel: document.getElementById('panel-lab2') },
+        piston: { btn: document.getElementById('tab-piston'), panel: document.getElementById('panel-piston') }
+      };
+
+      function switchTab(name) {
+        if (!tabs[name]) name = 'kinetic';
+        activeTab = name;
+        Object.keys(tabs).forEach(function (k) {
+          var sel = k === name;
+          tabs[k].btn.setAttribute('aria-selected', sel ? 'true' : 'false');
+          tabs[k].panel.hidden = !sel;
+        });
+        if (name === 'lab2') renderExp2();
+        if (name === 'piston') renderPiston();
+        if (name === 'kinetic') renderKineticStats();
+      }
+      tabs.kinetic.btn.addEventListener('click', function () { switchTab('kinetic'); });
+      tabs.lab2.btn.addEventListener('click', function () { switchTab('lab2'); });
+      tabs.piston.btn.addEventListener('click', function () { switchTab('piston'); });
+
+      /* ================= TAB 1: VI MÔ ĐỘNG HỌC PHÂN TỬ ================= */
+      var GAS_MAP = {
+        He: { name: 'Heli', M: 0.004 },
+        N2: { name: 'Nitơ', M: 0.028 },
+        O2: { name: 'Oxi', M: 0.032 },
+        MIX: { name: 'Hỗn hợp H₂ + O₂', M: 0.002, M2: 0.032 }
+      };
+      var kinGasEl = document.getElementById('kin-gas');
+      var kinTempEl = document.getElementById('kin-temp');
+      var kinVolEl = document.getElementById('kin-vol');
+      var kinMolEl = document.getElementById('kin-mol');
+      var kinPauseBtn = document.getElementById('kin-pause');
+      var kinStatsEl = document.getElementById('kin-stats');
+
+      var kinState = { paused: false, hits: 0, hitRate: 0, lastHitSec: performance.now(), particles: [] };
+
+      function rebuildParticles() {
+        var nMol = Number(kinMolEl.value);
+        var count = Math.max(18, Math.round(nMol * 46));
+        kinState.particles = [];
+        for (var i = 0; i < count; i++) {
+          var ang = Math.random() * Math.PI * 2;
+          /* Phân bố vận tốc gần Maxwell (Box-Muller đơn giản) */
+          var u1 = Math.max(0.05, Math.random());
+          var relSpd = Math.sqrt(-2 * Math.log(u1)) * 0.7;
+          kinState.particles.push({
+            x: 0.05 + Math.random() * 0.85,
+            y: 0.06 + Math.random() * 0.88,
+            ux: Math.cos(ang),
+            uy: Math.sin(ang),
+            relSpd: Math.min(2.6, Math.max(0.25, relSpd)),
+            kind: i % 2 === 0 ? 'A' : 'B'
+          });
+        }
+      }
+
+      function renderKineticStats() {
+        var gKey = kinGasEl.value;
+        var gInfo = GAS_MAP[gKey];
+        var T = Number(kinTempEl.value);
+        var V_L = Number(kinVolEl.value);
+        var V_m3 = V_L * 1e-3;
+        var n = Number(kinMolEl.value);
+
+        document.getElementById('kin-temp-val').textContent = T + ' K (' + (T - 273) + ' °C)';
+        document.getElementById('kin-vol-val').textContent = C.fmt(V_L, 1) + ' lít';
+        document.getElementById('kin-mol-val').textContent = C.fmt(n, 2) + ' mol';
+
+        var pPa = (n * R * T) / V_m3;
+        var N = n * NA;
+        var mu = N / V_m3;
+        var Ed = 1.5 * kB * T;
+        var v1 = Math.sqrt((3 * R * T) / gInfo.M);
+        var vText = Math.round(v1) + ' m/s';
+        if (gKey === 'MIX') {
+          var vO2 = Math.sqrt((3 * R * T) / gInfo.M2);
+          vText = 'H₂: ' + Math.round(v1) + ' | O₂: ' + Math.round(vO2) + ' m/s';
+        }
+
+        kinStatsEl.innerHTML =
+          '<div class="stat-item"><div class="stat-label">Áp suất p = (2/3)μE_đ</div><div class="stat-value">' + C.fmt(pPa / 1e3, 1) + ' kPa</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Mật độ μ = N/V</div><div class="stat-value">' + C.fmt(mu / 1e25, 2) + '×10²⁵ m⁻³</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Động năng TB E_đ = (3/2)kT</div><div class="stat-value">' + C.fmt(Ed * 1e21, 2) + '×10⁻²¹ J</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Tốc độ căn quân phương v_rms</div><div class="stat-value" style="font-size: 1.02rem;">' + vText + '</div></div>';
+
+        var cols = C.getColors();
+        document.getElementById('sw-light').style.backgroundColor = cols.cold;
+        document.getElementById('sw-heavy').style.backgroundColor = cols.warm;
+      }
+
+      var lastKinTime = performance.now();
+      function stepKinetic(now) {
+        var dt = Math.min(0.04, (now - lastKinTime) / 1000);
+        lastKinTime = now;
+
+        if (activeTab === 'kinetic') {
+          var cols = C.getColors();
+          var gKey = kinGasEl.value;
+          var gInfo = GAS_MAP[gKey];
+          var T = Number(kinTempEl.value);
+          var V_L = Number(kinVolEl.value);
+
+          var boxSetup = C.setupCanvas(document.getElementById('cv-kin-box'), 250);
+          var ctx = boxSetup.ctx, W = boxSetup.width, H = boxSetup.height;
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = cols.bgAlt;
+          ctx.fillRect(0, 0, W, H);
+
+          var pad = 16;
+          var maxChamberW = W - pad * 2 - 22;
+          var chamberW = Math.max(80, maxChamberW * (V_L / 25));
+          var chamberH = H - pad * 2;
+
+          /* Thành xi-lanh và pít-tông bên phải */
+          ctx.fillStyle = cols.bg;
+          ctx.fillRect(pad, pad, chamberW, chamberH);
+          ctx.strokeStyle = cols.ink;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(pad + maxChamberW + 14, pad);
+          ctx.lineTo(pad, pad);
+          ctx.lineTo(pad, pad + chamberH);
+          ctx.lineTo(pad + maxChamberW + 14, pad + chamberH);
+          ctx.stroke();
+
+          /* Mặt pít-tông */
+          ctx.fillStyle = cols.muted;
+          ctx.fillRect(pad + chamberW, pad + 2, 12, chamberH - 4);
+          ctx.fillRect(pad + chamberW + 12, pad + chamberH / 2 - 4, 24, 8);
+
+          var vBaseA = Math.sqrt((3 * R * T) / gInfo.M) / 1400;
+          var vBaseB = gKey === 'MIX' ? Math.sqrt((3 * R * T) / gInfo.M2) / 1400 : vBaseA;
+
+          var bins = [0, 0, 0, 0, 0, 0, 0, 0];
+          kinState.particles.forEach(function (p) {
+            var isB = (gKey === 'MIX' && p.kind === 'B');
+            var spdFactor = (isB ? vBaseB : vBaseA) * p.relSpd;
+            if (!kinState.paused) {
+              var stepScale = spdFactor * dt * 0.55;
+              p.x += p.ux * stepScale;
+              p.y += p.uy * stepScale;
+              if (p.x < 0.03) { p.x = 0.03; p.ux = Math.abs(p.ux); }
+              if (p.x > 0.97) { p.x = 0.97; p.ux = -Math.abs(p.ux); kinState.hits += 1; }
+              if (p.y < 0.04) { p.y = 0.04; p.uy = Math.abs(p.uy); }
+              if (p.y > 0.96) { p.y = 0.96; p.uy = -Math.abs(p.uy); }
+            }
+            var realSpeed = Math.sqrt((3 * R * T) / (isB ? gInfo.M2 : gInfo.M)) * p.relSpd;
+            var bIdx = Math.min(7, Math.floor(realSpeed / 360));
+            bins[bIdx] += 1;
+
+            ctx.fillStyle = isB ? cols.warm : cols.cold;
+            ctx.beginPath();
+            ctx.arc(pad + p.x * chamberW, pad + p.y * chamberH, isB ? 5.2 : 4.2, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          if (now - kinState.lastHitSec >= 1000) {
+            kinState.hitRate = kinState.hits;
+            kinState.hits = 0;
+            kinState.lastHitSec = now;
+          }
+          ctx.fillStyle = cols.ink;
+          ctx.font = '600 11px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText('Va chạm pít-tông: ~' + kinState.hitRate + ' lượt/s', pad + 6, pad + 15);
+
+          /* Histogram tốc độ phân tử */
+          var histSetup = C.setupCanvas(document.getElementById('cv-kin-hist'), 250);
+          var hCtx = histSetup.ctx, hW = histSetup.width, hH = histSetup.height;
+          var ax = C.drawAxes(hCtx, hW, hH, {
+            xMin: 0, xMax: 2880, yMin: 0, yMax: Math.max(12, Math.max.apply(null, bins) + 3),
+            xLabel: 'v (m/s)', yLabel: 'Số hạt', xTicks: 4, yTicks: 4
+          });
+          bins.forEach(function (cnt, idx) {
+            var x1 = ax.toX(idx * 360 + 20), x2 = ax.toX((idx + 1) * 360 - 20);
+            var yTop = ax.toY(cnt), yBot = ax.toY(0);
+            hCtx.fillStyle = cols.accent;
+            hCtx.fillRect(x1, yTop, Math.max(4, x2 - x1), yBot - yTop);
+          });
+        }
+        requestAnimationFrame(stepKinetic);
+      }
+
+      kinGasEl.addEventListener('change', function () { rebuildParticles(); renderKineticStats(); });
+      kinTempEl.addEventListener('input', renderKineticStats);
+      kinVolEl.addEventListener('input', renderKineticStats);
+      kinMolEl.addEventListener('input', function () { rebuildParticles(); renderKineticStats(); });
+      kinPauseBtn.addEventListener('click', function () {
+        kinState.paused = !kinState.paused;
+        kinPauseBtn.textContent = kinState.paused ? 'Chạy tiếp' : 'Tạm dừng hạt';
+      });
+      document.getElementById('kin-reset').addEventListener('click', function () {
+        kinGasEl.value = 'N2'; kinTempEl.value = '300'; kinVolEl.value = '12'; kinMolEl.value = '0.5';
+        kinState.paused = false; kinPauseBtn.textContent = 'Tạm dừng hạt';
+        rebuildParticles(); renderKineticStats();
+      });
+
+      /* ================= TAB 2: THỰC HÀNH BOYLE & CHARLES ================= */
+      var exp2Sub = 'boyle';
+      var exp2ModeBoyleBtn = document.getElementById('exp2-mode-boyle');
+      var exp2ModeCharlesBtn = document.getElementById('exp2-mode-charles');
+      var boyleControls = document.getElementById('boyle-controls');
+      var charlesControls = document.getElementById('charles-controls');
+      var bVolEl = document.getElementById('b-vol');
+      var chTempEl = document.getElementById('ch-temp');
+      var boyleRows = [];
+      var charlesRows = [];
+      var BOYLE_CONST = 22.92; /* p(10^5 Pa) * V(cm^3) khop bang SGK KNTT */
+      var CHARLES_C0 = 0.1;    /* V(cm^3) / T(K) = 0.100 */
+
+      function setExp2Sub(sub) {
+        exp2Sub = sub;
+        exp2ModeBoyleBtn.className = sub === 'boyle' ? 'btn btn-primary btn-sm' : 'btn btn-sm';
+        exp2ModeCharlesBtn.className = sub === 'charles' ? 'btn btn-primary btn-sm' : 'btn btn-sm';
+        boyleControls.hidden = sub !== 'boyle';
+        charlesControls.hidden = sub !== 'charles';
+        document.getElementById('exp2-setup-title').textContent = sub === 'boyle'
+          ? 'Bộ dụng cụ Xi-lanh & Áp kế (Boyle, T = const)'
+          : 'Bình cầu & Ống giọt nước màu (Charles, p = const)';
+        document.getElementById('exp2-graph-title').textContent = sub === 'boyle'
+          ? 'Đồ thị kiểm chứng p theo (1/V) — qua gốc (0;0)'
+          : 'Đồ thị V(t °C) kèm ngoại suy cắt trục tại −273 °C';
+        renderExp2();
+      }
+      exp2ModeBoyleBtn.addEventListener('click', function () { setExp2Sub('boyle'); });
+      exp2ModeCharlesBtn.addEventListener('click', function () { setExp2Sub('charles'); });
+
+      function renderExp2() {
+        var cols = C.getColors();
+        var setupCanvas = C.setupCanvas(document.getElementById('cv-exp2-setup'), 245);
+        var ctx = setupCanvas.ctx, W = setupCanvas.width, H = setupCanvas.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bg;
+        ctx.fillRect(0, 0, W, H);
+
+        var thead = document.getElementById('exp2-thead');
+        var tbody = document.getElementById('exp2-tbody');
+        var sumBox = document.getElementById('exp2-summary');
+
+        if (exp2Sub === 'boyle') {
+          var Vb = Number(bVolEl.value);
+          var Pb = BOYLE_CONST / Vb;
+          document.getElementById('b-vol-val').textContent = C.fmt(Vb, 1) + ' cm³ (p = ' + C.fmt(Pb, 2) + '×10⁵ Pa)';
+
+          /* Vẽ xi-lanh dọc bên trái + đồng hồ áp kế bên phải */
+          var cx = 56, cy = 28, cw = 54, ch = 185;
+          ctx.strokeStyle = cols.ink; ctx.lineWidth = 2.5;
+          ctx.strokeRect(cx, cy, cw, ch);
+          var gasH = (Vb / 25) * (ch - 14);
+          var pisY = cy + ch - gasH;
+          ctx.fillStyle = cols.grid;
+          ctx.fillRect(cx + 2, pisY, cw - 4, gasH - 2);
+          ctx.fillStyle = cols.muted;
+          ctx.fillRect(cx + 2, pisY - 12, cw - 4, 12);
+          ctx.fillRect(cx + cw / 2 - 4, 8, 8, pisY - 18);
+
+          /* Đồng hồ áp kế kim xoay */
+          var gx = Math.max(185, W - 92), gy = 115, gr = 58;
+          ctx.strokeStyle = cols.ink; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(gx, gy, gr, 0, Math.PI * 2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx + cw, cy + ch - 18); ctx.lineTo(gx, gy + gr); ctx.stroke();
+          var ang = Math.PI * 0.75 + ((Pb - 0.5) / 2.0) * Math.PI * 1.5;
+          C.drawArrow(ctx, gx, gy, gx + Math.cos(ang) * 44, gy + Math.sin(ang) * 44, cols.warm, 2.5, 7);
+          ctx.fillStyle = cols.ink; ctx.font = '700 12px monospace'; ctx.textAlign = 'center';
+          ctx.fillText(C.fmt(Pb, 2) + '×10⁵ Pa', gx, gy + gr + 22);
+
+          /* Đồ thị p(1/V) */
+          var gSetup = C.setupCanvas(document.getElementById('cv-exp2-graph'), 245);
+          var gCtx = gSetup.ctx;
+          var ax = C.drawAxes(gCtx, gSetup.width, gSetup.height, {
+            xMin: 0, xMax: 0.09, yMin: 0, yMax: 2.1,
+            xLabel: '1/V (cm⁻³)', yLabel: 'p (10⁵ Pa)', xTicks: 4, yTicks: 4
+          });
+          gCtx.strokeStyle = cols.cold; gCtx.setLineDash([4, 3]); gCtx.lineWidth = 1.6;
+          gCtx.beginPath(); gCtx.moveTo(ax.toX(0), ax.toY(0)); gCtx.lineTo(ax.toX(0.085), ax.toY(BOYLE_CONST * 0.085)); gCtx.stroke();
+          gCtx.setLineDash([]);
+          boyleRows.forEach(function (r) {
+            gCtx.fillStyle = cols.warm;
+            gCtx.beginPath(); gCtx.arc(ax.toX(1 / r.V), ax.toY(r.p), 4.5, 0, Math.PI * 2); gCtx.fill();
+          });
+
+          thead.innerHTML = '<tr><th>Lần đo</th><th>V (cm³)</th><th>p (10⁵ Pa)</th><th>1/V (cm⁻³)</th><th>Tích p·V</th></tr>';
+          tbody.innerHTML = boyleRows.length
+            ? boyleRows.map(function (r, i) {
+                return '<tr class="num"><td>' + (i + 1) + '</td><td>' + C.fmt(r.V, 1) + '</td><td>' + C.fmt(r.p, 2) + '</td><td>' + C.fmt(1 / r.V, 4) + '</td><td><strong>' + C.fmt(r.p * r.V, 2) + '</strong></td></tr>';
+              }).join('')
+            : '<tr><td colspan="5" class="muted">Chưa có điểm đo. Kéo V từ từ và bấm "Ghi điểm đo" hoặc "Nạp bảng mẫu SGK KNTT".</td></tr>';
+
+          if (boyleRows.length) {
+            var avgPV = boyleRows.reduce(function (s, r) { return s + r.p * r.V; }, 0) / boyleRows.length;
+            sumBox.innerHTML = '<strong>Nhận xét thực nghiệm:</strong> Tích p·V trung bình = <strong>' + C.fmt(avgPV, 2) + '×10⁵ Pa·cm³</strong> (xấp xỉ hằng số → p ∝ 1/V).';
+          } else {
+            sumBox.textContent = 'Hãy ghi tối thiểu 3 điểm đo để kiểm chứng đồ thị p(1/V) đi qua gốc tọa độ.';
+          }
+        } else {
+          var tC = Number(chTempEl.value);
+          var TK = tC + 273;
+          var Vc = CHARLES_C0 * TK; /* cm^3 / ml */
+          document.getElementById('ch-temp-val').textContent = tC + ' °C (' + TK + ' K) → V = ' + C.fmt(Vc, 1) + ' cm³';
+
+          /* Vẽ cốc nước nóng + bình cầu + ống ngang chứa giọt nước màu */
+          ctx.fillStyle = cols.grid;
+          ctx.fillRect(24, 96, 118, 116);
+          ctx.strokeStyle = cols.ink; ctx.lineWidth = 2;
+          ctx.strokeRect(24, 72, 118, 140);
+          ctx.beginPath(); ctx.arc(83, 152, 34, 0, Math.PI * 2); ctx.fillStyle = cols.bg; ctx.fill(); ctx.stroke();
+
+          /* Ống thủy tinh ngang dẫn ra ngoài */
+          ctx.strokeRect(80, 48, Math.max(120, W - 102), 14);
+          var dropX = 95 + ((Vc - 29.0) / 8.0) * Math.max(70, W - 150);
+          ctx.fillStyle = cols.warm;
+          ctx.fillRect(dropX, 49, 14, 12);
+          ctx.fillStyle = cols.ink; ctx.font = '600 11px monospace'; ctx.textAlign = 'left';
+          ctx.fillText('Nhiệt kế bể: ' + tC + ' °C (' + TK + ' K)', 24, 30);
+          ctx.fillText('Giọt nước màu ở V = ' + C.fmt(Vc, 1) + ' cm³', 84, 42);
+
+          /* Đồ thị V(t C) có ngoại suy -273 C */
+          var gSetupC = C.setupCanvas(document.getElementById('cv-exp2-graph'), 245);
+          var gCtxC = gSetupC.ctx;
+          var axC = C.drawAxes(gCtxC, gSetupC.width, gSetupC.height, {
+            xMin: -300, xMax: 110, yMin: 0, yMax: 42,
+            xLabel: 't (°C)', yLabel: 'V (cm³)', xTicks: 5, yTicks: 4
+          });
+          /* Đường ngoại suy từ -273 C */
+          gCtxC.strokeStyle = cols.phase; gCtxC.setLineDash([5, 4]); gCtxC.lineWidth = 1.8;
+          gCtxC.beginPath(); gCtxC.moveTo(axC.toX(-273), axC.toY(0)); gCtxC.lineTo(axC.toX(100), axC.toY(CHARLES_C0 * 373)); gCtxC.stroke();
+          gCtxC.setLineDash([]);
+          gCtxC.fillStyle = cols.phase; gCtxC.font = '11px monospace'; gCtxC.textAlign = 'left';
+          gCtxC.beginPath(); gCtxC.arc(axC.toX(-273), axC.toY(0), 4, 0, Math.PI * 2); gCtxC.fill();
+          gCtxC.fillText('−273 °C (0 K)', axC.toX(-273) + 8, axC.toY(0) - 8);
+
+          charlesRows.forEach(function (r) {
+            gCtxC.fillStyle = cols.accent;
+            gCtxC.beginPath(); gCtxC.arc(axC.toX(r.t), axC.toY(r.V), 4.5, 0, Math.PI * 2); gCtxC.fill();
+          });
+
+          thead.innerHTML = '<tr><th>Lần đo</th><th>t (°C)</th><th>T = t + 273 (K)</th><th>Thể tích V (cm³)</th><th>Tỉ số V / T</th></tr>';
+          tbody.innerHTML = charlesRows.length
+            ? charlesRows.map(function (r, i) {
+                return '<tr class="num"><td>' + (i + 1) + '</td><td>' + r.t + '</td><td>' + (r.t + 273) + '</td><td>' + C.fmt(r.V, 1) + '</td><td><strong>' + C.fmt(r.V / (r.t + 273), 3) + '</strong></td></tr>';
+              }).join('')
+            : '<tr><td colspan="5" class="muted">Chưa có điểm đo. Thay đổi nhiệt độ và bấm "Ghi điểm đo" hoặc "Nạp bảng mẫu chuẩn".</td></tr>';
+          sumBox.innerHTML = '<strong>Kết luận Charles:</strong> Tỉ số V/T ≈ 0,100 cm³/K không đổi; đồ thị V(t °C) kéo dài cắt trục hoành đúng tại mốc không tuyệt đối <strong>−273 °C (0 K)</strong>.';
+        }
+      }
+
+      bVolEl.addEventListener('input', renderExp2);
+      chTempEl.addEventListener('input', renderExp2);
+      document.getElementById('b-record').addEventListener('click', function () {
+        var Vb = Number(bVolEl.value);
+        boyleRows.push({ V: Vb, p: Number((BOYLE_CONST / Vb).toFixed(2)) });
+        renderExp2();
+      });
+      document.getElementById('b-preset').addEventListener('click', function () {
+        boyleRows = [
+          { V: 22.0, p: 1.04 },
+          { V: 20.0, p: 1.14 },
+          { V: 18.0, p: 1.29 },
+          { V: 16.0, p: 1.43 },
+          { V: 14.0, p: 1.64 }
+        ];
+        renderExp2();
+      });
+      document.getElementById('b-clear').addEventListener('click', function () { boyleRows = []; renderExp2(); });
+
+      document.getElementById('ch-record').addEventListener('click', function () {
+        var tC = Number(chTempEl.value);
+        charlesRows.push({ t: tC, V: Number((CHARLES_C0 * (tC + 273)).toFixed(1)) });
+        renderExp2();
+      });
+      document.getElementById('ch-preset').addEventListener('click', function () {
+        charlesRows = [
+          { t: 27, V: 30.0 },
+          { t: 47, V: 32.0 },
+          { t: 67, V: 34.0 },
+          { t: 87, V: 36.0 }
+        ];
+        renderExp2();
+      });
+      document.getElementById('ch-clear').addEventListener('click', function () { charlesRows = []; renderExp2(); });
+
+      /* ================= TAB 3: XI-LANH PÍT-TÔNG & ỐNG THỦY NGÂN ================= */
+      var pisSysEl = document.getElementById('pis-system');
+      var pisOrientEl = document.getElementById('pis-orient');
+      var pisMassEl = document.getElementById('pis-mass');
+      var pisExtraEl = document.getElementById('pis-extra');
+      var pisAreaEl = document.getElementById('pis-area');
+      var hgLenEl = document.getElementById('hg-len');
+      var hgL0El = document.getElementById('hg-l0');
+      var pisTempEl = document.getElementById('pis-temp');
+      var pisFormulaBox = document.getElementById('pis-formula-box');
+      var pisStatsEl = document.getElementById('pis-stats');
+
+      function renderPiston() {
+        var sys = pisSysEl.value;
+        var orient = pisOrientEl.value;
+        var T = Number(pisTempEl.value);
+        document.getElementById('pis-sub-piston').hidden = sys !== 'piston';
+        document.getElementById('pis-sub-hg').hidden = sys !== 'hg';
+        document.getElementById('pis-temp-val').textContent = T + ' K (' + (T - 273) + ' °C)';
+
+        var cols = C.getColors();
+        document.getElementById('sw-f0').style.backgroundColor = cols.cold;
+        document.getElementById('sw-fg').style.backgroundColor = cols.phase;
+        document.getElementById('sw-fgas').style.backgroundColor = cols.warm;
+
+        var s = C.setupCanvas(document.getElementById('cv-piston'), 300);
+        var ctx = s.ctx, W = s.width, H = s.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = cols.bgAlt;
+        ctx.fillRect(0, 0, W, H);
+
+        var pOut, pGas, colLenCm, eqText, pDisplay, unitLabel;
+        if (sys === 'piston') {
+          var m = Number(pisMassEl.value);
+          var M = Number(pisExtraEl.value);
+          var S_cm2 = Number(pisAreaEl.value);
+          var S_m2 = S_cm2 * 1e-4;
+          var g = 10;
+          var p0 = 1.0e5;
+          var dp = ((m + M) * g) / S_m2;
+          document.getElementById('pis-mass-val').textContent = m + ' kg';
+          document.getElementById('pis-extra-val').textContent = M + ' kg';
+          document.getElementById('pis-area-val').textContent = S_cm2 + ' cm²';
+
+          if (orient === 'horiz') {
+            pGas = p0;
+            eqText = 'Nằm ngang: p = p₀ = 1,00×10⁵ Pa';
+          } else if (orient === 'up') {
+            pGas = p0 + dp;
+            eqText = 'Miệng LÊN: p = p₀ + (m+M)g/S = 10⁵ + ' + Math.round(dp) + ' Pa';
+          } else {
+            pGas = Math.max(0.05e5, p0 - dp);
+            eqText = 'Miệng XUỐNG: p = p₀ − (m+M)g/S = 10⁵ − ' + Math.round(dp) + ' Pa';
+          }
+          /* So voi chuan p0 = 1e5, T0 = 300 K, l0 = 25 cm */
+          colLenCm = 25 * (p0 / pGas) * (T / 300);
+          pOut = p0;
+          pDisplay = C.fmt(pGas / 1e5, 2) + '×10⁵ Pa';
+          unitLabel = C.fmt(dp / 1e3, 1) + ' kPa';
+        } else {
+          var hHg = Number(hgLenEl.value);
+          var l0 = Number(hgL0El.value);
+          var p0Hg = 76;
+          document.getElementById('hg-len-val').textContent = hHg + ' cm';
+          document.getElementById('hg-l0-val').textContent = l0 + ' cm';
+          if (orient === 'horiz') {
+            pGas = p0Hg;
+            eqText = 'Ống ngang: p = p₀ = 76 cmHg';
+          } else if (orient === 'up') {
+            pGas = p0Hg + hHg;
+            eqText = 'Miệng LÊN: p = p₀ + h = 76 + ' + hHg + ' = ' + pGas + ' cmHg';
+          } else {
+            pGas = Math.max(10, p0Hg - hHg);
+            eqText = 'Miệng XUỐNG: p = p₀ − h = 76 − ' + hHg + ' = ' + pGas + ' cmHg';
+          }
+          colLenCm = l0 * (p0Hg / pGas) * (T / 300);
+          pDisplay = pGas + ' cmHg';
+          unitLabel = hHg + ' cmHg';
+        }
+
+        pisFormulaBox.innerHTML = '<strong>Phương trình cân bằng:</strong><br>' + eqText;
+        pisStatsEl.innerHTML =
+          '<div class="stat-item"><div class="stat-label">Áp suất khí bên trong</div><div class="stat-value">' + pDisplay + '</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Chiều dài cột khí l</div><div class="stat-value">' + C.fmt(colLenCm, 1) + ' cm</div></div>' +
+          '<div class="stat-item"><div class="stat-label">Áp suất gây bởi nút chặn</div><div class="stat-value">' + unitLabel + '</div></div>';
+
+        /* Vẽ sơ đồ hình học xi-lanh / ống và vectơ lực */
+        var frac = Math.min(0.75, Math.max(0.15, colLenCm / 50));
+        if (orient === 'horiz') {
+          var ox = 40, oy = 105, ow = Math.min(340, W - 90), oh = 84;
+          var gasW = ow * frac;
+          ctx.fillStyle = cols.bg; ctx.fillRect(ox, oy, ow, oh);
+          ctx.fillStyle = cols.grid; ctx.fillRect(ox + 2, oy + 2, gasW, oh - 4);
+          ctx.strokeStyle = cols.ink; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(ox + ow, oy); ctx.lineTo(ox, oy); ctx.lineTo(ox, oy + oh); ctx.lineTo(ox + ow, oy + oh); ctx.stroke();
+
+          ctx.fillStyle = sys === 'hg' ? cols.muted : cols.ink;
+          ctx.fillRect(ox + gasW, oy + 2, 26, oh - 4);
+          C.drawArrow(ctx, ox + gasW - 6, oy + oh / 2, ox + gasW + 40, oy + oh / 2, cols.warm, 2.5, 8);
+          C.drawArrow(ctx, ox + gasW + 58, oy + oh / 2, ox + gasW + 16, oy + oh / 2, cols.cold, 2.5, 8);
+          ctx.fillStyle = cols.ink; ctx.font = '600 12px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText('pS', ox + gasW - 22, oy + oh / 2 - 10);
+          ctx.fillText('p₀S', ox + gasW + 66, oy + oh / 2 - 10);
+        } else {
+          var vx = W * 0.44, vw = 88, vh = 230, vy = 35;
+          var gasPx = vh * frac;
+          ctx.fillStyle = cols.bg; ctx.fillRect(vx, vy, vw, vh);
+          ctx.strokeStyle = cols.ink; ctx.lineWidth = 3;
+
+          if (orient === 'up') {
+            ctx.fillStyle = cols.grid; ctx.fillRect(vx + 2, vy + vh - gasPx, vw - 4, gasPx - 2);
+            ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(vx, vy + vh); ctx.lineTo(vx + vw, vy + vh); ctx.lineTo(vx + vw, vy); ctx.stroke();
+            var plugY = vy + vh - gasPx - 24;
+            ctx.fillStyle = sys === 'hg' ? cols.muted : cols.ink;
+            ctx.fillRect(vx + 2, plugY, vw - 4, 24);
+            C.drawArrow(ctx, vx + vw / 2, plugY + 26, vx + vw / 2, plugY - 12, cols.warm, 2.8, 8);
+            C.drawArrow(ctx, vx + vw / 2 - 22, plugY - 26, vx + vw / 2 - 22, plugY + 4, cols.cold, 2.5, 8);
+            C.drawArrow(ctx, vx + vw / 2 + 22, plugY + 6, vx + vw / 2 + 22, plugY + 44, cols.phase, 2.5, 8);
+            ctx.fillStyle = cols.ink; ctx.font = '600 12px sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText('pS (lên)', vx + vw + 14, plugY);
+            ctx.fillText('p₀S (xuống)', vx + vw + 14, plugY + 20);
+            ctx.fillText('P = trọng lực (xuống)', vx + vw + 14, plugY + 40);
+          } else {
+            ctx.fillStyle = cols.grid; ctx.fillRect(vx + 2, vy + 2, vw - 4, gasPx - 2);
+            ctx.beginPath(); ctx.moveTo(vx, vy + vh); ctx.lineTo(vx, vy); ctx.lineTo(vx + vw, vy); ctx.lineTo(vx + vw, vy + vh); ctx.stroke();
+            var plugYd = vy + gasPx;
+            ctx.fillStyle = sys === 'hg' ? cols.muted : cols.ink;
+            ctx.fillRect(vx + 2, plugYd, vw - 4, 24);
+            C.drawArrow(ctx, vx + vw / 2 - 20, plugYd - 8, vx + vw / 2 - 20, plugYd + 26, cols.warm, 2.8, 8);
+            C.drawArrow(ctx, vx + vw / 2 + 20, plugYd + 12, vx + vw / 2 + 20, plugYd + 48, cols.phase, 2.5, 8);
+            C.drawArrow(ctx, vx + vw / 2, plugYd + 58, vx + vw / 2, plugYd + 22, cols.cold, 2.5, 8);
+            ctx.fillStyle = cols.ink; ctx.font = '600 12px sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText('pS (xuống)', vx + vw + 14, plugYd + 8);
+            ctx.fillText('P = trọng lực (xuống)', vx + vw + 14, plugYd + 28);
+            ctx.fillText('p₀S (đẩy lên)', vx + vw + 14, plugYd + 48);
+          }
+        }
+      }
+
+      [pisSysEl, pisOrientEl, pisMassEl, pisExtraEl, pisAreaEl, hgLenEl, hgL0El, pisTempEl].forEach(function (el) {
+        el.addEventListener('input', renderPiston);
+        el.addEventListener('change', renderPiston);
+      });
+
+      function onResizeOrTheme() {
+        renderKineticStats();
+        if (activeTab === 'lab2') renderExp2();
+        if (activeTab === 'piston') renderPiston();
+      }
+      window.addEventListener('resize', onResizeOrTheme);
+      window.addEventListener('ly-theme-change', onResizeOrTheme);
+
+      rebuildParticles();
+      renderKineticStats();
+      setExp2Sub('boyle');
+      renderPiston();
+
+      if (location.hash === '#tab-lab2') switchTab('lab2');
+      else if (location.hash === '#tab-piston') switchTab('piston');
+      requestAnimationFrame(stepKinetic);
+    })();
+  </script>
+</body>
+</html>
