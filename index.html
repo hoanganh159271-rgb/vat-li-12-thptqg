@@ -23,89 +23,73 @@
   </header>
 
   <main class="wrap page-main">
-    <!-- Đầu trang tổng quan -->
+    <!-- Khu vực Trọng tâm hiện tại: Chương 1 & Chương 2 -->
     <section class="section-block">
       <div class="card">
-        <h1>Hệ sinh thái ôn thi Vật lí 12</h1>
-        <p class="muted">4 chương chuẩn GDPT 2018 · 4 phòng thí nghiệm Canvas · 1 đề mẫu 3 phần chuẩn THPTQG · Chạy 100% ngoại tuyến không cần Wi-Fi, lưu tiến độ tự động bằng bộ nhớ cục bộ.</p>
+        <div class="section-head" style="margin-bottom: 4px;">
+          <h1>Trọng tâm hiện tại: Chương 1 &amp; Chương 2</h1>
+          <span id="c12-overall-badge" class="tag tag-cold">Chuyên đề C1–C2: 0/36 câu đúng</span>
+        </div>
+        <p class="muted">Lộ trình ưu tiên Vật lí nhiệt &amp; Khí lí tưởng (GDPT 2018): luyện sâu 6 dạng thực chiến, thi thử 50 phút 28 câu, cày bẫy Đúng/Sai &amp; Trả lời ngắn 100% ngoại tuyến.</p>
+
         <div class="btn-group">
-          <a href="./luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-mobile-full">Vào phòng luyện đề THPTQG</a>
-          <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-mobile-full">Mở bảng hằng số &amp; đổi đơn vị</a>
-          <button type="button" class="btn btn-mobile-full doc-open-btn" data-doc="kho_bay">Đọc kho 12 bẫy Đúng/Sai</button>
+          <a href="./ly_thuyet/ch1_ch2_truc_quan.html" class="btn btn-primary btn-mobile-full">Học Lý thuyết trực quan Ch1–C2</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-primary btn-mobile-full">Bài tập Nguồn thật SGK &amp; Đề Bộ (28 câu)</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=exam50" class="btn btn-mobile-full">Thi thử Ch1–C2 (50 phút - 28 câu)</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=bay_ds_tln" class="btn btn-mobile-full">Chuyên cày Bẫy Đúng/Sai &amp; TLN</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=on_cau_sai" id="btn-retry-wrong" class="btn btn-mobile-full">Làm lại câu sai (0)</a>
+          <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-mobile-full">Bảng hằng số &amp; đổi đơn vị</a>
+          <button type="button" class="btn btn-mobile-full doc-open-btn" data-doc="kho_bay">Đọc kho bẫy Đúng/Sai</button>
         </div>
       </div>
     </section>
 
-    <!-- Khu vực 1: Kho Kiến thức 4 chương & Lớp 11 -->
+    <!-- Lưới 6 Dạng bài tập C1-C2 với thanh tiến độ localStorage -->
     <section class="section-block">
       <div class="section-head">
-        <h2>1. Kho kiến thức chuẩn hóa (Khung 6 lớp)</h2>
+        <h2>1. Luyện theo 6 Dạng bài tập (Chương 1 &amp; Chương 2)</h2>
+        <a href="./luyen_tap/phong_thi_thptqg.html?mode=chuyen_de" class="btn btn-sm">Mở toàn bộ 36 câu chuyên đề</a>
+      </div>
+
+      <div id="c12-dang-grid" class="grid-3"></div>
+    </section>
+
+    <!-- Lý thuyết chuẩn hóa & 4 Phòng Thí nghiệm Canvas Chương 1-2 -->
+    <section class="section-block">
+      <div class="section-head">
+        <h2>2. Kiến thức cốt lõi &amp; 4 Phòng Thí nghiệm Canvas (Ch1–Ch2)</h2>
         <span id="kb-progress-text" class="tag">Đã ôn: 0/5 tài liệu</span>
       </div>
 
       <div class="grid-2">
         <article class="card">
           <h3>Chương 1: Vật lí nhiệt</h3>
-          <p class="muted">Nội năng, Định luật I NĐLH (ΔU = A + Q), thang Celsius/Kelvin, chuyển thể và nhiệt ẩn nóng chảy/hóa hơi.</p>
+          <p class="muted">Nội năng, Định luật I NĐLH (ΔU = A + Q), thang Celsius/Kelvin, chuyển thể và thực hành đo c, λ, L.</p>
           <div class="panel-alt mono" style="font-size: 0.9rem;">ΔU = A + Q | Q = mcΔT | Q = λm | Q = Lm</div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto;">
             <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c1"><span>Đã ôn xong Chương 1</span></label>
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_01">Mở tài liệu Chương 1</button>
+            <div class="btn-group">
+              <a href="./ly_thuyet/ch1_ch2_truc_quan.html#cd-1" class="btn btn-sm">Lý thuyết trực quan</a>
+              <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_01">Tài liệu .md</button>
+            </div>
           </div>
         </article>
 
         <article class="card">
           <h3>Chương 2: Khí lí tưởng</h3>
-          <p class="muted">Đẳng nhiệt Boyle, đẳng áp Charles, phương trình Clapeyron (pV = nRT) và áp suất động học phân tử.</p>
+          <p class="muted">Boyle, Charles, Clapeyron (pV = nRT), pít-tông, ống thủy ngân, 3 đồ thị (p–V, p–T, V–T) và v_rms.</p>
           <div class="panel-alt mono" style="font-size: 0.9rem;">p₁V₁/T₁ = p₂V₂/T₂ | E_đ = (3/2)kT | v_rms = √(3RT/M)</div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto;">
             <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c2"><span>Đã ôn xong Chương 2</span></label>
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_02">Mở tài liệu Chương 2</button>
+            <div class="btn-group">
+              <a href="./ly_thuyet/ch1_ch2_truc_quan.html#cd-5" class="btn btn-sm">Lý thuyết trực quan</a>
+              <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_02">Tài liệu .md</button>
+            </div>
           </div>
         </article>
 
-        <article class="card">
-          <h3>Chương 3: Từ trường</h3>
-          <p class="muted">Lực từ (F = BIL sinθ), từ thông Φ = NBScosα, định luật Lenz/Faraday, dòng xoay chiều và sóng điện từ.</p>
-          <div class="panel-alt mono" style="font-size: 0.9rem;">Φ = NBScosα | e = −ΔΦ/Δt | E = E₀/√2</div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
-            <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c3"><span>Đã ôn xong Chương 3</span></label>
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_03">Mở tài liệu Chương 3</button>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>Chương 4: Vật lí hạt nhân</h3>
-          <p class="muted">Độ hụt khối, năng lượng liên kết riêng, phản ứng phân hạch/nhiệt hạch, định luật phóng xạ và độ phóng xạ Bq.</p>
-          <div class="panel-alt mono" style="font-size: 0.9rem;">N(t) = N₀·2^(-t/T) | H = λN | m_con = (A_con/A_mẹ)Δm_mẹ</div>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
-            <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c4"><span>Đã ôn xong Chương 4</span></label>
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_04">Mở tài liệu Chương 4</button>
-          </div>
-        </article>
-      </div>
-
-      <div class="card" style="margin-top: 16px; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between;">
-        <div>
-          <h3>Kiến thức nền lớp 11 (Dao động, Sóng, Điện học)</h3>
-          <p class="muted">Khung 6 lớp sẵn sàng cho 4 chuyên đề lớp 11 thường liên hệ trong đề THPTQG.</p>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px;">
-          <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="l11"><span>Đã rà soát nền 11</span></label>
-          <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_00">Mở tài liệu lớp 11</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Khu vực 2: 4 Phòng thí nghiệm Mô phỏng Canvas -->
-    <section class="section-block">
-      <div class="section-head">
-        <h2>2. Phòng thí nghiệm mô phỏng tương tác (HTML5 Canvas)</h2>
-      </div>
-
-      <div id="sim-grid" class="grid-2">
         <article class="card card-link-interactive">
-          <h3>01. Chuyển thể &amp; Định luật I NĐLH</h3>
+          <h3>Mô phỏng 01: Chuyển thể T(t) &amp; Định luật I NĐLH</h3>
           <p class="muted">Vẽ đồ thị T(t) qua 5 giai đoạn theo chất/khối lượng/công suất và mô phỏng xi-lanh pít-tông ΔU = A + Q.</p>
           <div style="margin-top: auto;">
             <a href="./mo_phong/01_chuyen_the_va_nhiet_dong.html" class="btn btn-primary btn-sm">Mở mô phỏng chuyển thể</a>
@@ -113,73 +97,112 @@
         </article>
 
         <article class="card card-link-interactive">
-          <h3>02. Đồng bộ 3 đồ thị Khí lí tưởng</h3>
+          <h3>Thí nghiệm 05: Thực hành Nhiệt học SGK (Đo c, λ, L)</h3>
+          <p class="muted">Bộ dụng cụ thật chuẩn KNTT: Oát kế, Nhiệt lượng kế vỏ xốp, Nhiệt kế điện tử, Cân điện tử và phân tích sai số.</p>
+          <div style="margin-top: auto;">
+            <a href="./mo_phong/05_thuc_hanh_nhiet_sgk.html" class="btn btn-primary btn-sm">Mở PTN Thực hành Nhiệt SGK</a>
+          </div>
+        </article>
+
+        <article class="card card-link-interactive">
+          <h3>Mô phỏng 02: Đồng bộ 3 đồ thị Khí lí tưởng</h3>
           <p class="muted">Cập nhật đồng thời (p–V), (p–T), (V–T) cho các đẳng quá trình, chu trình kín và so sánh độ dốc đường đẳng.</p>
           <div style="margin-top: auto;">
-            <a href="./mo_phong/02_do_thi_khi_li_tuong.html" class="btn btn-primary btn-sm">Mở mô phỏng khí lí tưởng</a>
+            <a href="./mo_phong/02_do_thi_khi_li_tuong.html" class="btn btn-primary btn-sm">Mở mô phỏng 3 đồ thị khí</a>
           </div>
         </article>
 
         <article class="card card-link-interactive">
-          <h3>03. Cảm ứng điện từ &amp; Dòng xoay chiều</h3>
-          <p class="muted">Khung dây quay trong từ trường đều, xác định chiều dòng Lenz và quan sát Φ(t) vuông pha với e(t).</p>
+          <h3>Thí nghiệm 06: Vi mô Khí, Boyle–Charles &amp; Pít-tông</h3>
+          <p class="muted">Va chạm phân tử H₂+O₂ 60fps, bộ dụng cụ Boyle–Charles ngoại suy −273 °C và cân bằng lực pít-tông / cột Hg.</p>
           <div style="margin-top: auto;">
-            <a href="./mo_phong/03_cam_ung_dien_tu_ac.html" class="btn btn-primary btn-sm">Mở mô phỏng cảm ứng AC</a>
+            <a href="./mo_phong/06_thuc_hanh_khi_va_dong_hoc.html" class="btn btn-primary btn-sm">Mở PTN Khí &amp; Vi mô SGK</a>
           </div>
         </article>
-
-        <article class="card card-link-interactive">
-          <h3>04. Đường cong phân rã &amp; Độ phóng xạ</h3>
-          <p class="muted">Vẽ đồng thời N(t) và hạt nhân con ΔN(t), đánh dấu giao điểm t = T, lưới 100 hạt và độ phóng xạ H(t).</p>
-          <div style="margin-top: auto;">
-            <a href="./mo_phong/04_phong_xa_hat_nhan.html" class="btn btn-primary btn-sm">Mở mô phỏng phóng xạ</a>
-          </div>
-        </article>
-        <!-- Thêm thẻ mô phỏng mới tại đây khi gọi /ly-mophong -->
       </div>
     </section>
 
-    <!-- Khu vực 3: Luyện đề, Tra cứu & Chẩn đoán -->
+    <!-- Giai đoạn sau (Chương 3 & Chương 4 thu gọn/mở rộng) -->
     <section class="section-block">
-      <div class="section-head">
-        <h2>3. Luyện đề, Tra cứu &amp; Tài liệu chẩn đoán</h2>
-      </div>
+      <details class="stage-details" id="stage-later-details">
+        <summary class="stage-summary">
+          <span>3. Giai đoạn sau (Chương 3, Chương 4 &amp; Kiến thức nền lớp 11)</span>
+          <span class="tag">Bấm để mở rộng / thu gọn</span>
+        </summary>
 
-      <div class="grid-3">
-        <article class="card">
-          <h3>Phòng thi THPTQG chuẩn 3 phần</h3>
-          <p class="muted">Bấm giờ làm đề hoặc lọc theo chương; chấm lũy tiến Đúng/Sai và kiểm tra ô trả lời ngắn 4 ký tự.</p>
-          <div style="margin-top: auto;">
-            <a href="./luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-sm">Làm đề luyện tập</a>
-          </div>
-        </article>
+        <div class="stage-details-body">
+          <div class="grid-2">
+            <article class="card">
+              <h3>Chương 3: Từ trường</h3>
+              <p class="muted">Lực từ (F = BIL sinθ), từ thông Φ = NBScosα, định luật Lenz/Faraday, dòng xoay chiều và sóng điện từ.</p>
+              <div class="panel-alt mono" style="font-size: 0.9rem;">Φ = NBScosα | e = −ΔΦ/Δt | E = E₀/√2</div>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+                <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c3"><span>Đã ôn xong Chương 3</span></label>
+                <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_03">Mở tài liệu Chương 3</button>
+              </div>
+            </article>
 
-        <article class="card">
-          <h3>Hằng số &amp; Đổi đơn vị nhanh</h3>
-          <p class="muted">Đổi 2 chiều °C↔K, atm/bar/mmHg↔Pa, cm²↔m², lít↔m³, eV/MeV↔J, u↔MeV/c², Ci↔Bq và bảng thứ nguyên.</p>
-          <div style="margin-top: auto;">
-            <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Tra cứu hằng số</a>
+            <article class="card">
+              <h3>Chương 4: Vật lí hạt nhân</h3>
+              <p class="muted">Độ hụt khối, năng lượng liên kết riêng, phản ứng phân hạch/nhiệt hạch, định luật phóng xạ và độ phóng xạ Bq.</p>
+              <div class="panel-alt mono" style="font-size: 0.9rem;">N(t) = N₀·2^(-t/T) | H = λN | m_con = (A_con/A_mẹ)Δm_mẹ</div>
+              <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+                <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="c4"><span>Đã ôn xong Chương 4</span></label>
+                <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_04">Mở tài liệu Chương 4</button>
+              </div>
+            </article>
           </div>
-        </article>
 
-        <article class="card">
-          <h3>Kho bẫy &amp; Nhật ký lỗi</h3>
-          <p class="muted">Truy cập nhanh các tệp tổng hợp bẫy lý thuyết, bảng nhật ký lỗi sai và checklist 3 phút trước giờ thi.</p>
-          <div class="btn-group" style="margin-top: auto;">
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kho_bay">Kho bẫy</button>
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="nhat_ky">Nhật ký</button>
-            <button type="button" class="btn btn-sm doc-open-btn" data-doc="checklist">Checklist</button>
+          <div class="card" style="flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div>
+              <h3>Kiến thức nền lớp 11 (Dao động, Sóng, Điện học)</h3>
+              <p class="muted">Khung 6 lớp sẵn sàng cho 4 chuyên đề lớp 11 thường liên hệ trong đề THPTQG.</p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px;">
+              <label class="check-row"><input type="checkbox" class="kb-chk" data-kb="l11"><span>Đã rà soát nền 11</span></label>
+              <button type="button" class="btn btn-sm doc-open-btn" data-doc="kb_00">Mở tài liệu lớp 11</button>
+            </div>
           </div>
-        </article>
-      </div>
+
+          <div id="sim-grid" class="grid-2">
+            <article class="card card-link-interactive">
+              <h3>Mô phỏng 03: Cảm ứng điện từ &amp; Dòng xoay chiều</h3>
+              <p class="muted">Khung dây quay trong từ trường đều, xác định chiều dòng Lenz và quan sát Φ(t) vuông pha với e(t).</p>
+              <div style="margin-top: auto;">
+                <a href="./mo_phong/03_cam_ung_dien_tu_ac.html" class="btn btn-primary btn-sm">Mở mô phỏng cảm ứng AC</a>
+              </div>
+            </article>
+
+            <article class="card card-link-interactive">
+              <h3>Mô phỏng 04: Đường cong phân rã &amp; Độ phóng xạ</h3>
+              <p class="muted">Vẽ đồng thời N(t) và hạt nhân con ΔN(t), đánh dấu giao điểm t = T, lưới 100 hạt và độ phóng xạ H(t).</p>
+              <div style="margin-top: auto;">
+                <a href="./mo_phong/04_phong_xa_hat_nhan.html" class="btn btn-primary btn-sm">Mở mô phỏng phóng xạ</a>
+              </div>
+            </article>
+            <!-- Thêm thẻ mô phỏng mới tại đây khi gọi /ly-mophong -->
+          </div>
+
+          <div class="card" style="flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div>
+              <h3>Đề mẫu tổng hợp đủ 4 chương (Ch1–Ch4)</h3>
+              <p class="muted">Kiểm tra chéo đầy đủ cả Từ trường và Vật lí hạt nhân trên cùng phòng thi chuẩn GDPT 2018.</p>
+            </div>
+            <a href="./luyen_tap/phong_thi_thptqg.html?mode=de_mau" class="btn btn-sm">Mở Đề mẫu 4 chương</a>
+          </div>
+        </div>
+      </details>
     </section>
 
-    <!-- Khu vực 4: Thống kê & Cảnh báo lỗi hay mắc từ localStorage -->
+    <!-- Tài liệu chẩn đoán & Thống kê lỗi sai từ localStorage -->
     <section class="section-block">
       <div class="card">
         <div class="section-head" style="margin-bottom: 4px;">
-          <h2>4. Cảnh báo lỗi hay mắc &amp; Tiến độ tự học</h2>
+          <h2>4. Cảnh báo lỗi hay mắc &amp; Tài liệu chẩn đoán</h2>
           <div class="btn-group">
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="kho_bay">Kho bẫy</button>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="nhat_ky">Nhật ký lỗi .md</button>
+            <button type="button" class="btn btn-sm doc-open-btn" data-doc="checklist">Checklist trước thi</button>
             <button type="button" id="dash-export-md" class="btn btn-sm">Tải Markdown Nhật ký lỗi</button>
           </div>
         </div>
@@ -194,8 +217,8 @@
             <div id="dash-latest-score" class="stat-value">—</div>
           </div>
           <div class="stat-item">
-            <div class="stat-label">Tổng lỗi đã ghi nhận</div>
-            <div id="dash-err-count" class="stat-value">0</div>
+            <div class="stat-label">Câu sai đang chờ ôn</div>
+            <div id="dash-wrong-queue-count" class="stat-value">0</div>
           </div>
           <div class="stat-item">
             <div class="stat-label">Lỗi đơn vị / Điều kiện mô hình</div>
@@ -209,15 +232,12 @@
         </div>
 
         <div id="dash-empty-box" class="panel-alt">
-          <div class="notice-title">Chưa có dữ liệu lỗi sai trên thiết bị này</div>
-          <p class="muted">Sau khi nộp bài trong Phòng luyện đề, hãy bấm <strong>"Đẩy câu sai vào Nhật ký lỗi"</strong> tại các câu làm nhầm để hệ thống thống kê theo 8 nhóm lỗi và tự động cảnh báo lỗi lặp.</p>
-          <div style="margin-top: 10px;">
-            <a href="./luyen_tap/phong_thi_thptqg.html" class="btn btn-primary btn-sm">Bắt đầu làm đề mẫu</a>
-          </div>
+          <div class="notice-title">Chưa có dữ liệu nhật ký lỗi 8 nhóm trên thiết bị này</div>
+          <p class="muted">Sau khi kiểm tra câu sai hoặc nộp bài trong Phòng luyện đề, hệ thống tự đẩy câu sai vào hàng đợi ôn lại và bạn có thể bấm <strong>"Đẩy câu sai vào Nhật ký lỗi"</strong> để phân loại theo 8 nhóm chuẩn.</p>
         </div>
 
         <div id="dash-breakdown-wrap" hidden>
-          <h3>Phân bố 8 nhóm lỗi chẩn đoán</h3>
+          <h3>Phân bố 8 nhóm lỗi chẩn đoán (<span id="dash-err-count">0</span> lỗi đã phân loại)</h3>
           <div id="dash-group-grid" class="grid-4" style="margin-top: 10px;"></div>
 
           <h3 style="margin-top: 20px;">Các lỗi vừa ghi nhận gần đây</h3>
@@ -264,11 +284,14 @@
 
   <script src="./assets/common.js"></script>
   <script src="./assets/docs_data.js"></script>
+  <script src="./luyen_tap/data_chuyen_de_c1_c2.js"></script>
+  <script src="./luyen_tap/data_de_thi_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
       var C = window.LY_COMMON;
       var DOCS = window.LY_DOCS || {};
+      var CD_BANK = window.LY_CHUYEN_DE_C1_C2 || { questions: [] };
 
       var docModal = document.getElementById('doc-viewer-modal');
       var docTitle = document.getElementById('doc-modal-title');
@@ -302,6 +325,11 @@
           if (stats.totalLogs > 0) {
             html += '<hr class="doc-hr"><h2>Dữ liệu lỗi vừa lưu trên trình duyệt (localStorage)</h2>' +
               C.renderMarkdownOffline(C.generateErrorLogMarkdown());
+          }
+          var wq = C.getWrongQueue();
+          if (wq.length > 0) {
+            html += '<hr class="doc-hr"><h2>Câu sai đang chờ ôn lại (localStorage)</h2>' +
+              C.renderMarkdownOffline(C.generateWrongQueueMarkdown());
           }
         } else if (docId === 'checklist') {
           var stCheck = C.getErrorStats();
@@ -360,9 +388,75 @@
         setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
       });
 
+      function renderC12ProgressGrid() {
+        var grid = document.getElementById('c12-dang-grid');
+        var solvedMap = C.getSolvedMap();
+        var wrongQueue = C.getWrongQueue();
+        var cdQuestions = CD_BANK.questions || [];
+
+        var totalCdSolved = 0;
+        var totalCdCount = cdQuestions.length;
+
+        grid.innerHTML = '';
+        C.DANG_BAI_LIST.forEach(function (d) {
+          var qsInDang = cdQuestions.filter(function (q) { return q.dang_bai === d.id; });
+          var doneInDang = qsInDang.filter(function (q) { return Boolean(solvedMap[q.id]); }).length;
+          totalCdSolved += doneInDang;
+          var pct = qsInDang.length > 0 ? Math.round((doneInDang / qsInDang.length) * 100) : 0;
+
+          var card = document.createElement('article');
+          card.className = 'card';
+
+          var topRow = document.createElement('div');
+          topRow.style.display = 'flex';
+          topRow.style.justifyContent = 'space-between';
+          topRow.style.alignItems = 'center';
+          topRow.style.gap = '8px';
+
+          var tagCh = document.createElement('span');
+          tagCh.className = 'tag ' + (d.chuong === '1' ? 'tag-warm' : 'tag-cold');
+          tagCh.textContent = d.chuong === '1' ? 'Chương 1' : 'Chương 2';
+
+          var tagProg = document.createElement('span');
+          tagProg.className = 'tag num';
+          tagProg.textContent = doneInDang + '/' + qsInDang.length + ' câu đúng';
+
+          topRow.appendChild(tagCh);
+          topRow.appendChild(tagProg);
+          card.appendChild(topRow);
+
+          var h3 = document.createElement('h3');
+          h3.style.marginTop = '4px';
+          h3.textContent = d.ten;
+          card.appendChild(h3);
+
+          var track = document.createElement('div');
+          track.className = 'progress-track';
+          var fill = document.createElement('div');
+          fill.className = 'progress-fill';
+          fill.style.width = pct + '%';
+          track.appendChild(fill);
+          card.appendChild(track);
+
+          var act = document.createElement('div');
+          act.style.marginTop = 'auto';
+          act.innerHTML = '<a href="./luyen_tap/phong_thi_thptqg.html?mode=chuyen_de&dang=' + d.id + '" class="btn btn-sm">Luyện ' + d.id + ' ngay</a>';
+          card.appendChild(act);
+
+          grid.appendChild(card);
+        });
+
+        document.getElementById('c12-overall-badge').textContent = 'Chuyên đề C1–C2: ' + totalCdSolved + '/' + totalCdCount + ' câu đúng';
+        var wrongBtn = document.getElementById('btn-retry-wrong');
+        wrongBtn.textContent = 'Làm lại câu sai (' + wrongQueue.length + ')';
+        document.getElementById('dash-wrong-queue-count').textContent = String(wrongQueue.length);
+      }
+
       function renderDashboard() {
         var store = C.loadStore();
         var stats = C.getErrorStats();
+
+        renderC12ProgressGrid();
 
         /* Tiến độ KB */
         var kbChks = document.querySelectorAll('.kb-chk');
@@ -401,11 +495,6 @@
         /* Chi tiết 8 nhóm & bảng gần đây */
         var emptyBox = document.getElementById('dash-empty-box');
         var bdWrap = document.getElementById('dash-breakdown-wrap');
-        if (stats.totalLogs === 0 && stats.examCount === 0) {
-          emptyBox.hidden = false;
-          bdWrap.hidden = true;
-          return;
-        }
         emptyBox.hidden = stats.totalLogs > 0;
         bdWrap.hidden = stats.totalLogs === 0;
 
