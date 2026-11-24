@@ -202,7 +202,7 @@
         <button type="button" class="mode-tab" role="tab" data-mode="chuyen_de" id="tab-chuyen_de" aria-selected="false">2. Luyện theo Dạng bài (6 chuyên đề)</button>
         <button type="button" class="mode-tab" role="tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-selected="false">3. Chuyên cày Bẫy Đúng/Sai &amp; Trả lời ngắn</button>
         <button type="button" class="mode-tab" role="tab" data-mode="on_cau_sai" id="tab-on_cau_sai" aria-selected="false">4. Ôn lại Câu Từng Sai (0)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="nguon_that" id="tab-nguon_that" aria-selected="false">Nguồn thật SGK &amp; Đề Bộ (28 câu)</button>
+        <button type="button" class="mode-tab" role="tab" data-mode="nguon_that" id="tab-nguon_that" aria-selected="false">Nguồn thật: Bộ, SGK &amp; Đề tỉnh hot (56 câu)</button>
         <button type="button" class="mode-tab" role="tab" data-mode="de_mau" id="tab-de_mau" aria-selected="false">Đề mẫu 4 chương (Ch1–Ch4)</button>
       </div>
 
@@ -281,7 +281,8 @@
           <div>
             <label for="sel-nguon-nhom" class="control-label" style="display: block; margin-bottom: 4px;">Lọc Nguồn tài liệu</label>
             <select id="sel-nguon-nhom" style="min-width: 240px;">
-              <option value="all">Tất cả nguồn thật (28 câu)</option>
+              <option value="all">Tất cả nguồn thật (56 câu)</option>
+              <option value="de_tinh_hot">Đề các Sở GD &amp; Trường chuyên hot 2025–2026 (28 câu)</option>
               <option value="bo_gd">Đề Bộ GD&amp;ĐT 2025 (Tham khảo &amp; Chính thức)</option>
               <option value="sgk_kntt">SGK Vật lí 12 Kết nối tri thức</option>
               <option value="sgk_ctst_so">SGK Chân trời sáng tạo &amp; Đề Sở GD 2025</option>
@@ -303,7 +304,7 @@
             </select>
           </div>
           <div style="align-self: flex-end;">
-            <span id="nguon-count-tag" class="tag">Đang hiển thị: 28 câu</span>
+            <span id="nguon-count-tag" class="tag">Đang hiển thị: 56 câu</span>
           </div>
         </div>
 
@@ -419,6 +420,7 @@
   <script src="./data_chuyen_de_c1_c2.js"></script>
   <script src="./data_de_thi_c1_c2.js"></script>
   <script src="./data_nguon_thuc_te_c1_c2.js"></script>
+  <script src="./data_de_tinh_hot_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -427,6 +429,8 @@
       var CD_BANK = window.LY_CHUYEN_DE_C1_C2 || { questions: [] };
       var EXAM_C12 = window.LY_EXAM_C1_C2 || { phan1: [], phan2: [], phan3: [], durationMin: 50 };
       var NGUON_BANK = window.LY_NGUON_THUC_TE_C1_C2 || { questions: [] };
+      var DE_TINH_BANK = window.LY_DE_TINH_HOT_C1_C2 || { questions: [] };
+      var ALL_NGUON_QUESTIONS = [].concat(NGUON_BANK.questions || [], DE_TINH_BANK.questions || []);
       C.initShell();
 
       /* Tạo từ điển tra cứu toàn bộ câu hỏi theo ID để hỗ trợ Mode 4 Ôn câu từng sai */
@@ -440,7 +444,7 @@
       }
 
       (CD_BANK.questions || []).forEach(function (q) { registerQuestion(q); });
-      (NGUON_BANK.questions || []).forEach(function (q) { registerQuestion(q); });
+      (ALL_NGUON_QUESTIONS || []).forEach(function (q) { registerQuestion(q); });
       (EXAM_C12.phan1 || []).forEach(function (q) { registerQuestion(q, 'I'); });
       (EXAM_C12.phan2 || []).forEach(function (q) { registerQuestion(q, 'II'); });
       (EXAM_C12.phan3 || []).forEach(function (q) { registerQuestion(q, 'III'); });
@@ -704,7 +708,7 @@
           return { list: pool };
         }
         if (appState.mode === 'nguon_that') {
-          var filteredNguon = (NGUON_BANK.questions || []).filter(function (q) {
+          var filteredNguon = ALL_NGUON_QUESTIONS.filter(function (q) {
             if (selNguonNhom.value !== 'all' && q.nguon_nhom !== selNguonNhom.value) return false;
             if (selNguonDang.value !== 'all' && q.dang_bai !== selNguonDang.value) return false;
             if (selNguonPhan.value !== 'all' && q.phan !== selNguonPhan.value) return false;
@@ -771,6 +775,13 @@
         var normU = normalizeShortAnswer(appState.p3Ans[q.id]);
         var normK = normalizeShortAnswer(q.answer);
         var ok3 = normU !== '' && normU === normK;
+        if (!ok3 && normU !== '' && /^-?[0-9]+(,[0-9]+)?$/.test(normU) && /^-?[0-9]+(,[0-9]+)?$/.test(normK)) {
+          var numU = Number(normU.replace(',', '.'));
+          var numK = Number(normK.replace(',', '.'));
+          if (isFinite(numU) && isFinite(numK) && Math.abs(numU - numK) < 1e-9) {
+            ok3 = true;
+          }
+        }
         return { isCorrect: ok3, points: ok3 ? 0.25 : 0, maxPoints: 0.25, correctItems: ok3 ? 1 : 0 };
       }
 
@@ -1168,7 +1179,7 @@
           chuyen_de: 'Ngân hàng 36 câu chuyên đề chia theo 6 dạng trọng tâm Chương 1 & 2. Chọn dạng muốn cày, mở gợi ý trước khi xem lời giải.',
           bay_ds_tln: 'Kho tốc độ cao gồm toàn bộ 28 câu Phần II (Đúng/Sai) & Phần III (Trả lời ngắn) của Chương 1 & 2.',
           on_cau_sai: 'Tự động gom các câu làm sai từ bộ nhớ cục bộ. Làm đúng trọn vẹn mới gỡ khỏi danh sách sai.',
-          nguon_that: '28 câu hỏi 100% trích nguồn thật (Đề Bộ GD&ĐT 2025, SGK KNTT, SGK CTST & Sở GD) có gắn nhãn xuất xứ chi tiết.',
+          nguon_that: '56 câu hỏi 100% nguồn thật: 28 câu từ Đề Bộ GD&ĐT 2025 & SGK KNTT/CTST + 28 câu mới tổng hợp từ Đề thi thử 2025–2026 các Sở GD&ĐT và Trường chuyên hot trên cả nước.',
           de_mau: 'Đề mẫu tổng hợp đủ cả 4 chương (Vật lí nhiệt, Khí lí tưởng, Từ trường, Vật lí hạt nhân).'
         };
         leftControls.innerHTML = '<span class="muted" style="font-size: 0.92rem;">' + modeDesc[appState.mode] + '</span>';
@@ -1181,7 +1192,7 @@
         } else if (appState.mode === 'bay_ds_tln') {
           trapCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / 28 câu';
         } else if (appState.mode === 'nguon_that') {
-          nguonCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + (NGUON_BANK.questions || []).length + ' câu';
+          nguonCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + ALL_NGUON_QUESTIONS.length + ' câu';
         }
 
         if (isExamMode) {
@@ -1449,13 +1460,18 @@
         setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
       });
 
-      /* Khởi tạo từ URL query params (?mode=...&dang=...) */
+      /* Khởi tạo từ URL query params (?mode=...&dang=...&nguon=...) */
       var params = new URLSearchParams(window.location.search || '');
       var qMode = params.get('mode') || 'exam50';
       var qDang = params.get('dang');
       if (qDang && selectedDangs.hasOwnProperty(qDang)) {
         C.DANG_BAI_LIST.forEach(function (d) { selectedDangs[d.id] = (d.id === qDang); });
         syncDangChipUI();
+      }
+      var qNguon = params.get('nguon');
+      if (qNguon) {
+        var hasNguonOpt = Array.prototype.some.call(selNguonNhom.options, function (opt) { return opt.value === qNguon; });
+        if (hasNguonOpt) selNguonNhom.value = qNguon;
       }
 
       /* Giữ nguyên API kiểm thử cho các script xác minh */
