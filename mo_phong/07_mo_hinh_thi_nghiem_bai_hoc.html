@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô hình Thí nghiệm Bài học (Chương 1 &amp; 2) — Vật lí 12 GDPT 2018</title>
+  <meta name="theme-color" content="#184E8A">
+  <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <div class="topbar-actions">
+        <a href="../index.html" class="btn btn-sm">Bảng điều khiển</a>
+        <a href="../ly_thuyet/ch1_ch2_truc_quan.html" class="btn btn-sm">Lý thuyết Ch1–C2</a>
+        <a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn btn-primary btn-sm">33 câu LT &amp; Mô hình TN</a>
+        <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page-main">
+    <h1>Phòng Thí Nghiệm Mô Hình Bài Học: Chương 1 &amp; Chương 2</h1>
+    <p class="muted">4 mô hình thí nghiệm SGK còn thiếu (Nội năng nút bần &amp; nén nhanh, Cân bằng nhiệt hai bình &amp; Điểm ba 273,16 K, Kính hiển vi Brown, Xung lực va chạm thành bình &amp; 2 bước dựng Phương trình trạng thái) kèm lộ trình 11 bài học.</p>
+
+    <div style="margin-top: 18px; margin-bottom: 22px;">
+      <div class="tabs" role="tablist" aria-label="Chọn mô hình thí nghiệm bài học">
+        <button type="button" class="tab-btn" role="tab" id="tab-b2" aria-selected="true">1. Bài 2: Ống nghiệm nút bần &amp; Nén nhanh</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-b3" aria-selected="false">2. Bài 3: Cân bằng nhiệt &amp; Điểm ba 273,16 K</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-b8" aria-selected="false">3. Bài 8: Kính hiển vi Chuyển động Brown</button>
+        <button type="button" class="tab-btn" role="tab" id="tab-b12" aria-selected="false">4. Bài 11–12: Va chạm thành bình &amp; 2 bước TT</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: BÀI 2 - ỐNG NGHIỆM NÚT BẦN & NÉN NHANH BÔNG ETE -->
+    <section id="panel-b2">
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều khiển Thí nghiệm Bài 2</h3>
+
+          <div class="control-group">
+            <label for="b2-mode" class="control-label">Chọn mô hình thí nghiệm SGK</label>
+            <select id="b2-mode">
+              <option value="cork">Mô hình A: Đun ống nghiệm nước đậy nút bần</option>
+              <option value="piston">Mô hình B: Xi-lanh nén nhanh bật cháy bông ete</option>
+            </select>
+          </div>
+
+          <div id="b2-ctrl-cork">
+            <div class="control-group">
+              <div class="control-head">
+                <label for="b2-heat" class="control-label">Công suất đèn cồn P</label>
+                <span id="b2-heat-val" class="control-val">120 W</span>
+              </div>
+              <input id="b2-heat" type="range" min="60" max="240" step="20" value="120">
+            </div>
+            <div class="btn-group">
+              <button type="button" id="b2-cork-start" class="btn btn-primary btn-sm">Bật đèn cồn đun nóng</button>
+              <button type="button" id="b2-cork-reset" class="btn btn-sm">Lắp lại nút bần</button>
+            </div>
+          </div>
+
+          <div id="b2-ctrl-piston" hidden>
+            <div class="control-group">
+              <label for="b2-speed" class="control-label">Tốc độ ấn pít-tông</label>
+              <select id="b2-speed">
+                <option value="fast" selected>Ấn rất nhanh, xi-lanh cách nhiệt (Q ≈ 0)</option>
+                <option value="slow">Ấn thật chậm, tỏa nhiệt kịp ra ngoài (ΔT ≈ 0)</option>
+              </select>
+            </div>
+            <div class="btn-group">
+              <button type="button" id="b2-pis-push" class="btn btn-primary btn-sm">Ấn pít-tông nén khí</button>
+              <button type="button" id="b2-pis-reset" class="btn btn-sm">Kéo lên ban đầu</button>
+            </div>
+          </div>
+
+          <div id="b2-readout" class="panel-alt num" style="margin-top: 12px; font-size: 0.92rem;"></div>
+
+          <div class="notice" style="margin-top: 12px;">
+            <strong>Quy ước dấu GDPT 2018 (ΔU = A + Q):</strong><br>
+            • Khi nút bần bị đẩy bật ra: hệ nhận nhiệt (<strong>Q &gt; 0</strong>) và <em>sinh công</em> đẩy nút (<strong>A &lt; 0</strong>).<br>
+            • Khi ấn nhanh pít-tông: khí <em>nhận công</em> (<strong>A &gt; 0</strong>), gần như không trao đổi nhiệt (<strong>Q ≈ 0</strong>) ⇒ ΔU ≈ A &gt; 0 làm nhiệt độ vọt vượt 180 °C, đốt cháy bông tẩm ete.
+          </div>
+
+          <div class="btn-group" style="margin-top: 12px;">
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B2" class="btn btn-primary btn-sm" style="width: 100%;">Làm 3 câu Bài 2 ngay</a>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="card">
+            <h3 id="b2-canvas-title">Mô phỏng ống nghiệm nước &amp; nút bần</h3>
+            <div class="canvas-box">
+              <canvas id="cv-b2"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: BÀI 3 - CÂN BẰNG NHIỆT & ĐIỂM BA 273,16 K -->
+    <section id="panel-b3" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều khiển Thí nghiệm Cân bằng nhiệt</h3>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="b3-ta" class="control-label">Nhiệt độ đầu bình A (lượng ít)</label>
+              <span id="b3-ta-val" class="control-val">75 °C (348 K)</span>
+            </div>
+            <input id="b3-ta" type="range" min="40" max="90" step="5" value="75">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="b3-tb" class="control-label">Nhiệt độ đầu bình B (lượng nhiều)</label>
+              <span id="b3-tb-val" class="control-val">15 °C (288 K)</span>
+            </div>
+            <input id="b3-tb" type="range" min="5" max="35" step="5" value="15">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="b3-ratio" class="control-label">Tỉ số khối lượng nước m_B / m_A</label>
+              <span id="b3-ratio-val" class="control-val">3,0 lần</span>
+            </div>
+            <input id="b3-ratio" type="range" min="1" max="5" step="0.5" value="3">
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="b3-start" class="btn btn-primary btn-sm">Cho tiếp xúc nhiệt</button>
+            <button type="button" id="b3-reset" class="btn btn-sm">Đặt lại</button>
+          </div>
+
+          <div id="b3-readout" class="panel-alt num" style="margin-top: 12px; font-size: 0.92rem;"></div>
+
+          <div class="notice" style="margin-top: 12px;">
+            <strong>Chốt bẫy Bài 3 (SGK):</strong> Nhiệt lượng luôn tự truyền từ bình có <strong>nhiệt độ cao hơn (bình A)</strong> sang bình có <strong>nhiệt độ thấp hơn (bình B)</strong> dù bình B nặng gấp nhiều lần bình A. Mốc điểm ba của nước là <strong>0,01 °C = 273,16 K</strong> (ở 0,006 atm), còn 0 °C = 273,15 K.
+          </div>
+
+          <div class="btn-group" style="margin-top: 12px;">
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B3" class="btn btn-primary btn-sm" style="width: 100%;">Làm 3 câu Bài 3 ngay</a>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 18px; min-width: 0;">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Hai bình tiếp xúc qua thành dẫn nhiệt</h3>
+              <div class="canvas-box">
+                <canvas id="cv-b3-beakers"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Đồ thị hội tụ về nhiệt độ cân bằng t_cb</h3>
+              <div class="canvas-box">
+                <canvas id="cv-b3-graph"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Đối chiếu các mốc chuẩn Thang Celsius (°C) ↔ Kelvin (K)</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Trạng thái vật lí chuẩn</th><th>Celsius (°C)</th><th>Kelvin chính xác (K)</th><th>Quy đổi làm tròn phổ thông</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Độ không tuyệt đối (chuyển động nhiệt ngừng)</td><td class="num">−273,15 °C</td><td class="num">0,00 K</td><td class="num">0 K (−273 °C)</td></tr>
+                  <tr><td>Nước đá đang tan ở áp suất chuẩn 1 atm</td><td class="num">0,00 °C</td><td class="num">273,15 K</td><td class="num">273 K</td></tr>
+                  <tr><td><strong>Điểm ba của nước (Rắn–Lỏng–Hơi cùng cân bằng, 0,006 atm)</strong></td><td class="num"><strong>0,01 °C</strong></td><td class="num"><strong>273,16 K</strong></td><td class="num"><strong>Mốc chuẩn 1 K = 1/273,16</strong></td></tr>
+                  <tr><td>Nước tinh khiết sôi ở áp suất chuẩn 1 atm</td><td class="num">100,00 °C</td><td class="num">373,15 K</td><td class="num">373 K</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: BÀI 8 - KÍNH HIỂN VI CHUYỂN ĐỘNG BROWN -->
+    <section id="panel-b8" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Điều khiển Kính hiển vi Brown</h3>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="b8-temp" class="control-label">Nhiệt độ môi trường nước t</label>
+              <span id="b8-temp-val" class="control-val">25 °C (298 K)</span>
+            </div>
+            <input id="b8-temp" type="range" min="5" max="95" step="5" value="25">
+          </div>
+
+          <div class="control-group">
+            <label for="b8-size" class="control-label">Kích thước hạt phấn hoa quan sát</label>
+            <select id="b8-size">
+              <option value="10">Hạt nhỏ (~1 µm — nhảy rất mạnh)</option>
+              <option value="16" selected>Hạt trung bình (~2 µm)</option>
+              <option value="24">Hạt lớn (~4 µm — ì hơn)</option>
+            </select>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="b8-pause" class="btn btn-sm">Tạm dừng</button>
+            <button type="button" id="b8-clear" class="btn btn-sm">Xóa vết quỹ đạo</button>
+          </div>
+
+          <div id="b8-readout" class="panel-alt num" style="margin-top: 12px; font-size: 0.92rem;"></div>
+
+          <div class="notice notice-warn" style="margin-top: 12px;">
+            <strong>Điểm dễ nhầm:</strong> Kính hiển vi quang học chỉ nhìn thấy <strong>hạt phấn hoa/hạt khói (cỡ µm)</strong> chứ <strong>KHÔNG thấy trực tiếp từng phân tử nước</strong>! Các phân tử nước vô hình va chạm không đều vào hạt làm nó chuyển động gấp khúc hỗn loạn — đây là bằng chứng gián tiếp của chuyển động nhiệt.
+          </div>
+
+          <div class="btn-group" style="margin-top: 12px;">
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B8" class="btn btn-primary btn-sm" style="width: 100%;">Làm 3 câu Bài 8 ngay</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Thị trường Kính hiển vi (Quỹ đạo gấp khúc hạt Brown &amp; Va chạm phân tử nền)</h3>
+          <div class="canvas-box">
+            <canvas id="cv-b8"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: BÀI 11–12 - VA CHẠM THÀNH BÌNH & 2 BƯỚC PHƯƠNG TRÌNH TRẠNG THÁI -->
+    <section id="panel-b12" hidden>
+      <div class="lab-layout">
+        <div class="card">
+          <h3>Phân tích Áp suất Động học &amp; 2 Bước TT</h3>
+
+          <div class="control-group">
+            <label for="b12-gas" class="control-label">Loại khí lí tưởng</label>
+            <select id="b12-gas">
+              <option value="2">Hiđrô H₂ (M = 2 g/mol)</option>
+              <option value="4">Heli He (M = 4 g/mol)</option>
+              <option value="28" selected>Nitơ N₂ (M = 28 g/mol)</option>
+              <option value="32">Oxi O₂ (M = 32 g/mol)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="b12-temp" class="control-label">Nhiệt độ tuyệt đối T</label>
+              <span id="b12-temp-val" class="control-val">300 K</span>
+            </div>
+            <input id="b12-temp" type="range" min="150" max="600" step="25" value="300">
+          </div>
+
+          <div class="control-group">
+            <div class="control-head">
+              <label for="b12-mu" class="control-label">Hệ số mật độ phân tử μ / μ₀</label>
+              <span id="b12-mu-val" class="control-val">1,0×</span>
+            </div>
+            <input id="b12-mu" type="range" min="0.5" max="2.5" step="0.25" value="1">
+          </div>
+
+          <div class="control-group">
+            <label for="b12-step" class="control-label">Sơ đồ 2 bước dựng Phương trình trạng thái (Bài 11)</label>
+            <select id="b12-step">
+              <option value="wall" selected>Xem va chạm thành bình |Δp_x| = 2·m·|v_x|</option>
+              <option value="two_step">Xem sơ đồ (p₁,V₁,T₁) → Đẳng nhiệt → (p',V₂,T₁) → Đẳng tích → (p₂,V₂,T₂)</option>
+            </select>
+          </div>
+
+          <div id="b12-readout" class="panel-alt num" style="margin-top: 12px; font-size: 0.9rem;"></div>
+
+          <div class="notice" style="margin-top: 12px;">
+            <strong>2 chốt lí thuyết hay hỏi thi (Bài 11–12):</strong><br>
+            1) Va chạm đàn hồi bật ngược `+v_x → −v_x` tạo độ biến thiên động lượng <strong>2·m·|v_x|</strong>; đẳng hướng 3 chiều sinh thừa số <strong>1/3</strong> trong <strong>p = (1/3)·μ·m·v²_tb = μ·k·T</strong>.<br>
+            2) Nén <em>đẳng nhiệt</em> (T giữ nguyên): <strong>v_rms và E_đ không đổi</strong>, p tăng thuần túy do mật độ <strong>μ = N/V</strong> tăng.
+          </div>
+
+          <div class="btn-group" style="margin-top: 12px;">
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B11" class="btn btn-sm">Làm 3 câu Bài 11</a>
+            <a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B12" class="btn btn-primary btn-sm">Làm 3 câu Bài 12</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 id="b12-canvas-title">Mô hình Va chạm thành bình |Δp_x| = 2·m·|v_x| &amp; tính đẳng hướng 1/3</h3>
+          <div class="canvas-box">
+            <canvas id="cv-b12"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BẢNG LỘ TRÌNH 11 BÀI HỌC CHƯƠNG 1 & CHƯƠNG 2 -->
+    <section class="card" style="margin-top: 24px;">
+      <h2>Lộ trình Toàn bộ 11 Bài học Chương 1 &amp; Chương 2 (Lý thuyết + PTN + 33 câu Luyện tập)</h2>
+      <p class="muted">Mỗi bài học gồm mô phỏng thí nghiệm trực quan tương ứng (PTN 01, 05, 06, 07) và bộ 3 câu hỏi chuyên biệt (2 Phần I + 1 Phần II Đúng/Sai 4 ý) về cả lí thuyết bài học lẫn lí thuyết mô hình thí nghiệm.</p>
+      <div class="table-wrap" style="margin-top: 12px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Chương</th>
+              <th>Bài học (GDPT 2018)</th>
+              <th>Mô hình thí nghiệm trọng tâm</th>
+              <th>Phòng thí nghiệm</th>
+              <th>Luyện câu hỏi bài</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Ch1</td><td><strong>Bài 1:</strong> Cấu trúc của chất. Sự chuyển thể</td><td>Đồ thị nóng chảy phẳng ngang, Rắn–Lỏng–Khí</td><td><a href="./01_chuyen_the_va_nhiet_dong.html">Mở PTN 01</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B1">3 câu Bài 1</a></td></tr>
+            <tr><td>Ch1</td><td><strong>Bài 2:</strong> Nội năng. Định luật I NĐLH</td><td>Ống nghiệm nút bần, nén nhanh cháy bông ete</td><td><a href="#tab-b2" class="jump-tab" data-tab="b2">Tab 1 trang này</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B2">3 câu Bài 2</a></td></tr>
+            <tr><td>Ch1</td><td><strong>Bài 3:</strong> Nhiệt độ. Thang nhiệt độ – Nhiệt kế</td><td>Hai bình tiếp xúc nhiệt, điểm ba 273,16 K</td><td><a href="#tab-b3" class="jump-tab" data-tab="b3">Tab 2 trang này</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B3">3 câu Bài 3</a></td></tr>
+            <tr><td>Ch1</td><td><strong>Bài 4:</strong> Nhiệt dung riêng</td><td>Nhiệt lượng kế + oát kế, đồ thị t(τ) đo c</td><td><a href="./05_thuc_hanh_nhiet_sgk.html?tab=exp-c">Mở PTN 05 (Đo c)</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B4">3 câu Bài 4</a></td></tr>
+            <tr><td>Ch1</td><td><strong>Bài 5:</strong> Nhiệt nóng chảy riêng</td><td>Đoạn phẳng 0 °C &amp; phễu nước đá khử môi trường</td><td><a href="./05_thuc_hanh_nhiet_sgk.html?tab=exp-lam">Mở PTN 05 (Đo λ)</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B5">3 câu Bài 5</a></td></tr>
+            <tr><td>Ch1</td><td><strong>Bài 6:</strong> Nhiệt hóa hơi riêng</td><td>Cân điện tử đo Δm nước sôi đều ở 100 °C</td><td><a href="./05_thuc_hanh_nhiet_sgk.html?tab=exp-L">Mở PTN 05 (Đo L)</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B6">3 câu Bài 6</a></td></tr>
+            <tr><td>Ch2</td><td><strong>Bài 8:</strong> Mô hình động học phân tử chất khí</td><td>Kính hiển vi Brown &amp; điều kiện khí lí tưởng</td><td><a href="#tab-b8" class="jump-tab" data-tab="b8">Tab 3 trang này</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B8">3 câu Bài 8</a></td></tr>
+            <tr><td>Ch2</td><td><strong>Bài 9:</strong> Định luật Boyle (Đẳng nhiệt)</td><td>Xi-lanh đẩy chậm, đồ thị (p, V) và (p, 1/V)</td><td><a href="./06_thuc_hanh_khi_va_dong_hoc.html?tab=lab2">Mở PTN 06 (Boyle)</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B9">3 câu Bài 9</a></td></tr>
+            <tr><td>Ch2</td><td><strong>Bài 10:</strong> Định luật Charles (Đẳng áp)</td><td>Ống mao dẫn giọt thủy ngân, ngoại suy −273 °C</td><td><a href="./06_thuc_hanh_khi_va_dong_hoc.html?tab=lab2">Mở PTN 06 (Charles)</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B10">3 câu Bài 10</a></td></tr>
+            <tr><td>Ch2</td><td><strong>Bài 11:</strong> Phương trình trạng thái khí lí tưởng</td><td>Đường đi 2 bước Đẳng nhiệt + Đẳng tích, pV = nRT</td><td><a href="#tab-b12" class="jump-tab" data-tab="b12">Tab 4 trang này</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B11">3 câu Bài 11</a></td></tr>
+            <tr><td>Ch2</td><td><strong>Bài 12:</strong> Áp suất khí theo mô hình ĐHPT</td><td>Va chạm 2m|v_x|, đẳng hướng 1/3, v_rms, E_đ</td><td><a href="#tab-b12" class="jump-tab" data-tab="b12">Tab 4 trang này</a></td><td><a href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B12">3 câu Bài 12</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var C = window.LY_COMMON;
+      C.initShell();
+
+      var activeTab = 'b2';
+      var tabIds = ['b2', 'b3', 'b8', 'b12'];
+
+      function selectTab(id) {
+        if (tabIds.indexOf(id) === -1) id = 'b2';
+        activeTab = id;
+        tabIds.forEach(function (t) {
+          var btn = document.getElementById('tab-' + t);
+          var pnl = document.getElementById('panel-' + t);
+          if (btn) btn.setAttribute('aria-selected', t === id ? 'true' : 'false');
+          if (pnl) pnl.hidden = (t !== id);
+        });
+        redrawActive();
+      }
+
+      tabIds.forEach(function (t) {
+        var btn = document.getElementById('tab-' + t);
+        if (btn) btn.addEventListener('click', function () { selectTab(t); });
+      });
+
+      document.querySelectorAll('.jump-tab').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          selectTab(a.getAttribute('data-tab'));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      function drawLabelBox(ctx, x, y, text, bgColor, textColor) {
+        ctx.save();
+        ctx.font = '600 12px system-ui, sans-serif';
+        var w = ctx.measureText(text).width + 14;
+        ctx.fillStyle = bgColor;
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, 24, 6);
+        ctx.fill();
+        ctx.fillStyle = textColor;
+        ctx.fillText(text, x + 7, y + 16);
+        ctx.restore();
+      }
+
+      /* ================= TAB 1: BÀI 2 (NÚT BẦN & NÉN NHANH) ================= */
+      var b2State = {
+        mode: 'cork',
+        heat: 120,
+        corkRunning: false,
+        corkTemp: 25,
+        corkOffset: 0,
+        corkPopped: false,
+        pistonSpeed: 'fast',
+        pistonProg: 0,
+        pistonPushing: false,
+        pistonTemp: 25,
+        cottonBurn: false
+      };
+
+      var elB2Mode = document.getElementById('b2-mode');
+      var elB2Heat = document.getElementById('b2-heat');
+      var elB2HeatVal = document.getElementById('b2-heat-val');
+      var elB2Speed = document.getElementById('b2-speed');
+      var elB2Readout = document.getElementById('b2-readout');
+
+      elB2Mode.addEventListener('change', function () {
+        b2State.mode = elB2Mode.value;
+        document.getElementById('b2-ctrl-cork').hidden = (b2State.mode !== 'cork');
+        document.getElementById('b2-ctrl-piston').hidden = (b2State.mode !== 'piston');
+        document.getElementById('b2-canvas-title').textContent = b2State.mode === 'cork'
+          ? 'Mô phỏng ống nghiệm nước & nút bần bật ra (Q > 0, A < 0)'
+          : 'Mô phỏng xi-lanh nén nhanh bật cháy bông ete (A > 0, Q ≈ 0 ⇒ ΔU > 0)';
+        drawB2();
+      });
+
+      elB2Heat.addEventListener('input', function () {
+        b2State.heat = Number(elB2Heat.value);
+        elB2HeatVal.textContent = b2State.heat + ' W';
+      });
+
+      elB2Speed.addEventListener('change', function () {
+        b2State.pistonSpeed = elB2Speed.value;
+        resetB2Piston();
+      });
+
+      document.getElementById('b2-cork-start').addEventListener('click', function () {
+        if (b2State.corkPopped) resetB2Cork();
+        b2State.corkRunning = true;
+      });
+      function resetB2Cork() {
+        b2State.corkRunning = false;
+        b2State.corkTemp = 25;
+        b2State.corkOffset = 0;
+        b2State.corkPopped = false;
+        drawB2();
+      }
+      document.getElementById('b2-cork-reset').addEventListener('click', resetB2Cork);
+
+      function resetB2Piston() {
+        b2State.pistonPushing = false;
+        b2State.pistonProg = 0;
+        b2State.pistonTemp = 25;
+        b2State.cottonBurn = false;
+        drawB2();
+      }
+      document.getElementById('b2-pis-push').addEventListener('click', function () {
+        resetB2Piston();
+        b2State.pistonPushing = true;
+      });
+      document.getElementById('b2-pis-reset').addEventListener('click', resetB2Piston);
+
+      function drawB2() {
+        var setup = C.setupCanvas(document.getElementById('cv-b2'), 340);
+        if (!setup) return;
+        var ctx = setup.ctx, W = setup.width, H = setup.height;
+        var col = C.getColors();
+        ctx.clearRect(0, 0, W, H);
+
+        if (b2State.mode === 'cork') {
+          var cx = W * 0.42, baseY = H * 0.72;
+          /* Đèn cồn */
+          ctx.fillStyle = col.bgAlt;
+          ctx.strokeStyle = col.muted;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(cx - 34, baseY + 12, 68, 44, 8);
+          ctx.fill();
+          ctx.stroke();
+
+          if (b2State.corkRunning) {
+            ctx.fillStyle = col.warm;
+            ctx.beginPath();
+            ctx.moveTo(cx - 10, baseY + 10);
+            ctx.quadraticCurveTo(cx, baseY - 22 - (b2State.heat / 24), cx + 10, baseY + 10);
+            ctx.fill();
+          }
+
+          /* Ống nghiệm nghiêng 22 độ */
+          ctx.save();
+          ctx.translate(cx - 15, baseY - 20);
+          ctx.rotate(-0.42);
+          /* Thân ống */
+          ctx.strokeStyle = col.ink;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.roundRect(-22, -170, 44, 180, [4, 4, 22, 22]);
+          ctx.stroke();
+          /* Nước */
+          ctx.fillStyle = col.cold;
+          ctx.globalAlpha = 0.5;
+          ctx.beginPath();
+          ctx.roundRect(-20, -45, 40, 52, [2, 2, 20, 20]);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          /* Nút bần */
+          var corkY = -182 - b2State.corkOffset;
+          ctx.fillStyle = '#B87A4B';
+          ctx.strokeStyle = col.ink;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect(-18, corkY, 36, 26, 4);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+
+          /* Chỉ báo dấu Q, A, ΔU */
+          drawLabelBox(ctx, W * 0.56, 36, 'Q > 0 (Đèn cồn cấp nhiệt)', col.bgAlt, col.warm);
+          drawLabelBox(ctx, W * 0.56, 74, b2State.corkPopped ? 'A < 0 (Hơi nước đẩy bật nút!)' : 'A = 0 (Thể tích chưa đổi)', col.bgAlt, b2State.corkPopped ? col.accent : col.muted);
+          drawLabelBox(ctx, W * 0.56, 112, 't ≈ ' + C.fmt(b2State.corkTemp, 0) + ' °C', col.bgAlt, col.ink);
+
+          elB2Readout.innerHTML = '<strong>Nhiệt độ hơi:</strong> ' + C.fmt(b2State.corkTemp, 0) + ' °C | <strong>Trạng thái:</strong> ' +
+            (b2State.corkPopped ? 'Nút bần đã bật ra (Hệ sinh công A &lt; 0)' : (b2State.corkRunning ? 'Đang nhận nhiệt Q &gt; 0...' : 'Chờ đun')) +
+            '<br><strong>Định luật I:</strong> ΔU = A + Q (Q &gt; 0; khi bật nút A &lt; 0).';
+        } else {
+          var px = W * 0.25, py = 46, cw = 130, ch = H - 80;
+          /* Vỏ xi-lanh cách nhiệt */
+          ctx.fillStyle = col.bgAlt;
+          ctx.strokeStyle = col.ink;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.rect(px, py, cw, ch);
+          ctx.stroke();
+          /* Nhúm bông ở đáy */
+          ctx.fillStyle = b2State.cottonBurn ? col.warm : col.muted;
+          ctx.beginPath();
+          ctx.arc(px + cw * 0.5, py + ch - 14, 14, 0, Math.PI * 2);
+          ctx.fill();
+          if (b2State.cottonBurn) {
+            ctx.fillStyle = '#F59E0B';
+            ctx.beginPath();
+            ctx.moveTo(px + cw * 0.5 - 12, py + ch - 18);
+            ctx.lineTo(px + cw * 0.5, py + ch - 52);
+            ctx.lineTo(px + cw * 0.5 + 12, py + ch - 18);
+            ctx.fill();
+          }
+          /* Pít-tông */
+          var headY = py + 24 + b2State.pistonProg * (ch - 82);
+          ctx.fillStyle = col.accent;
+          ctx.fillRect(px + 2, headY, cw - 4, 16);
+          ctx.fillRect(px + cw * 0.5 - 6, 12, 12, headY - 12);
+
+          drawLabelBox(ctx, W * 0.52, 40, 'A > 0 (Pít-tông nén khí)', col.bgAlt, col.accent);
+          drawLabelBox(ctx, W * 0.52, 78, b2State.pistonSpeed === 'fast' ? 'Q ≈ 0 (Nén nhanh cách nhiệt)' : 'Q < 0 (Tỏa nhiệt ra ngoài)', col.bgAlt, col.muted);
+          drawLabelBox(ctx, W * 0.52, 116, 'T khí ≈ ' + C.fmt(b2State.pistonTemp + 273, 0) + ' K (' + C.fmt(b2State.pistonTemp, 0) + ' °C)', col.bgAlt, b2State.cottonBurn ? col.warm : col.ink);
+
+          elB2Readout.innerHTML = '<strong>Nhiệt độ khí:</strong> ' + C.fmt(b2State.pistonTemp, 0) + ' °C | <strong>Bông tẩm ete:</strong> ' +
+            (b2State.cottonBurn ? 'ĐÃ BỐC CHÁY!' : 'Chưa cháy') +
+            '<br><strong>Bản chất:</strong> ' + (b2State.pistonSpeed === 'fast' ? 'Nén nhanh ⇒ Q ≈ 0, ΔU ≈ A &gt; 0 ⇒ Nhiệt độ tăng vọt!' : 'Nén chậm ⇒ nhiệt kịp truyền ra (Q &lt; 0), ΔU ≈ 0 ⇒ Bông không cháy.');
+        }
+      }
+
+      /* ================= TAB 2: BÀI 3 (CÂN BẰNG NHIỆT & ĐIỂM BA) ================= */
+      var b3State = { ta0: 75, tb0: 15, ratio: 3, running: false, tau: 0, ta: 75, tb: 15, history: [] };
+      var elB3Ta = document.getElementById('b3-ta'), elB3Tb = document.getElementById('b3-tb'), elB3Ratio = document.getElementById('b3-ratio');
+      var elB3Readout = document.getElementById('b3-readout');
+
+      function updateB3Controls() {
+        b3State.ta0 = Number(elB3Ta.value);
+        b3State.tb0 = Number(elB3Tb.value);
+        b3State.ratio = Number(elB3Ratio.value);
+        document.getElementById('b3-ta-val').textContent = b3State.ta0 + ' °C (' + (b3State.ta0 + 273) + ' K)';
+        document.getElementById('b3-tb-val').textContent = b3State.tb0 + ' °C (' + (b3State.tb0 + 273) + ' K)';
+        document.getElementById('b3-ratio-val').textContent = C.fmt(b3State.ratio, 1) + ' lần';
+        resetB3();
+      }
+      function resetB3() {
+        b3State.running = false;
+        b3State.tau = 0;
+        b3State.ta = b3State.ta0;
+        b3State.tb = b3State.tb0;
+        b3State.history = [{ tau: 0, ta: b3State.ta, tb: b3State.tb }];
+        drawB3();
+      }
+      elB3Ta.addEventListener('input', updateB3Controls);
+      elB3Tb.addEventListener('input', updateB3Controls);
+      elB3Ratio.addEventListener('input', updateB3Controls);
+      document.getElementById('b3-start').addEventListener('click', function () {
+        if (b3State.tau > 40) resetB3();
+        b3State.running = true;
+      });
+      document.getElementById('b3-reset').addEventListener('click', resetB3);
+
+      function drawB3() {
+        var col = C.getColors();
+        var tcb = (b3State.ta0 + b3State.ratio * b3State.tb0) / (1 + b3State.ratio);
+        elB3Readout.innerHTML = '<strong>t_A = ' + C.fmt(b3State.ta, 1) + ' °C</strong> (' + C.fmt(b3State.ta + 273, 1) + ' K) | ' +
+          '<strong>t_B = ' + C.fmt(b3State.tb, 1) + ' °C</strong> (' + C.fmt(b3State.tb + 273, 1) + ' K)<br>' +
+          '<strong>Nhiệt độ cân bằng lí thuyết:</strong> t_cb = ' + C.fmt(tcb, 1) + ' °C (luôn truyền A → B).';
+
+        /* Canvas 1: Hai bình + nhiệt kế */
+        var s1 = C.setupCanvas(document.getElementById('cv-b3-beakers'), 260);
+        if (s1) {
+          var ctx = s1.ctx, W = s1.width, H = s1.height;
+          ctx.clearRect(0, 0, W, H);
+          var midX = W * 0.5, bottomY = H - 36;
+          /* Bình B lớn bên phải */
+          var hB = 60 + b3State.ratio * 18;
+          ctx.fillStyle = col.cold;
+          ctx.globalAlpha = 0.35;
+          ctx.fillRect(midX + 4, bottomY - hB, 110, hB);
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = col.ink;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(midX + 4, bottomY - 165, 110, 165);
+
+          /* Bình A nhỏ bên trái */
+          ctx.fillStyle = col.warm;
+          ctx.globalAlpha = 0.4;
+          ctx.fillRect(midX - 88, bottomY - 72, 84, 72);
+          ctx.globalAlpha = 1;
+          ctx.strokeRect(midX - 88, bottomY - 165, 84, 165);
+
+          /* Nhiệt kế A và B */
+          function drawTherm(tx, temp) {
+            ctx.fillStyle = col.bg;
+            ctx.strokeStyle = col.ink;
+            ctx.lineWidth = 1.5;
+            ctx.fillRect(tx - 4, bottomY - 180, 8, 120);
+            ctx.strokeRect(tx - 4, bottomY - 180, 8, 120);
+            var lvl = Math.max(8, (temp / 100) * 110);
+            ctx.fillStyle = temp > tcb ? col.warm : col.accent;
+            ctx.fillRect(tx - 2.5, bottomY - 60 - lvl, 5, lvl);
+            ctx.beginPath();
+            ctx.arc(tx, bottomY - 56, 7, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          drawTherm(midX - 46, b3State.ta);
+          drawTherm(midX + 59, b3State.tb);
+
+          ctx.fillStyle = col.ink;
+          ctx.font = '600 12px system-ui, sans-serif';
+          ctx.fillText('A (m, ' + C.fmt(b3State.ta, 1) + '°C)', midX - 88, bottomY + 18);
+          ctx.fillText('B (' + C.fmt(b3State.ratio, 1) + 'm, ' + C.fmt(b3State.tb, 1) + '°C)', midX + 6, bottomY + 18);
+          if (Math.abs(b3State.ta - b3State.tb) > 0.3) {
+            drawLabelBox(ctx, midX - 42, 16, 'Nhiệt: A → B', col.bgAlt, col.warm);
+          } else {
+            drawLabelBox(ctx, midX - 58, 16, 'Đã cân bằng nhiệt!', col.bgAlt, col.ok);
+          }
+        }
+
+        /* Canvas 2: Đồ thị t(τ) */
+        var s2 = C.setupCanvas(document.getElementById('cv-b3-graph'), 260);
+        if (s2) {
+          var g = s2.ctx, GW = s2.width, GH = s2.height;
+          g.clearRect(0, 0, GW, GH);
+          var padL = 44, padR = 16, padT = 18, padB = 30;
+          var pw = GW - padL - padR, ph = GH - padT - padB;
+          g.strokeStyle = col.grid;
+          g.lineWidth = 1;
+          for (var yt = 0; yt <= 100; yt += 25) {
+            var yy = padT + ph * (1 - yt / 100);
+            g.beginPath(); g.moveTo(padL, yy); g.lineTo(GW - padR, yy); g.stroke();
+            g.fillStyle = col.muted;
+            g.font = '11px system-ui, sans-serif';
+            g.fillText(yt + '°', 8, yy + 4);
+          }
+          /* Đường t_cb nét đứt */
+          var ycb = padT + ph * (1 - tcb / 100);
+          g.setLineDash([5, 4]);
+          g.strokeStyle = col.ok;
+          g.beginPath(); g.moveTo(padL, ycb); g.lineTo(GW - padR, ycb); g.stroke();
+          g.setLineDash([]);
+
+          /* Vẽ đường t_A và t_B */
+          function plotSeries(key, color) {
+            g.strokeStyle = color;
+            g.lineWidth = 2.5;
+            g.beginPath();
+            b3State.history.forEach(function (pt, idx) {
+              var x = padL + Math.min(1, pt.tau / 45) * pw;
+              var y = padT + ph * (1 - pt[key] / 100);
+              if (idx === 0) g.moveTo(x, y); else g.lineTo(x, y);
+            });
+            g.stroke();
+          }
+          plotSeries('ta', col.warm);
+          plotSeries('tb', col.cold);
+        }
+      }
+
+      /* ================= TAB 3: BÀI 8 (KÍNH HIỂN VI BROWN) ================= */
+      var b8State = { temp: 25, radius: 16, paused: false, pollen: { x: 0, y: 0, vx: 0, vy: 0 }, trail: [], mols: [], inited: false };
+      var elB8Temp = document.getElementById('b8-temp');
+      var elB8Size = document.getElementById('b8-size');
+      var elB8Readout = document.getElementById('b8-readout');
+
+      function initB8Mols(W, H) {
+        b8State.pollen = { x: W * 0.5, y: H * 0.5, vx: 0, vy: 0 };
+        b8State.trail = [{ x: W * 0.5, y: H * 0.5 }];
+        b8State.mols = [];
+        for (var i = 0; i < 65; i++) {
+          var ang = Math.random() * Math.PI * 2;
+          b8State.mols.push({
+            x: W * 0.5 + (Math.random() - 0.5) * 240,
+            y: H * 0.5 + (Math.random() - 0.5) * 240,
+            ux: Math.cos(ang),
+            uy: Math.sin(ang)
+          });
+        }
+        b8State.inited = true;
+      }
+
+      elB8Temp.addEventListener('input', function () {
+        b8State.temp = Number(elB8Temp.value);
+        document.getElementById('b8-temp-val').textContent = b8State.temp + ' °C (' + (b8State.temp + 273) + ' K)';
+      });
+      elB8Size.addEventListener('change', function () {
+        b8State.radius = Number(elB8Size.value);
+      });
+      document.getElementById('b8-pause').addEventListener('click', function () {
+        b8State.paused = !b8State.paused;
+        this.textContent = b8State.paused ? 'Tiếp tục' : 'Tạm dừng';
+      });
+      document.getElementById('b8-clear').addEventListener('click', function () {
+        b8State.trail = [{ x: b8State.pollen.x, y: b8State.pollen.y }];
+      });
+
+      function stepAndDrawB8() {
+        var s = C.setupCanvas(document.getElementById('cv-b8'), 340);
+        if (!s) return;
+        var ctx = s.ctx, W = s.width, H = s.height;
+        var col = C.getColors();
+        if (!b8State.inited) initB8Mols(W, H);
+        var cx = W * 0.5, cy = H * 0.5, scopeR = Math.min(W, H) * 0.44;
+        var spdScale = Math.sqrt((b8State.temp + 273) / 298) * 3.1;
+
+        if (!b8State.paused) {
+          b8State.mols.forEach(function (m) {
+            m.x += m.ux * spdScale;
+            m.y += m.uy * spdScale;
+            var dx = m.x - cx, dy = m.y - cy;
+            if (dx * dx + dy * dy > scopeR * scopeR) {
+              var nLen = Math.hypot(dx, dy) || 1;
+              var nx = dx / nLen, ny = dy / nLen;
+              var dot = m.ux * nx + m.uy * ny;
+              if (dot > 0) {
+                m.ux -= 2 * dot * nx;
+                m.uy -= 2 * dot * ny;
+              }
+              m.x = cx + nx * (scopeR - 2);
+              m.y = cy + ny * (scopeR - 2);
+            }
+            var px = m.x - b8State.pollen.x, py = m.y - b8State.pollen.y;
+            if (px * px + py * py < (b8State.radius + 3) * (b8State.radius + 3)) {
+              var kick = (14 / b8State.radius) * spdScale * 0.45;
+              b8State.pollen.vx += m.ux * kick;
+              b8State.pollen.vy += m.uy * kick;
+              m.ux = -m.ux;
+              m.uy = -m.uy;
+            }
+          });
+          b8State.pollen.vx *= 0.86;
+          b8State.pollen.vy *= 0.86;
+          b8State.pollen.x += b8State.pollen.vx;
+          b8State.pollen.y += b8State.pollen.vy;
+          var dpc = Math.hypot(b8State.pollen.x - cx, b8State.pollen.y - cy);
+          if (dpc > scopeR - b8State.radius - 6) {
+            b8State.pollen.x = cx + ((b8State.pollen.x - cx) / dpc) * (scopeR - b8State.radius - 6);
+            b8State.pollen.y = cy + ((b8State.pollen.y - cy) / dpc) * (scopeR - b8State.radius - 6);
+            b8State.pollen.vx = -b8State.pollen.vx;
+            b8State.pollen.vy = -b8State.pollen.vy;
+          }
+          var last = b8State.trail[b8State.trail.length - 1];
+          if (!last || Math.hypot(b8State.pollen.x - last.x, b8State.pollen.y - last.y) > 4) {
+            b8State.trail.push({ x: b8State.pollen.x, y: b8State.pollen.y });
+            if (b8State.trail.length > 160) b8State.trail.shift();
+          }
+        }
+
+        ctx.clearRect(0, 0, W, H);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, scopeR, 0, Math.PI * 2);
+        ctx.fillStyle = col.bgAlt;
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = col.ink;
+        ctx.stroke();
+        ctx.clip();
+
+        /* Quỹ đạo gấp khúc hạt Brown */
+        ctx.strokeStyle = col.accent;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        b8State.trail.forEach(function (pt, i) { if (i === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
+        ctx.stroke();
+
+        /* Phân tử nước nền */
+        ctx.fillStyle = col.cold;
+        ctx.globalAlpha = 0.55;
+        b8State.mols.forEach(function (m) {
+          ctx.beginPath(); ctx.arc(m.x, m.y, 2.5, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        /* Hạt phấn hoa */
+        ctx.fillStyle = col.warm;
+        ctx.strokeStyle = col.ink;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(b8State.pollen.x, b8State.pollen.y, b8State.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        elB8Readout.innerHTML = '<strong>Nhiệt độ T:</strong> ' + (b8State.temp + 273) + ' K | <strong>Tốc độ nhiệt tỉ đối:</strong> ' + C.fmt(Math.sqrt((b8State.temp + 273) / 298), 2) + '× so với 25 °C<br>Đường gấp khúc xanh là quỹ đạo hạt phấn hoa do hàng tỉ va chạm không cân bằng từ phân tử nước.';
+      }
+
+      /* ================= TAB 4: BÀI 11–12 (VA CHẠM THÀNH BÌNH & 2 BƯỚC TT) ================= */
+      var b12State = { M: 28, T: 300, muRatio: 1, stepMode: 'wall', flashTimer: 0, particles: [] };
+      for (var k = 0; k < 22; k++) {
+        b12State.particles.push({
+          x: 0.15 + Math.random() * 0.7,
+          y: 0.12 + Math.random() * 0.76,
+          vx: (Math.random() > 0.5 ? 1 : -1) * (0.4 + Math.random() * 0.6),
+          vy: (Math.random() - 0.5) * 0.9
+        });
+      }
+
+      var elB12Gas = document.getElementById('b12-gas');
+      var elB12Temp = document.getElementById('b12-temp');
+      var elB12Mu = document.getElementById('b12-mu');
+      var elB12Step = document.getElementById('b12-step');
+      var elB12Readout = document.getElementById('b12-readout');
+
+      function updateB12Readout() {
+        var Mkg = b12State.M / 1000;
+        var R = 8.31, kB = 1.38e-23;
+        var vrms = Math.sqrt((3 * R * b12State.T) / Mkg);
+        var ed = 1.5 * kB * b12State.T;
+        var mu0 = 2.5e25; /* 103.5 kPa ở 300 K */
+        var mu = mu0 * b12State.muRatio;
+        var pKPa = (mu * kB * b12State.T) / 1000;
+        elB12Readout.innerHTML =
+          '<strong>v_rms = √(3RT/M):</strong> ' + C.fmt(vrms, 0) + ' m/s<br>' +
+          '<strong>E_đ = (3/2)kT:</strong> ' + C.fmt(ed * 1e21, 2) + '×10⁻²¹ J<br>' +
+          '<strong>p = (1/3)μmv²_tb = μkT:</strong> ' + C.fmt(pKPa, 1) + ' kPa (theo μ = ' + C.fmt(b12State.muRatio, 2) + '·μ₀).';
+      }
+
+      elB12Gas.addEventListener('change', function () { b12State.M = Number(this.value); updateB12Readout(); });
+      elB12Temp.addEventListener('input', function () {
+        b12State.T = Number(this.value);
+        document.getElementById('b12-temp-val').textContent = b12State.T + ' K';
+        updateB12Readout();
+      });
+      elB12Mu.addEventListener('input', function () {
+        b12State.muRatio = Number(this.value);
+        document.getElementById('b12-mu-val').textContent = C.fmt(b12State.muRatio, 2) + '×';
+        updateB12Readout();
+      });
+      elB12Step.addEventListener('change', function () {
+        b12State.stepMode = this.value;
+        document.getElementById('b12-canvas-title').textContent = this.value === 'wall'
+          ? 'Mô hình Va chạm thành bình |Δp_x| = 2·m·|v_x| & tính đẳng hướng 1/3'
+          : 'Sơ đồ 2 bước dựng Phương trình trạng thái (Đẳng nhiệt → Đẳng tích)';
+        drawB12();
+      });
+      updateB12Readout();
+
+      function drawB12() {
+        var s = C.setupCanvas(document.getElementById('cv-b12'), 340);
+        if (!s) return;
+        var ctx = s.ctx, W = s.width, H = s.height;
+        var col = C.getColors();
+        ctx.clearRect(0, 0, W, H);
+
+        if (b12State.stepMode === 'two_step') {
+          var bx = 46, bw = W - 92, topY = 58;
+          /* 3 khung trạng thái */
+          var pts = [
+            { x: bx + 20, y: topY + 60, t: 'Trạng thái 1', sub: '(p₁, V₁, T₁)' },
+            { x: W * 0.5, y: topY + 145, t: "Trung gian 1'", sub: "(p', V₂, T₁)" },
+            { x: bx + bw - 20, y: topY + 35, t: 'Trạng thái 2', sub: '(p₂, V₂, T₂)' }
+          ];
+          ctx.strokeStyle = col.accent;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(pts[0].x, pts[0].y);
+          ctx.quadraticCurveTo(W * 0.34, topY + 140, pts[1].x, pts[1].y);
+          ctx.stroke();
+
+          ctx.strokeStyle = col.warm;
+          ctx.beginPath();
+          ctx.moveTo(pts[1].x, pts[1].y);
+          ctx.lineTo(pts[2].x, pts[2].y);
+          ctx.stroke();
+
+          pts.forEach(function (pt) {
+            ctx.fillStyle = col.accent;
+            ctx.beginPath(); ctx.arc(pt.x, pt.y, 7, 0, Math.PI * 2); ctx.fill();
+            drawLabelBox(ctx, pt.x - 52, pt.y - 42, pt.t + ' ' + pt.sub, col.bgAlt, col.ink);
+          });
+          drawLabelBox(ctx, W * 0.16, H - 72, 'Bước 1 (T₁ = const): p₁·V₁ = p\'·V₂', col.bgAlt, col.accent);
+          drawLabelBox(ctx, W * 0.52, H - 72, 'Bước 2 (V₂ = const): p\'/T₁ = p₂/T₂', col.bgAlt, col.warm);
+          drawLabelBox(ctx, W * 0.30, H - 36, 'Kết hợp ⇒ p₁·V₁ / T₁ = p₂·V₂ / T₂', col.bgAlt, col.ok);
+          return;
+        }
+
+        var left = 36, top = 36, boxW = W * 0.55, boxH = H - 72;
+        ctx.fillStyle = col.bgAlt;
+        ctx.strokeStyle = col.ink;
+        ctx.lineWidth = 2;
+        ctx.fillRect(left, top, boxW, boxH);
+        ctx.strokeRect(left, top, boxW, boxH);
+
+        /* Thành phải tô sáng khi có va chạm */
+        ctx.fillStyle = b12State.flashTimer > 0 ? col.warm : col.accent;
+        ctx.fillRect(left + boxW - 5, top, 8, boxH);
+
+        var activeCount = Math.max(8, Math.round(b12State.muRatio * 14));
+        var spdMul = Math.sqrt(b12State.T / 300) * Math.sqrt(28 / b12State.M) * 0.015;
+        for (var i = 0; i < Math.min(activeCount, b12State.particles.length); i++) {
+          var p = b12State.particles[i];
+          p.x += p.vx * spdMul;
+          p.y += p.vy * spdMul;
+          if (p.x >= 0.97) { p.x = 0.97; p.vx = -Math.abs(p.vx); b12State.flashTimer = 8; }
+          if (p.x <= 0.03) { p.x = 0.03; p.vx = Math.abs(p.vx); }
+          if (p.y >= 0.96) { p.y = 0.96; p.vy = -Math.abs(p.vy); }
+          if (p.y <= 0.04) { p.y = 0.04; p.vy = Math.abs(p.vy); }
+
+          var px = left + p.x * boxW, py = top + p.y * boxH;
+          ctx.fillStyle = i === 0 ? col.warm : col.accent;
+          ctx.beginPath(); ctx.arc(px, py, i === 0 ? 6 : 4, 0, Math.PI * 2); ctx.fill();
+        }
+        if (b12State.flashTimer > 0) b12State.flashTimer -= 1;
+
+        var infoX = left + boxW + 18;
+        drawLabelBox(ctx, infoX, 46, '1 va chạm: |Δp_x| = 2·m·|v_x|', col.bgAlt, col.warm);
+        drawLabelBox(ctx, infoX, 86, 'Đẳng hướng: v²_x_tb = (1/3)·v²_tb', col.bgAlt, col.accent);
+        drawLabelBox(ctx, infoX, 126, 'p = (1/3)·μ·m·v²_tb = μ·k·T', col.bgAlt, col.ok);
+        drawLabelBox(ctx, infoX, 166, 'T không đổi ⇒ v_rms giữ nguyên!', col.bgAlt, col.ink);
+      }
+
+      function redrawActive() {
+        if (activeTab === 'b2') drawB2();
+        else if (activeTab === 'b3') drawB3();
+        else if (activeTab === 'b8') stepAndDrawB8();
+        else if (activeTab === 'b12') drawB12();
+      }
+
+      /* Vòng lặp anim thống nhất */
+      function tick() {
+        if (activeTab === 'b2') {
+          if (b2State.mode === 'cork' && b2State.corkRunning) {
+            b2State.corkTemp += (b2State.heat / 120) * 0.55;
+            if (b2State.corkTemp >= 100) {
+              b2State.corkPopped = true;
+              b2State.corkOffset = Math.min(95, b2State.corkOffset + 5.5);
+              if (b2State.corkOffset >= 95) b2State.corkRunning = false;
+            }
+            drawB2();
+          } else if (b2State.mode === 'piston' && b2State.pistonPushing) {
+            var step = b2State.pistonSpeed === 'fast' ? 0.045 : 0.012;
+            b2State.pistonProg = Math.min(0.88, b2State.pistonProg + step);
+            b2State.pistonTemp = b2State.pistonSpeed === 'fast' ? (25 + b2State.pistonProg * 215) : (25 + Math.sin(b2State.pistonProg * Math.PI) * 3);
+            if (b2State.pistonTemp > 180) b2State.cottonBurn = true;
+            if (b2State.pistonProg >= 0.88) b2State.pistonPushing = false;
+            drawB2();
+          }
+        } else if (activeTab === 'b3' && b3State.running) {
+          b3State.tau += 0.25;
+          var tcb = (b3State.ta0 + b3State.ratio * b3State.tb0) / (1 + b3State.ratio);
+          var k = 0.085;
+          b3State.ta = tcb + (b3State.ta0 - tcb) * Math.exp(-k * b3State.tau);
+          b3State.tb = tcb + (b3State.tb0 - tcb) * Math.exp(-k * b3State.tau);
+          b3State.history.push({ tau: b3State.tau, ta: b3State.ta, tb: b3State.tb });
+          if (b3State.tau >= 45) b3State.running = false;
+          drawB3();
+        } else if (activeTab === 'b8') {
+          stepAndDrawB8();
+        } else if (activeTab === 'b12' && b12State.stepMode === 'wall') {
+          drawB12();
+        }
+        window.requestAnimationFrame(tick);
+      }
+
+      window.addEventListener('ly-theme-change', redrawActive);
+      window.addEventListener('resize', redrawActive);
+
+      /* Đọc ?tab= hoặc #tab= trên URL */
+      var params = new URLSearchParams(window.location.search || '');
+      var reqTab = params.get('tab') || '';
+      if (!reqTab && window.location.hash.indexOf('tab=') !== -1) {
+        reqTab = window.location.hash.split('tab=')[1].split('&')[0];
+      }
+      selectTab(reqTab || 'b2');
+      window.requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>
