@@ -24,7 +24,71 @@
     .lesson-card .opt-label:has(input:checked) { border-color: var(--accent); }
     .lesson-card .opt-label:has(input:checked:not(:disabled)) { background-color: var(--accent-subtle); }
     .lesson-card { scroll-margin-top: 80px; }
-    .solution-box li + li { margin-top: 6px; }
+    .solution-visual {
+      margin: 4px 0 12px;
+      padding: clamp(12px, 2vw, 20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      display: grid;
+      gap: 10px;
+      overflow-wrap: anywhere;
+    }
+    .solution-visual-title { font-weight: 700; }
+    .solution-visual-steps, .solution-visual-items, .solution-plot-legend {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .solution-visual-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .solution-visual-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .solution-visual-steps li, .solution-visual-panel {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-alt);
+    }
+    .solution-visual-steps li {
+      border-top: 3px solid var(--accent);
+      display: grid;
+      align-items: center;
+    }
+    .solution-particles {
+      position: relative;
+      width: 68px;
+      height: 66px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      margin-bottom: 8px;
+    }
+    .solution-particle {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .solution-visual-panel p { margin: 6px 0 0; }
+    .solution-visual-value { margin-top: 6px; font-weight: 650; }
+    .solution-plot {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 600px;
+      background: #f0f4f8;
+      border-radius: var(--radius-sm);
+    }
+    .solution-plot-axes { margin: 0; color: var(--ink-muted); }
+    .solution-plot-legend li { display: flex; align-items: baseline; gap: 8px; }
+    .solution-plot-key { width: 24px; flex-shrink: 0; border-top: 3px var(--plot-line) var(--plot-color); }
+    [data-theme="dark"] .solution-plot-key { filter: brightness(1.6); }
+    @media (max-width: 560px) {
+      .solution-visual-steps, .solution-visual-items { grid-template-columns: minmax(0, 1fr); }
+      .solution-visual-steps li { border-top: 1px solid var(--border); border-left: 3px solid var(--accent); }
+    }
     .mode-picker { display: none; }
     @media (max-width: 640px) {
       .q-card { padding: 14px; }
@@ -489,6 +553,7 @@
   <script src="./data_hay_kho_c1_c2.js"></script>
   <script src="./data_ly_thuyet_tn_c1_c2.js"></script>
   <script src="./data_bay_ly_thuyet_c1_c2.js"></script>
+  <script src="./minh_hoa_loi_giai_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -923,13 +988,15 @@
         if (exp.dapAn) {
           html += '<p><strong>3. Đáp án chuẩn:</strong> ' + exp.dapAn + '</p>';
         }
-        if (q.bo_sung && q.phan === 'II') {
+        var visual = window.LY_SOLUTION_VISUAL && window.LY_SOLUTION_VISUAL.render(q);
+        if (!visual && q.bo_sung && q.phan === 'II') {
           html += '<ul>' + q.items.map(function (item) {
             return '<li><strong>' + item.label + ')</strong> ' + item.reason + '</li>';
           }).join('') + '</ul>';
         }
         html += '<p><strong>4. Bẫy cần tránh:</strong> ' + exp.bay + '</p>';
         box.innerHTML = html;
+        if (visual) box.firstElementChild.after(visual);
 
         if (isWrong) {
           var btnLog = document.createElement('button');

@@ -595,7 +595,7 @@
         prompt: 'Trong thí nghiệm đo nhiệt hóa hơi riêng L của nước bằng bình đun công suất không đổi đặt trên cân điện tử (bỏ nắp bình), vì sao học sinh phải đợi đến khi nước sôi đều ổn định ở 100 °C mới nhấn bắt đầu tính thời gian τ = 0 và ghi khối lượng m₀?',
         options: [
           'Vì dưới 100 °C cân điện tử không thể hiển thị khối lượng nước.',
-          'Để loại trừ hoàn toàn giai đoạn cấp nhiệt làm nóng nước và vỏ bình lên 100 °C, đảm bảo từ τ = 0 điện năng tiêu thụ chỉ phục vụ sự hóa hơi.',
+          'Để loại giai đoạn tăng nhiệt độ khỏi khoảng đo. Trong giai đoạn sôi đều, phần nhiệt có ích chủ yếu dùng để hóa hơi.',
           'Vì ở 100 °C nước mới bắt đầu có sự chuyển từ thể lỏng sang thể hơi.',
           'Để áp suất hơi nước trong bình kín tăng cao gấp đôi áp suất khí quyển.'
         ],

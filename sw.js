@@ -1,5 +1,5 @@
 /* Service Worker — Hỗ trợ chạy 100% ngoại tuyến & tự cập nhật khi có mạng */
-var CACHE_NAME = 'vatli12-gdpt2018-v7';
+var CACHE_NAME = 'vatli12-gdpt2018-v8';
 
 var PRECACHE_URLS = [
   './',
@@ -26,6 +26,7 @@ var PRECACHE_URLS = [
   './luyen_tap/data_ly_thuyet_tn_c1_c2.js',
   './luyen_tap/data_bay_ly_thuyet_c1_c2.js',
   './luyen_tap/phong_thi_thptqg.html',
+  './luyen_tap/minh_hoa_loi_giai_c1_c2.js',
   './tra_cuu/hang_so_va_doi_don_vi.html'
 ];
 
