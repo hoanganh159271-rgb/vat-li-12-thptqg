@@ -119,6 +119,7 @@
           <div class="btn-group">
             <button type="button" id="exp2-mode-boyle" class="btn btn-primary btn-sm">Định luật Boyle (T = const)</button>
             <button type="button" id="exp2-mode-charles" class="btn btn-sm">Định luật Charles (p = const)</button>
+            <a id="gas-law-practice" class="btn btn-sm" href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B9">Luyện câu hỏi thí nghiệm</a>
           </div>
 
           <div id="boyle-controls" style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
@@ -500,6 +501,8 @@
 
       function setExp2Sub(sub) {
         exp2Sub = sub;
+        document.getElementById('gas-law-practice').href =
+          '../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&bai=' + (sub === 'boyle' ? 'B9' : 'B10');
         exp2ModeBoyleBtn.className = sub === 'boyle' ? 'btn btn-primary btn-sm' : 'btn btn-sm';
         exp2ModeCharlesBtn.className = sub === 'charles' ? 'btn btn-primary btn-sm' : 'btn btn-sm';
         boyleControls.hidden = sub !== 'boyle';
@@ -826,7 +829,11 @@
       setExp2Sub('boyle');
       renderPiston();
 
-      if (location.hash === '#tab-lab2') switchTab('lab2');
+      var requestedTab = new URLSearchParams(location.search).get('tab');
+      if (requestedTab === 'charles' || requestedTab === 'boyle') {
+        switchTab('lab2');
+        setExp2Sub(requestedTab);
+      } else if (requestedTab === 'lab2' || location.hash === '#tab-lab2') switchTab('lab2');
       else if (location.hash === '#tab-piston') switchTab('piston');
       requestAnimationFrame(stepKinetic);
     })();

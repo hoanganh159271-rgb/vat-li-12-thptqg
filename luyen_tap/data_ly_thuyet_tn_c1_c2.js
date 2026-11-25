@@ -12,17 +12,72 @@
       note: '33 câu hỏi Lý thuyết cốt lõi và Lý thuyết Mô hình Thí nghiệm cho từng bài học (Bài 1–6 Chương 1; Bài 8–12 Chương 2) theo chương trình Vật lí 12 GDPT 2018.'
     },
     lessons: [
-      { id: 'B1', chuong: '1', label: 'Bài 1: Cấu trúc của chất. Sự chuyển thể', sim: '../mo_phong/01_chuyen_the_va_nhiet_dong.html' },
-      { id: 'B2', chuong: '1', label: 'Bài 2: Nội năng. Định luật I NĐLH', sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b2' },
-      { id: 'B3', chuong: '1', label: 'Bài 3: Nhiệt độ. Thang nhiệt độ – Nhiệt kế', sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b3' },
-      { id: 'B4', chuong: '1', label: 'Bài 4: Nhiệt dung riêng', sim: '../mo_phong/05_thuc_hanh_nhiet_sgk.html?tab=exp-c' },
-      { id: 'B5', chuong: '1', label: 'Bài 5: Nhiệt nóng chảy riêng', sim: '../mo_phong/05_thuc_hanh_nhiet_sgk.html?tab=exp-lam' },
-      { id: 'B6', chuong: '1', label: 'Bài 6: Nhiệt hóa hơi riêng', sim: '../mo_phong/05_thuc_hanh_nhiet_sgk.html?tab=exp-L' },
-      { id: 'B8', chuong: '2', label: 'Bài 8: Mô hình động học phân tử chất khí', sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b8' },
-      { id: 'B9', chuong: '2', label: 'Bài 9: Định luật Boyle (Đẳng nhiệt)', sim: '../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html?tab=boyle' },
-      { id: 'B10', chuong: '2', label: 'Bài 10: Định luật Charles (Đẳng áp)', sim: '../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html?tab=charles' },
-      { id: 'B11', chuong: '2', label: 'Bài 11: Phương trình trạng thái khí lí tưởng', sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b12' },
-      { id: 'B12', chuong: '2', label: 'Bài 12: Áp suất khí theo mô hình ĐHPT', sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b12' }
+      {
+        id: 'B1', chuong: '1', label: 'Bài 1: Cấu trúc của chất. Sự chuyển thể',
+        sim: '../mo_phong/01_chuyen_the_va_nhiet_dong.html',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-1',
+        checkpoint: 'Tách đoạn tăng nhiệt khỏi đoạn chuyển thể. Kiểm tra áp suất và loại chất trước khi kết luận.'
+      },
+      {
+        id: 'B2', chuong: '1', label: 'Bài 2: Nội năng. Định luật I NĐLH',
+        sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b2',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-2',
+        checkpoint: 'Chọn hệ, chia quá trình thành từng giai đoạn rồi xác định dấu A và Q theo ΔU = A + Q.'
+      },
+      {
+        id: 'B3', chuong: '1', label: 'Bài 3: Nhiệt độ. Thang nhiệt độ – Nhiệt kế',
+        sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b3',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-3',
+        checkpoint: 'Phân biệt nhiệt độ với độ chênh nhiệt độ. Khi cân bằng nhiệt, xét cả nhiệt dung của từng vật.'
+      },
+      {
+        id: 'B4', chuong: '1', label: 'Bài 4: Nhiệt dung riêng',
+        sim: '../mo_phong/05_thuc_hanh_nhiet_sgk.html?tab=exp-c',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-4',
+        checkpoint: 'Tìm hệ số góc của đồ thị nhiệt độ theo thời gian. Xác định công suất thực sự làm nước nóng lên.'
+      },
+      {
+        id: 'B5', chuong: '1', label: 'Bài 5: Nhiệt nóng chảy riêng',
+        sim: '../mo_phong/05_thuc_hanh_nhiet_sgk.html?tab=exp-lam',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-4',
+        checkpoint: 'Tách phần năng lượng làm đá tăng nhiệt khỏi phần làm đá tan. Xét lượng đá tự tan trong phép đối chứng.'
+      },
+      {
+        id: 'B6', chuong: '1', label: 'Bài 6: Nhiệt hóa hơi riêng',
+        sim: '../mo_phong/05_thuc_hanh_nhiet_sgk.html?tab=exp-L',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-4',
+        checkpoint: 'Xác định khoảng nước sôi đều. Đọc tốc độ giảm khối lượng và kiểm tra thất thoát nhiệt.'
+      },
+      {
+        id: 'B8', chuong: '2', label: 'Bài 8: Mô hình động học phân tử chất khí',
+        sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b8',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-5',
+        checkpoint: 'Phân biệt hạt quan sát dưới kính hiển vi, phân tử môi trường và dòng chảy có hướng.'
+      },
+      {
+        id: 'B9', chuong: '2', label: 'Bài 9: Định luật Boyle (Đẳng nhiệt)',
+        sim: '../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html?tab=boyle',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-6',
+        checkpoint: 'Trước khi áp dụng Boyle, kiểm tra nhiệt độ, lượng khí, thể tích thực và loại áp suất đang đo.'
+      },
+      {
+        id: 'B10', chuong: '2', label: 'Bài 10: Định luật Charles (Đẳng áp)',
+        sim: '../mo_phong/06_thuc_hanh_khi_va_dong_hoc.html?tab=charles',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-6',
+        checkpoint: 'Xét cân bằng của pít-tông rồi đọc độ dốc và giao điểm trên trục Kelvin hoặc Celsius.'
+      },
+      {
+        id: 'B11', chuong: '2', label: 'Bài 11: Phương trình trạng thái khí lí tưởng',
+        sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b11',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-7',
+        checkpoint: 'Chọn lượng khí làm hệ. Phân biệt đại lượng trạng thái với công và nhiệt phụ thuộc quá trình.'
+      },
+      {
+        id: 'B12', chuong: '2', label: 'Bài 12: Áp suất khí theo mô hình ĐHPT',
+        sim: '../mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html?tab=b12',
+        theory: '../ly_thuyet/ch1_ch2_truc_quan.html#cd-8',
+        checkpoint: 'Tách vận tốc vuông góc với thành bình. Phân biệt tốc độ, động năng trung bình và mật độ phân tử.'
+      }
     ],
     questions: [
       /* ================= BÀI 1: CẤU TRÚC CỦA CHẤT. SỰ CHUYỂN THỂ ================= */
@@ -39,7 +94,7 @@
         prompt: 'Phát biểu nào sau đây mô tả đúng cấu trúc và chuyển động phân tử của các thể chất theo mô hình động học phân tử?',
         options: [
           'Ở thể khí, lực tương tác phân tử rất mạnh nên giữ các phân tử tại vị trí cân bằng cố định.',
-          'Ở thể rắn, các phân tử sắp xếp có trật tự và dao động nhiệt quanh các vị trí cân bằng xác định.',
+          'Trong chất rắn kết tinh, các hạt sắp xếp có trật tự và dao động nhiệt quanh các vị trí cân bằng xác định.',
           'Ở thể lỏng, các phân tử chuyển động hoàn toàn tự do, chiếm hết thể tích bình chứa.',
           'Ở thể rắn, khoảng cách giữa các phân tử lớn gấp hàng chục lần kích thước phân tử.'
         ],
@@ -47,7 +102,7 @@
         goi_y: 'So sánh độ chặt chẽ liên kết và bậc tự do chuyển động: Rắn (dao động quanh VTCB) → Lỏng (dao động và trượt đổi chỗ) → Khí (chuyển động hỗn loạn tự do).',
         loi_giai: {
           ban_chat: 'Thể của một chất phụ thuộc vào tương quan giữa động năng chuyển động nhiệt và thế năng tương tác (lực liên kết) giữa các phân tử.',
-          bien_doi: 'Thể rắn có lực tương tác lớn nhất, các phân tử dao động quanh vị trí cân bằng xác định ⇒ có hình dạng và thể tích riêng. Thể lỏng có lực tương tác yếu hơn nên chỉ giữ được thể tích xác định. Thể khí có khoảng cách lớn và lực tương tác rất yếu nên chiếm toàn bộ bình chứa.',
+          bien_doi: 'Trong chất rắn kết tinh, các hạt dao động quanh các vị trí trong mạng tinh thể. Trong chất lỏng, các hạt ở gần nhau nhưng có thể đổi chỗ, nên chất lỏng giữ thể tích và đổi hình dạng theo bình. Ở thể khí loãng, các hạt ở xa nhau và khí chiếm toàn bộ thể tích bình.',
           dap_an: 'Chọn B.',
           bay: 'Nhầm đặc điểm khoảng cách lớn của thể khí gán cho thể rắn hoặc nhầm đặc điểm chiếm toàn bộ bình chứa của thể khí gán cho thể lỏng.'
         }
@@ -157,7 +212,7 @@
         phan: 'I',
         muc_do: 'Hiểu',
         nguon: 'Thí nghiệm SGK Vật lí 12 — Đun ống nghiệm nước có nút bần bật ra',
-        prompt: 'Xét thí nghiệm đun nóng một ống nghiệm chứa ít nước được đậy kín bằng nút bần cho tới khi hơi nước đẩy nút bần bật ra ngoài. Xét hệ gồm nước và không khí bên trong ống nghiệm, trong giai đoạn đẩy nút bần bật ra, quy ước dấu nào của A và Q theo Định luật I nhiệt động lực học (ΔU = A + Q) là đúng?',
+        prompt: 'Xét thí nghiệm đun nóng một ống nghiệm chứa ít nước được đậy kín bằng nút bần cho tới khi hơi nước đẩy nút bần bật ra ngoài. Xét hệ gồm nước và khí trong ống, từ lúc nút bắt đầu dịch chuyển đến ngay trước khi rời miệng ống. Mô hình giả sử nút vẫn kín và hệ còn nhận nhiệt từ đèn. Dấu của A và Q theo ΔU = A + Q là gì?',
         options: [
           'Hệ nhận nhiệt nên Q > 0; hệ thực hiện công đẩy nút nên A < 0.',
           'Hệ nhận nhiệt nên Q > 0; hệ nhận công từ nút bần nên A > 0.',
@@ -252,7 +307,7 @@
         phan: 'I',
         muc_do: 'Hiểu',
         nguon: 'SGK Vật lí 12 GDPT 2018 — Thang nhiệt độ Kelvin & Điểm ba của nước',
-        prompt: 'Theo quy ước thang nhiệt độ Kelvin trong chương trình Vật lí 12 GDPT 2018, hai mốc chuẩn dùng để thiết lập 1 đơn vị chia (1 K) và mối liên hệ thường dùng với độ Celsius là:',
+        prompt: 'Theo cách dựng thang Kelvin dùng điểm ba của nước trong SGK, cặp mốc và công thức quy đổi gần đúng nào là đúng?',
         options: [
           'Mốc 0 K (độ không tuyệt đối) và điểm sôi của nước tinh khiết (373 K); T(K) = t(°C) − 273.',
           'Mốc 0 K (độ không tuyệt đối) và điểm đóng băng của nước biển mặn (270 K); T(K) = t(°C) + 270.',
@@ -262,8 +317,8 @@
         answerIndex: 2,
         goi_y: 'Điểm ba của nước có nhiệt độ chính xác là 0,01 °C = 273,16 K (nơi nước đá, nước lỏng và hơi nước cùng cân bằng).',
         loi_giai: {
-          ban_chat: 'Thang nhiệt độ nhiệt động lực học Kelvin có gốc 0 K là độ không tuyệt đối (tại đó động năng chuyển động nhiệt phân tử triệt tiêu) và mốc cố định là điểm ba của nước (273,16 K).',
-          bien_doi: '1 K bằng 1/273,16 hiệu nhiệt độ giữa điểm ba của nước và độ không tuyệt đối. Liên hệ chính xác T(K) = t(°C) + 273,15, trong các bài toán phổ thông thường làm tròn T(K) = t(°C) + 273.',
+          ban_chat: '0 K là độ không tuyệt đối. Định nghĩa kelvin trước năm 2019 ấn định điểm ba của nước ở 273,16 K. SI hiện hành định nghĩa kelvin bằng cách ấn định giá trị của hằng số Boltzmann.',
+          bien_doi: 'Theo định nghĩa cũ, 1 K bằng 1/273,16 hiệu nhiệt độ giữa điểm ba của nước và độ không tuyệt đối. Liên hệ chính xác T(K) = t(°C) + 273,15, trong các bài toán phổ thông thường làm tròn T(K) = t(°C) + 273.',
           dap_an: 'Chọn C.',
           bay: 'Nhầm điểm đóng băng 0 °C (273,15 K) thành điểm ba của nước (0,01 °C = 273,16 K).'
         }

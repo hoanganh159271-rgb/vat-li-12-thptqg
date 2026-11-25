@@ -34,6 +34,10 @@
     </div>
 
     <!-- TAB 1: ĐO NHIỆT DUNG RIÊNG NƯỚC (c) -->
+    <div class="btn-group" style="margin: 14px 0;">
+      <a id="heat-practice" class="btn" href="../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=B4">Luyện câu hỏi thí nghiệm</a>
+    </div>
+
     <section id="panel-exp-c">
       <div class="lab-layout">
         <div class="card">
@@ -321,7 +325,11 @@
         L: { btn: document.getElementById('tab-exp-L'), panel: document.getElementById('panel-exp-L') }
       };
 
+      var practiceLink = document.getElementById('heat-practice');
+      var lessonByTab = { c: 'B4', lambda: 'B5', L: 'B6' };
+
       function switchTab(name) {
+        practiceLink.href = '../luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&bai=' + lessonByTab[name];
         activeTab = name;
         Object.keys(tabMap).forEach(function (k) {
           var isSel = k === name;
@@ -923,6 +931,9 @@
       resetC();
       resetL();
       resetV();
+      var requestedTab = new URLSearchParams(location.search).get('tab');
+      var tabByQuery = { 'exp-c': 'c', 'exp-lam': 'lambda', 'exp-L': 'L' };
+      if (Object.prototype.hasOwnProperty.call(tabByQuery, requestedTab)) switchTab(tabByQuery[requestedTab]);
       requestAnimationFrame(tick);
     })();
   </script>

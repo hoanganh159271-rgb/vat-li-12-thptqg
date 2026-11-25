@@ -8,6 +8,32 @@
   <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
   <link rel="stylesheet" href="../assets/style.css">
   <style>
+    #mode-controls select { max-width: 100%; }
+    #mode-controls label + select { min-width: 0 !important; width: 100%; min-height: 44px; }
+    #mode-controls label { display: block; }
+    #mode-controls > div > div { min-width: 0; }
+    #lttn-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+    .lesson-progress { grid-column: 1 / -1; }
+    .lesson-progress { display: grid; gap: 5px; }
+    .lesson-progress progress { width: 100%; height: 10px; accent-color: var(--accent); }
+    .lesson-guide { background: var(--accent-subtle); }
+    .lesson-guide .btn { min-height: 44px; }
+    .lesson-steps { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+    .lesson-steps .btn { min-height: 44px; }
+    .lesson-card .btn { min-height: 44px; }
+    .lesson-card .opt-label:has(input:checked) { border-color: var(--accent); }
+    .lesson-card .opt-label:has(input:checked:not(:disabled)) { background-color: var(--accent-subtle); }
+    .lesson-card { scroll-margin-top: 80px; }
+    .solution-box li + li { margin-top: 6px; }
+    .mode-picker { display: none; }
+    @media (max-width: 640px) {
+      .q-card { padding: 14px; }
+      .mode-tabs { display: none; }
+      .mode-picker { display: grid; gap: 5px; }
+      .mode-picker select { min-height: 44px; width: 100%; }
+      #lttn-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #lttn-filters > div:first-child { grid-column: 1 / -1; }
+    }
     .exam-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -182,34 +208,38 @@
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a href="../index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <a href="../index.html" class="brand-link">Ôn thi Vật lí 12</a>
       <div class="topbar-actions">
-        <a href="../index.html" class="btn btn-sm">Quay về Bảng điều khiển</a>
-        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Hằng số &amp; Đổi đơn vị</a>
+        <a href="../tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Đổi đơn vị</a>
         <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
       </div>
     </div>
   </header>
 
   <main class="wrap page-main">
-    <h1>Phòng luyện tập thực chiến THPTQG (GDPT 2018)</h1>
-    <p class="muted" id="exam-subtitle">Chấm thang lũy tiến Phần II (0,10 – 0,25 – 0,50 – 1,00), kiểm tra phiếu tô tối đa 4 ký tự Phần III và lưu tự động câu sai vào bộ nhớ cục bộ.</p>
+    <h1 id="practice-title">Lý thuyết và thí nghiệm Chương 1–2</h1>
+    <p class="muted" id="lesson-intro">Chọn bài, tự trả lời rồi kiểm tra lập luận. Câu sai được lưu để ôn lại.</p>
 
     <!-- Thanh chuyển 4 chế độ Ch1-C2 + Đề 4 chương -->
     <div class="card" style="margin-top: 18px;">
-      <div class="mode-tabs" role="tablist" aria-label="Chế độ luyện tập">
-        <button type="button" class="mode-tab" role="tab" data-mode="exam50" id="tab-exam50" aria-selected="true">1. Thi thử Ch1–C2 (50 phút - 28 câu)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="chuyen_de" id="tab-chuyen_de" aria-selected="false">2. Luyện theo Dạng bài (6 chuyên đề)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-selected="false">3. Chuyên cày Bẫy Đúng/Sai &amp; Trả lời ngắn</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="on_cau_sai" id="tab-on_cau_sai" aria-selected="false">4. Ôn lại Câu Từng Sai (0)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="nguon_that" id="tab-nguon_that" aria-selected="false">Nguồn thật: Bộ, Sở &amp; Hay–Khó (76 câu)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="ly_thuyet_tn" id="tab-ly_thuyet_tn" aria-selected="false">LT &amp; Mô hình TN theo Bài (33 câu)</button>
-        <button type="button" class="mode-tab" role="tab" data-mode="de_mau" id="tab-de_mau" aria-selected="false">Đề mẫu 4 chương (Ch1–Ch4)</button>
+      <div class="mode-tabs" role="group" aria-label="Chế độ luyện tập">
+        <button type="button" class="mode-tab" data-mode="ly_thuyet_tn" id="tab-ly_thuyet_tn" aria-pressed="false">Lý thuyết &amp; thí nghiệm</button>
+        <button type="button" class="mode-tab" data-mode="exam50" id="tab-exam50" aria-pressed="true">Thi thử Ch1–2</button>
+        <button type="button" class="mode-tab" data-mode="chuyen_de" id="tab-chuyen_de" aria-pressed="false">Luyện chuyên đề</button>
+        <button type="button" class="mode-tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-pressed="false">Bẫy Đúng/Sai &amp; TLN</button>
+        <button type="button" class="mode-tab" data-mode="on_cau_sai" id="tab-on_cau_sai" aria-pressed="false">Ôn câu sai (0)</button>
+        <button type="button" class="mode-tab" data-mode="nguon_that" id="tab-nguon_that" aria-pressed="false">Kho đề nguồn thật</button>
+        <button type="button" class="mode-tab" data-mode="de_mau" id="tab-de_mau" aria-pressed="false">Đề mẫu 4 chương</button>
+      </div>
+
+      <div class="mode-picker">
+        <label for="mode-select">Chế độ luyện tập</label>
+        <select id="mode-select"></select>
       </div>
 
       <!-- Thanh điều khiển ngữ cảnh theo chế độ -->
       <div id="mode-controls" style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--border); padding-top: 14px;">
-        <div class="exam-toolbar">
+        <div class="exam-toolbar" id="exam-toolbar">
           <div id="mode-left-controls" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;"></div>
 
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
@@ -311,31 +341,35 @@
         </div>
 
         <!-- Bộ lọc Lý thuyết & Mô hình TN từng Bài học (Mode 6) -->
-        <div id="lttn-filters" hidden style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+        <div id="lttn-filters" hidden>
           <div>
-            <label for="sel-lttn-bai" class="control-label" style="display: block; margin-bottom: 4px;">Lọc theo Bài học</label>
+            <label for="sel-lttn-bai" class="control-label" style="display: block; margin-bottom: 4px;">Chương hoặc bài học</label>
             <select id="sel-lttn-bai" style="min-width: 260px;">
-              <option value="all">Tất cả 11 bài học Ch1–C2 (33 câu)</option>
+              <option value="all">Cả hai chương</option>
+              <option value="c1">Chương 1 · Vật lí nhiệt</option>
+              <option value="c2">Chương 2 · Khí lí tưởng</option>
             </select>
           </div>
           <div>
-            <label for="sel-lttn-loai" class="control-label" style="display: block; margin-bottom: 4px;">Phân loại nội dung</label>
+            <label for="sel-lttn-loai" class="control-label" style="display: block; margin-bottom: 4px;">Nội dung luyện</label>
             <select id="sel-lttn-loai" style="min-width: 210px;">
               <option value="all">Lí thuyết &amp; Mô hình TN</option>
-              <option value="ly_thuyet">Lí thuyết bài học cốt lõi</option>
-              <option value="mo_hinh_tn">Lí thuyết Mô hình Thí nghiệm</option>
+              <option value="ly_thuyet">Lý thuyết</option>
+              <option value="mo_hinh_tn">Mô hình thí nghiệm</option>
+              <option value="bo_sung">Câu nâng cao: lý thuyết &amp; thí nghiệm</option>
             </select>
           </div>
           <div>
-            <label for="sel-lttn-phan" class="control-label" style="display: block; margin-bottom: 4px;">Lọc Phần</label>
+            <label for="sel-lttn-phan" class="control-label" style="display: block; margin-bottom: 4px;">Dạng câu hỏi</label>
             <select id="sel-lttn-phan" style="min-width: 170px;">
-              <option value="all">Cả 2 phần (I &amp; II)</option>
-              <option value="I">Phần I (Nhiều lựa chọn)</option>
-              <option value="II">Phần II (Đúng/Sai)</option>
+              <option value="all">Tất cả</option>
+              <option value="I">Nhiều lựa chọn</option>
+              <option value="II">Đúng/Sai</option>
             </select>
           </div>
-          <div style="align-self: flex-end;">
-            <span id="lttn-count-tag" class="tag">Đang hiển thị: 33 câu</span>
+          <div class="lesson-progress">
+            <label id="lttn-count-tag" for="lttn-progress" aria-live="polite"></label>
+            <progress id="lttn-progress" value="0" max="1"></progress>
           </div>
         </div>
 
@@ -454,6 +488,7 @@
   <script src="./data_de_tinh_hot_c1_c2.js"></script>
   <script src="./data_hay_kho_c1_c2.js"></script>
   <script src="./data_ly_thuyet_tn_c1_c2.js"></script>
+  <script src="./data_bay_ly_thuyet_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -549,7 +584,14 @@
       /* Tham chiếu DOM */
       var modeTabs = document.querySelectorAll('.mode-tab');
       var tabWrongBtn = document.getElementById('tab-on_cau_sai');
+      var modeSelect = document.getElementById('mode-select');
+      var practiceTitle = document.getElementById('practice-title');
+      var lessonIntro = document.getElementById('lesson-intro');
+      modeTabs.forEach(function (tab) {
+        modeSelect.add(new Option(tab.textContent, tab.dataset.mode));
+      });
       var leftControls = document.getElementById('mode-left-controls');
+      var examToolbar = document.getElementById('exam-toolbar');
       var timerEl = document.getElementById('timer-box');
       var btnTimerToggle = document.getElementById('btn-timer-toggle');
       var btnResetMode = document.getElementById('btn-reset-mode');
@@ -577,6 +619,11 @@
       var selLttnLoai = document.getElementById('sel-lttn-loai');
       var selLttnPhan = document.getElementById('sel-lttn-phan');
       var lttnCountTag = document.getElementById('lttn-count-tag');
+      var lttnProgress = document.getElementById('lttn-progress');
+      var lttnLessons = LTTN_BANK.lessons || [];
+      var lttnQuestions = (LTTN_BANK.questions || []).slice().sort(function (a, b) {
+        return Number(a.bai.slice(1)) - Number(b.bai.slice(1));
+      });
 
       var legacyFilters = document.getElementById('legacy-filters');
       var selExam = document.getElementById('sel-exam');
@@ -616,7 +663,7 @@
         selNguonDang.appendChild(optNguon);
       });
 
-      (LTTN_BANK.lessons || []).forEach(function (ls) {
+      lttnLessons.forEach(function (ls) {
         var optLttn = document.createElement('option');
         optLttn.value = ls.id;
         optLttn.textContent = 'Ch' + ls.chuong + ' — ' + ls.label;
@@ -633,6 +680,7 @@
       /* Trạng thái ứng dụng */
       var appState = {
         mode: 'exam50',
+        lessonIndex: null,
         submitted: false,
         p1Ans: {},
         p2Ans: {},
@@ -694,7 +742,8 @@
 
       function updateWrongTabBadge() {
         var count = C.getWrongQueue().length;
-        tabWrongBtn.textContent = '4. Ôn lại Câu Từng Sai (' + count + ')';
+        tabWrongBtn.textContent = 'Ôn câu sai (' + count + ')';
+        modeSelect.querySelector('[value=on_cau_sai]').textContent = tabWrongBtn.textContent;
       }
 
       function syncDangChipUI() {
@@ -723,9 +772,12 @@
       selNguonNhom.addEventListener('change', renderView);
       selNguonDang.addEventListener('change', renderView);
       selNguonPhan.addEventListener('change', renderView);
-      selLttnBai.addEventListener('change', renderView);
-      selLttnLoai.addEventListener('change', renderView);
-      selLttnPhan.addEventListener('change', renderView);
+      [selLttnBai, selLttnLoai, selLttnPhan].forEach(function (select) {
+        select.addEventListener('change', function () {
+          appState.lessonIndex = null;
+          renderView();
+        });
+      });
 
       function buildTrapPool() {
         var list = [];
@@ -773,9 +825,12 @@
           return { list: filteredNguon };
         }
         if (appState.mode === 'ly_thuyet_tn') {
-          var filteredLttn = (LTTN_BANK.questions || []).filter(function (q) {
-            if (selLttnBai.value !== 'all' && q.bai !== selLttnBai.value) return false;
-            if (selLttnLoai.value !== 'all' && q.loai_lt !== selLttnLoai.value) return false;
+          var lesson = selLttnBai.value;
+          var content = selLttnLoai.value;
+          var filteredLttn = lttnQuestions.filter(function (q) {
+            if (lesson !== 'all' && lesson !== q.bai && lesson !== 'c' + q.chuong) return false;
+            if (content === 'bo_sung' && !q.bo_sung) return false;
+            if (content !== 'all' && content !== 'bo_sung' && content !== q.loai_lt) return false;
             if (selLttnPhan.value !== 'all' && q.phan !== selLttnPhan.value) return false;
             return true;
           });
@@ -860,8 +915,18 @@
         var html = '<div class="notice-title">Lời giải chi tiết</div>' +
           '<p><strong>1. Bản chất &amp; Điều kiện mô hình:</strong> ' + exp.banChat + '</p>' +
           '<p><strong>2. Biến đổi &amp; Công thức:</strong> ' + exp.bienDoi + '</p>';
+        if (q.bo_sung) {
+          html += '<p><strong>Đơn vị:</strong> ' + q.loi_giai.don_vi + '</p>' +
+            '<p><strong>Điều kiện áp dụng:</strong> ' + q.loi_giai.dieu_kien + '</p>' +
+            '<p><strong>Cách đọc đồ thị:</strong> ' + q.loi_giai.do_thi + '</p>';
+        }
         if (exp.dapAn) {
           html += '<p><strong>3. Đáp án chuẩn:</strong> ' + exp.dapAn + '</p>';
+        }
+        if (q.bo_sung && q.phan === 'II') {
+          html += '<ul>' + q.items.map(function (item) {
+            return '<li><strong>' + item.label + ')</strong> ' + item.reason + '</li>';
+          }).join('') + '</ul>';
         }
         html += '<p><strong>4. Bẫy cần tránh:</strong> ' + exp.bay + '</p>';
         box.innerHTML = html;
@@ -886,11 +951,18 @@
       }
 
       /* Render 1 thẻ câu hỏi dùng chung cho mọi chế độ */
-      function renderQuestionCard(q, indexZero, practiceMode) {
+      function renderQuestionCard(q, indexZero, practiceMode, count) {
         var card = document.createElement('div');
         card.className = 'q-card';
         card.id = 'card-' + q.id;
 
+        var guided = appState.mode === 'ly_thuyet_tn';
+        if (guided) {
+          card.classList.add('lesson-card');
+          card.tabIndex = -1;
+          card.setAttribute('role', 'group');
+          card.setAttribute('aria-labelledby', card.id + '-title');
+        }
         var checkedInfo = appState.checkedQuestions[q.id] || null;
         var locked = practiceMode ? Boolean(checkedInfo) : appState.submitted;
         var solvedMap = C.getSolvedMap();
@@ -899,9 +971,10 @@
         head.className = 'q-head';
 
         var phanLabel = q.phan === 'II' ? 'Đúng/Sai' : (q.phan === 'III' ? 'Trả lời ngắn' : 'Nhiều lựa chọn');
-        var qTitle = 'Câu ' + (indexZero + 1) + ' (' + phanLabel + ')';
+        var qTitle = 'Câu ' + (indexZero + 1) + (count ? '/' + count : '') + ' (' + phanLabel + ')';
         var titleEl = document.createElement('strong');
         titleEl.textContent = qTitle;
+        titleEl.id = card.id + '-title';
 
         var tagsWrap = document.createElement('div');
         tagsWrap.className = 'q-tags';
@@ -911,7 +984,7 @@
         chTag.textContent = C.CHAPTER_NAMES[q.chuong || q.chapter] || ('Chương ' + (q.chuong || q.chapter));
         tagsWrap.appendChild(chTag);
 
-        if (q.dang_bai) {
+        if (q.dang_bai && !guided) {
           var dTag = document.createElement('span');
           dTag.className = 'tag tag-cold';
           dTag.textContent = dangLabel(q.dang_bai);
@@ -926,7 +999,7 @@
         if (q.loai_lt) {
           var ltTag = document.createElement('span');
           ltTag.className = q.loai_lt === 'mo_hinh_tn' ? 'tag tag-warm' : 'tag';
-          ltTag.textContent = q.loai_lt === 'mo_hinh_tn' ? 'Mô hình TN' : 'Lí thuyết bài';
+          ltTag.textContent = q.loai_lt === 'mo_hinh_tn' ? 'Mô hình thí nghiệm' : 'Lý thuyết';
           tagsWrap.appendChild(ltTag);
         }
         if (q.muc_do) {
@@ -1009,10 +1082,13 @@
             row.className = 'tf-row';
 
             var txt = document.createElement('div');
+            txt.id = card.id + '-item-' + ii;
             txt.innerHTML = '<strong>' + item.label + ')</strong> ' + item.text;
 
             var grp = document.createElement('div');
             grp.className = 'tf-choice-group';
+            grp.setAttribute('role', 'group');
+            grp.setAttribute('aria-labelledby', txt.id);
 
             var userChoice = appState.p2Ans[q.id][ii];
             var btnTrue = document.createElement('button');
@@ -1045,7 +1121,7 @@
               row.style.backgroundColor = okItem ? 'var(--phys-ok-bg)' : 'var(--phys-warm-bg)';
               var ansTag = document.createElement('span');
               ansTag.className = okItem ? 'tag tag-ok' : 'tag tag-warm';
-              ansTag.textContent = 'Đáp án: ' + (item.answer ? 'Đúng' : 'Sai');
+              ansTag.textContent = (okItem ? 'Đã chọn đúng · ' : 'Đáp án · ') + (item.answer ? 'Đúng' : 'Sai');
               grp.appendChild(ansTag);
             } else {
               grp.appendChild(btnTrue);
@@ -1121,10 +1197,12 @@
             var btnHint = document.createElement('button');
             btnHint.type = 'button';
             btnHint.className = 'btn btn-sm';
-            btnHint.textContent = appState.revealedHints[q.id] ? 'Ẩn Gợi Ý' : 'Xem Gợi Ý';
+            btnHint.dataset.action = 'hint';
+            btnHint.setAttribute('aria-expanded', Boolean(appState.revealedHints[q.id]));
+            btnHint.textContent = appState.revealedHints[q.id] ? 'Ẩn gợi ý' : 'Xem gợi ý';
             btnHint.addEventListener('click', function () {
               appState.revealedHints[q.id] = !appState.revealedHints[q.id];
-              renderView();
+              renderQuestionUpdate(guided, '[data-action=hint]');
             });
             actionRow.appendChild(btnHint);
           }
@@ -1135,6 +1213,14 @@
             btnCheck.className = 'btn btn-primary btn-sm';
             btnCheck.textContent = appState.mode === 'on_cau_sai' ? 'Kiểm tra lại câu này' : 'Kiểm tra câu này';
             btnCheck.addEventListener('click', function () {
+              if (guided && q.phan === 'II') {
+                var unfilled = appState.p2Ans[q.id].indexOf(null);
+                if (unfilled !== -1) {
+                  alert('Hãy chọn Đúng hoặc Sai cho cả 4 ý trước khi kiểm tra.');
+                  card.querySelectorAll('.tf-choice-group')[unfilled].querySelector('button').focus();
+                  return;
+                }
+              }
               if (!isQuestionAttempted(q)) {
                 alert('Hãy chọn hoặc nhập đáp án của bạn trước khi kiểm tra!');
                 return;
@@ -1152,18 +1238,20 @@
                 delete appState.clearedWrongView[q.id];
               }
               C.recordQuestionOutcome(q, res.isCorrect);
-              updateWrongTabBadge();
-              renderView();
+              if (guided) appState.revealedSolutions[q.id] = true;
+              renderQuestionUpdate(guided, '.lesson-card .notice');
             });
             actionRow.appendChild(btnCheck);
           } else {
             var btnSol = document.createElement('button');
             btnSol.type = 'button';
             btnSol.className = 'btn btn-sm';
-            btnSol.textContent = appState.revealedSolutions[q.id] ? 'Ẩn Lời Giải Chi Tiết' : 'Xem Lời Giải Chi Tiết';
+            btnSol.dataset.action = 'solution';
+            btnSol.setAttribute('aria-expanded', Boolean(appState.revealedSolutions[q.id]));
+            btnSol.textContent = appState.revealedSolutions[q.id] ? 'Ẩn lời giải' : 'Xem lời giải';
             btnSol.addEventListener('click', function () {
               appState.revealedSolutions[q.id] = !appState.revealedSolutions[q.id];
-              renderView();
+              renderQuestionUpdate(guided, '[data-action=solution]');
             });
             actionRow.appendChild(btnSol);
 
@@ -1177,7 +1265,7 @@
               if (q.phan === 'I') delete appState.p1Ans[q.id];
               else if (q.phan === 'II') appState.p2Ans[q.id] = [null, null, null, null];
               else appState.p3Ans[q.id] = '';
-              renderView();
+              renderQuestionUpdate(guided, '.lesson-card');
             });
             actionRow.appendChild(btnRetry);
           }
@@ -1193,6 +1281,7 @@
 
           if (checkedInfo) {
             var verdictBox = document.createElement('div');
+            verdictBox.tabIndex = -1;
             verdictBox.className = checkedInfo.isCorrect ? 'notice notice-ok' : 'notice notice-danger';
             var msg = checkedInfo.isCorrect
               ? (appState.mode === 'on_cau_sai'
@@ -1238,6 +1327,80 @@
         });
       }
 
+      function renderQuestionUpdate(guided, selector) {
+        renderView();
+        if (guided) {
+          var target = qContainer.querySelector(selector);
+          if (target) target.focus();
+        }
+      }
+
+      function renderLessonQuestion(list) {
+        var saved = C.loadStore();
+        function mastered(q) {
+          return Boolean(saved.solvedCorrect[q.id] && !saved.wrongQueue[q.id]);
+        }
+
+        var count = list.filter(mastered).length;
+        lttnCountTag.textContent = 'Đã làm đúng ' + count + '/' + list.length + ' câu trong bộ lọc';
+        lttnProgress.max = list.length || 1;
+        lttnProgress.value = count;
+        if (!list.length) return;
+
+        if (appState.lessonIndex === null) {
+          var firstRemaining = list.findIndex(function (q) { return !mastered(q); });
+          appState.lessonIndex = Math.max(0, firstRemaining);
+        }
+        var index = appState.lessonIndex;
+        var q = list[index];
+        var lesson = lttnLessons.find(function (item) { return item.id === q.bai; });
+        if (lesson) {
+          var guide = document.createElement('aside');
+          guide.className = 'card lesson-guide';
+          var heading = document.createElement('strong');
+          heading.textContent = lesson.label;
+          var note = document.createElement('p');
+          note.textContent = lesson.checkpoint;
+          var links = document.createElement('div');
+          links.className = 'btn-group';
+          links.innerHTML = '<a class="btn btn-sm" target="_blank" rel="noopener" title="Mở trong thẻ mới" href="' + lesson.theory + '">Đọc lý thuyết</a>' +
+            '<a class="btn btn-sm" target="_blank" rel="noopener" title="Mở trong thẻ mới" href="' + lesson.sim + '">Quan sát mô phỏng</a>';
+          guide.append(heading, note, links);
+          qContainer.appendChild(guide);
+        }
+
+        qContainer.appendChild(renderQuestionCard(q, index, true, list.length));
+        var controls = document.createElement('div');
+        controls.className = 'lesson-steps';
+        function step(label, target, disabled, primary) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = primary ? 'btn btn-primary' : 'btn';
+          btn.textContent = label;
+          btn.disabled = disabled;
+          btn.addEventListener('click', function () {
+            appState.lessonIndex = target;
+            renderQuestionUpdate(true, '.lesson-card');
+          });
+          return btn;
+        }
+        if (index < list.length - 1) {
+          controls.append(step('← Câu trước', index - 1, index === 0), step('Câu tiếp →', index + 1, false, true));
+        } else {
+          controls.append(step('← Câu trước', index - 1, index === 0));
+          var remaining = list.findIndex(function (item) { return !mastered(item); });
+          if (remaining !== -1 && remaining !== index) {
+            controls.append(step('Đến câu chưa đạt', remaining, false, true));
+          }
+          if (count === list.length) {
+            var complete = document.createElement('strong');
+            complete.textContent = 'Đã làm đúng toàn bộ câu trong bộ lọc';
+            controls.appendChild(complete);
+          }
+        }
+        qContainer.appendChild(controls);
+      }
+
       function renderView() {
         updateWrongTabBadge();
         var isExamMode = (appState.mode === 'exam50' || appState.mode === 'de_mau');
@@ -1246,7 +1409,11 @@
         cdFilters.hidden = appState.mode !== 'chuyen_de';
         trapFilters.hidden = appState.mode !== 'bay_ds_tln';
         nguonFilters.hidden = appState.mode !== 'nguon_that';
-        lttnFilters.hidden = appState.mode !== 'ly_thuyet_tn';
+        var guided = appState.mode === 'ly_thuyet_tn';
+        lttnFilters.hidden = !guided;
+        practiceTitle.textContent = guided ? 'Lý thuyết và thí nghiệm Chương 1–2' : 'Phòng luyện tập THPTQG';
+        lessonIntro.hidden = !guided;
+        examToolbar.hidden = guided;
         legacyFilters.hidden = appState.mode !== 'de_mau';
         btnExportWrongMd.hidden = appState.mode !== 'on_cau_sai';
         submitFooterCard.hidden = !isExamMode;
@@ -1258,10 +1425,9 @@
           bay_ds_tln: 'Kho tốc độ cao gồm toàn bộ 28 câu Phần II (Đúng/Sai) & Phần III (Trả lời ngắn) của Chương 1 & 2.',
           on_cau_sai: 'Tự động gom các câu làm sai từ bộ nhớ cục bộ. Làm đúng trọn vẹn mới gỡ khỏi danh sách sai.',
           nguon_that: '76 câu hỏi 100% nguồn thật: 28 câu Bộ GD&ĐT & SGK + 28 câu Đề các Sở/Chuyên hot + 20 câu Tuyển tập Hay & Khó (Vận dụng cao 9+).',
-          ly_thuyet_tn: '33 câu hỏi Lí thuyết cốt lõi & Lí thuyết Mô hình Thí nghiệm cho từng bài học (Bài 1–6 Chương 1; Bài 8–12 Chương 2) — mỗi bài 2 câu Phần I + 1 câu Phần II Đúng/Sai.',
           de_mau: 'Đề mẫu tổng hợp đủ cả 4 chương (Vật lí nhiệt, Khí lí tưởng, Từ trường, Vật lí hạt nhân).'
         };
-        leftControls.innerHTML = '<span class="muted" style="font-size: 0.92rem;">' + modeDesc[appState.mode] + '</span>';
+        leftControls.textContent = modeDesc[appState.mode] || '';
 
         var data = getActiveQuestions();
         qContainer.innerHTML = '';
@@ -1273,7 +1439,8 @@
         } else if (appState.mode === 'nguon_that') {
           nguonCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + ALL_NGUON_QUESTIONS.length + ' câu';
         } else if (appState.mode === 'ly_thuyet_tn') {
-          lttnCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + (LTTN_BANK.questions || []).length + ' câu';
+          renderLessonQuestion(data.list);
+          if (data.list.length) return;
         }
 
         if (isExamMode) {
@@ -1289,7 +1456,7 @@
           if (appState.mode === 'on_cau_sai') {
             empty.innerHTML =
               '<h3 style="margin: 0;">Chưa có câu sai tồn đọng trong hàng đợi</h3>' +
-              '<p class="muted">Mỗi khi bạn làm sai trong Thi thử, Chuyên đề hoặc Cày bẫy, câu đó tự động xuất hiện ở đây để bạn ôn lại cho tới khi làm đúng hoàn toàn.</p>' +
+              '<p class="muted">Câu bạn trả lời sai sẽ xuất hiện ở đây. Trả lời đúng toàn bộ để hoàn tất ôn lại.</p>' +
               '<div class="btn-group" style="margin-top: 8px;">' +
               '<button type="button" class="btn btn-primary btn-sm" id="empty-go-exam">Làm đề Thi thử 50 phút Ch1–C2</button>' +
               '<button type="button" class="btn btn-sm" id="empty-go-trap">Chuyên cày Đúng/Sai &amp; Trả lời ngắn</button>' +
@@ -1298,7 +1465,7 @@
             document.getElementById('empty-go-exam').addEventListener('click', function () { switchMode('exam50'); });
             document.getElementById('empty-go-trap').addEventListener('click', function () { switchMode('bay_ds_tln'); });
           } else {
-            empty.innerHTML = '<strong>Không có câu hỏi khớp bộ lọc hiện tại.</strong><p class="muted">Hãy chọn ít nhất 1 dạng bài hoặc nới lỏng bộ lọc Phần / Mức độ.</p>';
+            empty.innerHTML = '<strong>Không có câu hỏi khớp bộ lọc.</strong><p class="muted">Hãy đổi bộ lọc để xem thêm câu hỏi.</p>';
             qContainer.appendChild(empty);
           }
           return;
@@ -1400,6 +1567,7 @@
 
       function resetModeState() {
         appState.submitted = false;
+        appState.lessonIndex = null;
         appState.p1Ans = {};
         appState.p2Ans = {};
         appState.p3Ans = {};
@@ -1418,16 +1586,22 @@
         var validModes = ['exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'ly_thuyet_tn', 'de_mau'];
         if (validModes.indexOf(nextMode) < 0) nextMode = 'exam50';
         appState.mode = nextMode;
+        modeSelect.value = nextMode;
         modeTabs.forEach(function (t) {
-          t.setAttribute('aria-selected', t.getAttribute('data-mode') === nextMode ? 'true' : 'false');
+          t.setAttribute('aria-pressed', t.getAttribute('data-mode') === nextMode ? 'true' : 'false');
         });
         resetModeState();
       }
 
       modeTabs.forEach(function (btn) {
         btn.addEventListener('click', function () {
-          switchMode(btn.getAttribute('data-mode'));
+          var mode = btn.getAttribute('data-mode');
+          if (mode !== appState.mode) switchMode(mode);
         });
+      });
+
+      modeSelect.addEventListener('change', function () {
+        switchMode(modeSelect.value);
       });
 
       btnResetMode.addEventListener('click', resetModeState);
@@ -1543,7 +1717,7 @@
 
       /* Khởi tạo từ URL query params (?mode=...&dang=...&nguon=...) */
       var params = new URLSearchParams(window.location.search || '');
-      var qMode = params.get('mode') || 'exam50';
+      var qMode = params.get('mode') || 'ly_thuyet_tn';
       var qDang = params.get('dang');
       if (qDang && selectedDangs.hasOwnProperty(qDang)) {
         C.DANG_BAI_LIST.forEach(function (d) { selectedDangs[d.id] = (d.id === qDang); });

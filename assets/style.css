@@ -944,7 +944,7 @@ tr:last-child td {
   border-color: var(--accent);
 }
 
-.mode-tab[aria-selected="true"] {
+.mode-tab[aria-pressed="true"] {
   background-color: var(--accent);
   border-color: var(--accent);
   color: var(--accent-ink);
@@ -1059,5 +1059,128 @@ tr:last-child td {
   .btn:hover,
   .btn:active {
     transform: none !important;
+  }
+}
+
+/* Lộ trình Chương 1–2 */
+[hidden] {
+  display: none !important;
+}
+
+.study-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 48px);
+  align-items: center;
+  padding: clamp(20px, 4.5vw, 58px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, var(--surface), var(--accent-subtle));
+}
+
+.study-intro h1 {
+  font-size: clamp(2.15rem, 5vw, 4.15rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  margin-bottom: 18px;
+}
+
+.study-intro p {
+  color: var(--ink-muted);
+  max-width: 40ch;
+  text-wrap: pretty;
+}
+
+.study-intro .study-kicker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.study-intro .btn-group {
+  margin-top: 22px;
+}
+
+.study-chapters {
+  display: grid;
+  gap: 12px;
+}
+
+.study-chapter {
+  --chapter-ink: var(--phys-cold);
+  --chapter-tint: var(--phys-cold-bg);
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.study-chapter-heat {
+  --chapter-ink: var(--phys-warm);
+  --chapter-tint: var(--phys-warm-bg);
+}
+
+.study-chapter-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+.study-chapter-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.study-chapter-head small,
+.study-chapter label {
+  color: var(--ink-muted);
+}
+
+.study-formula {
+  padding: 6px 10px;
+  color: var(--chapter-ink);
+  background: var(--chapter-tint);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.study-chapter progress {
+  width: 100%;
+  height: 10px;
+  accent-color: var(--chapter-ink);
+  margin-bottom: 4px;
+}
+
+.study-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.study-more {
+  width: 100%;
+}
+
+.study-home .btn,
+.study-more summary {
+  min-height: 44px;
+  white-space: normal;
+}
+
+.study-more summary {
+  justify-content: flex-start;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    position: static;
+  }
+
+  .study-hero {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

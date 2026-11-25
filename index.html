@@ -9,13 +9,13 @@
   <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
   <link rel="stylesheet" href="./assets/style.css">
 </head>
-<body>
+<body class="study-home">
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a href="./index.html" class="brand-link">Hệ sinh thái Vật lí 12 — GDPT 2018</a>
+      <a href="./index.html" class="brand-link"><img src="./assets/icon.svg" width="34" height="34" alt=""> Ôn thi Vật lí 12</a>
       <div class="topbar-actions">
-        <button type="button" id="ly-export-json" class="btn btn-sm">Xuất JSON sao lưu</button>
-        <button type="button" id="ly-import-trigger" class="btn btn-sm">Nhập JSON</button>
+        <button type="button" id="ly-export-json" class="btn btn-sm">Xuất sao lưu</button>
+        <button type="button" id="ly-import-trigger" class="btn btn-sm">Nhập sao lưu</button>
         <input type="file" id="ly-import-json" accept="application/json,.json" hidden>
         <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
       </div>
@@ -23,35 +23,72 @@
   </header>
 
   <main class="wrap page-main">
-    <!-- Khu vực Trọng tâm hiện tại: Chương 1 & Chương 2 -->
-    <section class="section-block">
-      <div class="card">
-        <div class="section-head" style="margin-bottom: 4px;">
-          <h1>Trọng tâm hiện tại: Chương 1 &amp; Chương 2</h1>
-          <span id="c12-overall-badge" class="tag tag-cold">Chuyên đề C1–C2: 0/36 câu đúng</span>
-        </div>
-        <p class="muted">Lộ trình ưu tiên Vật lí nhiệt &amp; Khí lí tưởng (GDPT 2018): luyện sâu 6 dạng thực chiến, thi thử 50 phút 28 câu, cày bẫy Đúng/Sai &amp; Trả lời ngắn 100% ngoại tuyến.</p>
-
+    <section class="study-hero" aria-labelledby="study-title">
+      <div class="study-intro">
+        <p class="study-kicker">Chương 1 &amp; 2 · GDPT 2018</p>
+        <h1 id="study-title">Vật lí nhiệt &amp;<br>Khí lí tưởng</h1>
+        <p>Đọc bản chất, quan sát thí nghiệm rồi tự kiểm tra cách lập luận qua 55 câu hỏi.</p>
         <div class="btn-group">
-          <a href="./ly_thuyet/ch1_ch2_truc_quan.html" class="btn btn-primary btn-mobile-full">Học Lý thuyết trực quan Ch1–C2</a>
-          <a href="./mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html" class="btn btn-mobile-full">PTN Mô hình Bài học (07)</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn btn-primary btn-mobile-full">Lí thuyết &amp; Mô hình TN từng Bài (33 câu)</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that&amp;nguon=hay_kho_vdc" class="btn btn-primary btn-mobile-full">Tuyển tập Hay &amp; Khó 9+ (20 câu)</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that&nguon=de_tinh_hot" class="btn btn-mobile-full">Đề các Sở &amp; Trường chuyên hot (28 câu)</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-mobile-full">Kho Nguồn thật: Bộ, Sở &amp; Hay–Khó (76 câu)</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=exam50" class="btn btn-mobile-full">Thi thử Ch1–C2 (50 phút - 28 câu)</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=bay_ds_tln" class="btn btn-mobile-full">Chuyên cày Bẫy Đúng/Sai &amp; TLN</a>
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=on_cau_sai" id="btn-retry-wrong" class="btn btn-mobile-full">Làm lại câu sai (0)</a>
-          <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-mobile-full">Bảng hằng số &amp; đổi đơn vị</a>
-          <button type="button" class="btn btn-mobile-full doc-open-btn" data-doc="kho_bay">Đọc kho bẫy Đúng/Sai</button>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn btn-primary"><span id="study-start">Bắt đầu luyện theo bài</span> <span aria-hidden="true">→</span></a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=on_cau_sai" id="btn-retry-wrong" class="btn">Ôn câu sai (0)</a>
         </div>
       </div>
+      <div class="study-chapters">
+        <article class="study-chapter study-chapter-heat">
+          <div class="study-chapter-head">
+            <div>
+              <small>Chương 1</small>
+              <h2>Vật lí nhiệt</h2>
+            </div>
+            <span class="study-formula mono">ΔU = A + Q</span>
+          </div>
+          <label for="study-progress-1" id="study-count-1">0/30 câu làm đúng</label>
+          <progress id="study-progress-1" value="0" max="30"></progress>
+          <div class="btn-group">
+            <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=c1" class="btn btn-sm">Luyện Chương 1</a>
+            <a href="./ly_thuyet/ch1_ch2_truc_quan.html#cd-1" class="btn btn-sm">Đọc lý thuyết</a>
+          </div>
+        </article>
+        <article class="study-chapter study-chapter-gas">
+          <div class="study-chapter-head">
+            <div>
+              <small>Chương 2</small>
+              <h2>Khí lí tưởng</h2>
+            </div>
+            <span class="study-formula mono">pV = nRT</span>
+          </div>
+          <label for="study-progress-2" id="study-count-2">0/25 câu làm đúng</label>
+          <progress id="study-progress-2" value="0" max="25"></progress>
+          <div class="btn-group">
+            <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;bai=c2" class="btn btn-sm">Luyện Chương 2</a>
+            <a href="./ly_thuyet/ch1_ch2_truc_quan.html#cd-5" class="btn btn-sm">Đọc lý thuyết</a>
+          </div>
+        </article>
+      </div>
     </section>
+
+    <nav class="study-quick" aria-label="Mở nhanh">
+      <a class="btn" href="./mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html">Mô phỏng theo bài</a>
+      <a class="btn" href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn&amp;loai=bo_sung">Câu hỏi nâng cao</a>
+      <a class="btn" href="./luyen_tap/phong_thi_thptqg.html?mode=exam50">Thi thử 50 phút</a>
+      <details class="stage-details study-more">
+        <summary class="stage-summary">Thêm tài liệu &amp; đề luyện</summary>
+        <div class="stage-details-body btn-group">
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that" class="btn btn-sm">Kho đề nguồn thật</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that&amp;nguon=hay_kho_vdc" class="btn btn-sm">Tuyển tập hay &amp; khó</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=nguon_that&amp;nguon=de_tinh_hot" class="btn btn-sm">Đề Sở &amp; trường chuyên</a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=bay_ds_tln" class="btn btn-sm">Bẫy Đúng/Sai &amp; Trả lời ngắn</a>
+          <a href="./tra_cuu/hang_so_va_doi_don_vi.html" class="btn btn-sm">Hằng số &amp; đổi đơn vị</a>
+          <button type="button" class="btn btn-sm doc-open-btn" data-doc="kho_bay">Đọc kho bẫy Đúng/Sai</button>
+        </div>
+      </details>
+    </nav>
 
     <!-- Lưới 6 Dạng bài tập C1-C2 với thanh tiến độ localStorage -->
     <section class="section-block">
       <div class="section-head">
-        <h2>1. Luyện theo 6 Dạng bài tập (Chương 1 &amp; Chương 2)</h2>
+        <h2>Luyện theo 6 dạng bài</h2>
+        <span id="c12-overall-badge" class="tag tag-cold">Chuyên đề C1–C2: 0/36 câu đúng</span>
         <a href="./luyen_tap/phong_thi_thptqg.html?mode=chuyen_de" class="btn btn-sm">Mở toàn bộ 36 câu chuyên đề</a>
       </div>
 
@@ -61,7 +98,7 @@
     <!-- Lý thuyết chuẩn hóa & 4 Phòng Thí nghiệm Canvas Chương 1-2 -->
     <section class="section-block">
       <div class="section-head">
-        <h2>2. Kiến thức cốt lõi &amp; 5 Phòng Thí nghiệm Canvas (Ch1–Ch2)</h2>
+        <h2>Lý thuyết và phòng thí nghiệm</h2>
         <span id="kb-progress-text" class="tag">Đã ôn: 0/5 tài liệu</span>
       </div>
 
@@ -129,7 +166,7 @@
           <p class="muted">Ống nghiệm nút bần &amp; nén nhanh bật bông ete (Bài 2), hai bình cân bằng nhiệt &amp; điểm ba 273,16 K (Bài 3), kính hiển vi Brown (Bài 8), xung lực 2m|v_x| &amp; 2 bước PT trạng thái (Bài 11–12).</p>
           <div class="btn-group" style="margin-top: auto;">
             <a href="./mo_phong/07_mo_hinh_thi_nghiem_bai_hoc.html" class="btn btn-primary btn-sm">Mở PTN Bài học 07</a>
-            <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn btn-sm">Làm 33 câu từng bài</a>
+            <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn btn-sm">Luyện theo từng bài</a>
           </div>
         </article>
       </div>
@@ -139,7 +176,7 @@
     <section class="section-block">
       <details class="stage-details" id="stage-later-details">
         <summary class="stage-summary">
-          <span>3. Giai đoạn sau (Chương 3, Chương 4 &amp; Kiến thức nền lớp 11)</span>
+          <span>Chương 3, Chương 4 &amp; kiến thức nền lớp 11</span>
           <span class="tag">Bấm để mở rộng / thu gọn</span>
         </summary>
 
@@ -211,7 +248,7 @@
     <section class="section-block">
       <div class="card">
         <div class="section-head" style="margin-bottom: 4px;">
-          <h2>4. Cảnh báo lỗi hay mắc &amp; Tài liệu chẩn đoán</h2>
+          <h2>Nhật ký lỗi và tài liệu chẩn đoán</h2>
           <div class="btn-group">
             <button type="button" class="btn btn-sm doc-open-btn" data-doc="kho_bay">Kho bẫy</button>
             <button type="button" class="btn btn-sm doc-open-btn" data-doc="nhat_ky">Nhật ký lỗi .md</button>
@@ -299,6 +336,8 @@
   <script src="./assets/docs_data.js"></script>
   <script src="./luyen_tap/data_chuyen_de_c1_c2.js"></script>
   <script src="./luyen_tap/data_de_thi_c1_c2.js"></script>
+  <script src="./luyen_tap/data_ly_thuyet_tn_c1_c2.js"></script>
+  <script src="./luyen_tap/data_bay_ly_thuyet_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -461,7 +500,7 @@
 
         document.getElementById('c12-overall-badge').textContent = 'Chuyên đề C1–C2: ' + totalCdSolved + '/' + totalCdCount + ' câu đúng';
         var wrongBtn = document.getElementById('btn-retry-wrong');
-        wrongBtn.textContent = 'Làm lại câu sai (' + wrongQueue.length + ')';
+        wrongBtn.textContent = 'Ôn câu sai (' + wrongQueue.length + ')';
         document.getElementById('dash-wrong-queue-count').textContent = String(wrongQueue.length);
       }
 
@@ -470,6 +509,22 @@
         var stats = C.getErrorStats();
 
         renderC12ProgressGrid();
+
+        var lessonQuestions = window.LY_LY_THUYET_TN_C1_C2.questions;
+        var totalCorrect = 0;
+        ['1', '2'].forEach(function (chapter) {
+          var questions = lessonQuestions.filter(function (q) { return q.chuong === chapter; });
+          var correct = questions.filter(function (q) {
+            return store.solvedCorrect[q.id] && !store.wrongQueue[q.id];
+          }).length;
+          totalCorrect += correct;
+          var progress = document.getElementById('study-progress-' + chapter);
+          progress.max = questions.length;
+          progress.value = correct;
+          document.getElementById('study-count-' + chapter).textContent = correct + '/' + questions.length + ' câu làm đúng';
+        });
+        document.getElementById('study-start').textContent =
+          totalCorrect > 0 ? 'Luyện tiếp theo bài' : 'Bắt đầu luyện theo bài';
 
         /* Tiến độ KB */
         var kbChks = document.querySelectorAll('.kb-chk');
@@ -570,6 +625,9 @@
 
       C.initShell({ onImportSuccess: renderDashboard });
       renderDashboard();
+      window.addEventListener('pageshow', function (event) {
+        if (event.persisted) renderDashboard();
+      });
     })();
   </script>
 </body>
