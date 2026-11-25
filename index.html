@@ -29,7 +29,8 @@
         <h1 id="study-title">Vật lí nhiệt &amp;<br>Khí lí tưởng</h1>
         <p>Đọc bản chất, quan sát thí nghiệm rồi tự kiểm tra cách lập luận qua 55 câu hỏi.</p>
         <div class="btn-group">
-          <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn btn-primary"><span id="study-start">Bắt đầu luyện theo bài</span> <span aria-hidden="true">→</span></a>
+          <a href="#study-plan-title" class="btn btn-primary">Mở lộ trình học <span aria-hidden="true">↓</span></a>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=ly_thuyet_tn" class="btn"><span id="study-start">Bắt đầu luyện theo bài</span> <span aria-hidden="true">→</span></a>
           <a href="./luyen_tap/phong_thi_thptqg.html?mode=on_cau_sai" id="btn-retry-wrong" class="btn">Ôn câu sai (0)</a>
         </div>
       </div>
@@ -84,12 +85,57 @@
       </details>
     </nav>
 
+    <section class="section-block" aria-labelledby="study-plan-title">
+      <div class="section-head">
+        <h2 id="study-plan-title">Lộ trình chắc Chương 1–2</h2>
+      </div>
+      <div class="study-plan">
+        <article class="card study-plan-next">
+          <h3>Bước nên làm tiếp</h3>
+          <p id="study-plan-status">Làm 12 câu trong 20 phút để biết dạng nào cần ôn lý thuyết hoặc luyện tính.</p>
+          <div class="btn-group">
+            <a id="study-plan-action" class="btn btn-primary" href="./luyen_tap/phong_thi_thptqg.html?mode=chan_doan">Làm bài chẩn đoán</a>
+            <a id="study-plan-review" class="btn" href="./luyen_tap/phong_thi_thptqg.html?mode=on_dinh_ky">Ôn đúng hạn</a>
+          </div>
+          <p id="study-plan-next-date" class="muted" hidden></p>
+        </article>
+        <article class="card study-plan-method">
+          <h3>Cách tự kiểm tra đã hiểu</h3>
+          <ol>
+            <li>Trước khi xem lời giải, nói rõ hệ đang xét, đại lượng giữ nguyên và đồ thị sẽ đổi thế nào.</li>
+            <li>Sau khi sửa sai, làm một câu khác cùng dạng. Đổi dữ kiện hoặc trục đồ thị rồi tự giải lại.</li>
+            <li>Ôn những câu đến hạn mà không mở gợi ý. Khi làm đúng ổn định, thử đề 50 phút để kiểm tra tốc độ và các ý còn mất điểm.</li>
+          </ol>
+        </article>
+      </div>
+      <div id="diagnostic-results" hidden>
+        <div class="section-head">
+          <h3>Kết quả chẩn đoán gần nhất</h3>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=chan_doan" class="btn btn-sm">Làm lại chẩn đoán</a>
+        </div>
+        <p id="diagnostic-score" class="muted"></p>
+        <div id="diagnostic-topics" class="grid-3"></div>
+      </div>
+      <details class="stage-details study-exam-checklist">
+        <summary class="stage-summary">Checklist trước và trong bài thi</summary>
+        <div class="stage-details-body">
+          <ul>
+            <li><strong>Chọn hệ và điều kiện.</strong> Khí có rò không? Nhiệt độ, áp suất hoặc thể tích có được giữ cố định không? Mẫu đã chuyển thể xong chưa?</li>
+            <li><strong>Kiểm tra dấu và đơn vị.</strong> T tuyệt đối dùng K, p trong phương trình trạng thái là áp suất tuyệt đối, 1 kPa·L = 1 J. Khí giãn nở thực hiện công thì A &lt; 0.</li>
+            <li><strong>Đọc trục trước khi đọc đường.</strong> Phân biệt p–V với p–1/V, °C với K. Chỉ dùng diện tích dưới đường p–V để tính công khi điều kiện phù hợp.</li>
+            <li><strong>Chừa thời gian soát.</strong> Làm vòng đầu các câu chắc, đánh dấu câu còn vướng. Quay lại kiểm tra đủ 4 ý Đúng/Sai, dấu và tối đa 4 ký tự của đáp án ngắn.</li>
+          </ul>
+          <a href="./luyen_tap/phong_thi_thptqg.html?mode=exam50" class="btn btn-sm">Mở đề thi thử 50 phút</a>
+        </div>
+      </details>
+    </section>
+
     <!-- Lưới 6 Dạng bài tập C1-C2 với thanh tiến độ localStorage -->
     <section class="section-block">
       <div class="section-head">
         <h2>Luyện theo 6 dạng bài</h2>
-        <span id="c12-overall-badge" class="tag tag-cold">Chuyên đề C1–C2: 0/36 câu đúng</span>
-        <a href="./luyen_tap/phong_thi_thptqg.html?mode=chuyen_de" class="btn btn-sm">Mở toàn bộ 36 câu chuyên đề</a>
+        <span id="c12-overall-badge" class="tag tag-cold">Chuyên đề C1–C2: 0/42 câu đúng</span>
+        <a href="./luyen_tap/phong_thi_thptqg.html?mode=chuyen_de" class="btn btn-sm">Mở toàn bộ câu chuyên đề</a>
       </div>
 
       <div id="c12-dang-grid" class="grid-3"></div>
@@ -444,6 +490,7 @@
         var grid = document.getElementById('c12-dang-grid');
         var solvedMap = C.getSolvedMap();
         var wrongQueue = C.getWrongQueue();
+        var wrongIds = new Set(wrongQueue.map(function (q) { return q.id; }));
         var cdQuestions = CD_BANK.questions || [];
 
         var totalCdSolved = 0;
@@ -452,7 +499,7 @@
         grid.innerHTML = '';
         C.DANG_BAI_LIST.forEach(function (d) {
           var qsInDang = cdQuestions.filter(function (q) { return q.dang_bai === d.id; });
-          var doneInDang = qsInDang.filter(function (q) { return Boolean(solvedMap[q.id]); }).length;
+          var doneInDang = qsInDang.filter(function (q) { return Boolean(solvedMap[q.id] && !wrongIds.has(q.id)); }).length;
           totalCdSolved += doneInDang;
           var pct = qsInDang.length > 0 ? Math.round((doneInDang / qsInDang.length) * 100) : 0;
 
@@ -504,11 +551,113 @@
         document.getElementById('dash-wrong-queue-count').textContent = String(wrongQueue.length);
       }
 
+      function renderStudyPlan(store) {
+        var room = './luyen_tap/phong_thi_thptqg.html?mode=';
+        var exams = store.examHistory;
+        var diagnostic = exams.find(function (result) {
+          return result && result.filter === 'chan_doan_c1_c2' && result.studyTopics;
+        });
+        var now = Date.now();
+        var dueCount = C.getDueReviews(store, now).length;
+        var nextDue = Object.values(store.reviewSchedule).reduce(function (earliest, item) {
+          return Math.min(earliest, item.dueAt);
+        }, Infinity);
+
+        var review = document.getElementById('study-plan-review');
+        review.hidden = dueCount > 0;
+        review.textContent = 'Ôn đúng hạn (' + dueCount + ')';
+        var nextDate = document.getElementById('study-plan-next-date');
+        nextDate.hidden = dueCount > 0 || !Number.isFinite(nextDue);
+        if (!nextDate.hidden) {
+          var date = new Date(nextDue);
+          nextDate.textContent = 'Lần ôn gần nhất sắp tới: ' + date.toLocaleString('vi-VN', {
+            day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+          }) + '.';
+        }
+
+        var results = document.getElementById('diagnostic-results');
+        results.hidden = !diagnostic;
+        var weakest = null;
+        var hasOpenErrors = Object.values(store.wrongQueue).some(function (q) {
+          return q && C.DANG_BAI_LIST.some(function (topic) {
+            return q.dang_bai === topic.id && q.chuong === topic.chuong;
+          });
+        });
+        if (diagnostic) {
+          var score = document.getElementById('diagnostic-score');
+          score.textContent = C.fmt(diagnostic.totalScore, 2) + '/' + C.fmt(diagnostic.maxScore, 2) +
+            ' điểm. Mỗi dạng được kiểm tra bằng hai câu.';
+          var grid = document.getElementById('diagnostic-topics');
+          grid.textContent = '';
+          C.DANG_BAI_LIST.forEach(function (topic) {
+            var stats = diagnostic.studyTopics[topic.id];
+            if (!stats) return;
+            if (stats.exactCount < 2 && (!weakest || stats.exactCount < weakest.score)) {
+              var questions = CD_BANK.questions.filter(function (q) {
+                return q.dang_bai === topic.id;
+              });
+              if (questions.some(function (q) {
+                return !store.solvedCorrect[q.id] || store.wrongQueue[q.id];
+              })) {
+                weakest = { id: topic.id, score: stats.exactCount };
+              }
+            }
+            var card = document.createElement('article');
+            card.className = 'card';
+            var title = document.createElement('h4');
+            title.textContent = topic.ten;
+            var status = document.createElement('p');
+            status.className = 'muted';
+            status.textContent = 'Lý thuyết: ' + (stats.theoryCorrect ? 'đúng' : 'cần xem lại') +
+              ' · Bài tính: ' + (stats.exerciseCorrect ? 'đúng' : 'cần luyện thêm');
+            var link = document.createElement('a');
+            link.className = 'btn btn-sm';
+            link.textContent = 'Luyện dạng ' + topic.id.slice(1);
+            link.href = room + 'chuyen_de&dang=' + topic.id;
+            var links = document.createElement('div');
+            links.className = 'btn-group';
+            if (!stats.theoryCorrect) {
+              var theory = document.createElement('a');
+              theory.className = 'btn btn-sm';
+              theory.textContent = 'Ôn lý thuyết';
+              theory.href = room + 'ly_thuyet_tn&dang=' + topic.id;
+              links.appendChild(theory);
+            }
+            links.appendChild(link);
+            card.append(title, status, links);
+            grid.appendChild(card);
+          });
+        }
+
+        var action = document.getElementById('study-plan-action');
+        var status = document.getElementById('study-plan-status');
+        if (dueCount > 0) {
+          status.textContent = 'Có ' + dueCount + ' câu đến hạn. Hãy thử trả lời từ trí nhớ trước khi xem lời giải.';
+          action.textContent = 'Ôn các câu đến hạn';
+          action.href = room + 'on_dinh_ky';
+        } else if (!diagnostic) {
+          status.textContent = 'Làm 12 câu trong 20 phút để biết dạng nào cần ôn lý thuyết hoặc luyện tính.';
+          action.textContent = 'Làm bài chẩn đoán';
+          action.href = room + 'chan_doan';
+        } else if (hasOpenErrors) {
+          status.textContent = 'Xem các câu còn sai, tìm nguyên nhân rồi làm lại. Kết quả chẩn đoán bên dưới chỉ ra phần lý thuyết và bài tính cần ôn.';
+          action.textContent = 'Sửa các câu sai';
+          action.href = room + 'on_cau_sai';
+        } else {
+          status.textContent = weakest
+            ? 'Đã xử lý các câu sai đang lưu. Hãy luyện câu khác ở dạng còn yếu để kiểm tra xem bạn có vận dụng được với dữ kiện mới.'
+            : 'Thử đề 50 phút để kiểm tra độ chính xác và tốc độ với một bộ câu khác.';
+          action.textContent = weakest ? 'Luyện dạng ' + weakest.id.slice(1) : 'Thi thử 50 phút';
+          action.href = room + (weakest ? 'chuyen_de&dang=' + weakest.id : 'exam50');
+        }
+      }
+
       function renderDashboard() {
         var store = C.loadStore();
         var stats = C.getErrorStats();
 
         renderC12ProgressGrid();
+        renderStudyPlan(store);
 
         var lessonQuestions = window.LY_LY_THUYET_TN_C1_C2.questions;
         var totalCorrect = 0;

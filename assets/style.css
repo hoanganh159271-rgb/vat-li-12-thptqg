@@ -1184,3 +1184,19 @@ tr:last-child td {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.study-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+.study-plan-next { background: var(--accent-subtle); }
+.study-plan-method ol, .study-exam-checklist ul { margin: 0; padding-inline-start: 1.4em; }
+.study-plan-method li + li, .study-exam-checklist li + li { margin-top: 6px; }
+.study-exam-checklist, #diagnostic-results { margin-top: 18px; }
+.study-exam-checklist ul { margin-bottom: 12px; }
+#diagnostic-score { margin: 0 0 12px; }
+#study-plan-title { scroll-margin-top: 80px; }
+@media (max-width: 760px) {
+  .study-plan { grid-template-columns: minmax(0, 1fr); }
+}

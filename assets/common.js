@@ -4,6 +4,8 @@
 
   var STORAGE_KEY = 'ly12_ecosystem_v1';
   var THEME_KEY = 'ly12_theme';
+  var REVIEW_DAYS = [1, 3, 7, 14];
+  var DAY_MS = 24 * 60 * 60 * 1000;
 
   var ERROR_GROUPS = [
     'Hổng kiến thức',
@@ -50,7 +52,8 @@
       examHistory: [],
       errorLogs: [],
       solvedCorrect: {},
-      wrongQueue: {}
+      wrongQueue: {},
+      reviewSchedule: {}
     };
   }
 
@@ -63,8 +66,43 @@
       examHistory: Array.isArray(src.examHistory) ? src.examHistory : [],
       errorLogs: Array.isArray(src.errorLogs) ? src.errorLogs : [],
       solvedCorrect: (src.solvedCorrect && typeof src.solvedCorrect === 'object' && !Array.isArray(src.solvedCorrect)) ? src.solvedCorrect : {},
+      reviewSchedule: normalizeReviewSchedule(src.reviewSchedule),
       wrongQueue: (src.wrongQueue && typeof src.wrongQueue === 'object' && !Array.isArray(src.wrongQueue)) ? src.wrongQueue : {}
     };
+  }
+
+  function normalizeReviewSchedule(raw) {
+    var schedule = Object.create(null);
+    Object.keys(raw || {}).forEach(function (id) {
+      var item = raw[id];
+      if (item && Number.isInteger(item.step) && item.step >= 0 &&
+          item.step < REVIEW_DAYS.length && Number.isFinite(item.dueAt)) {
+        schedule[id] = { step: item.step, dueAt: item.dueAt };
+      }
+    });
+    return schedule;
+  }
+
+  function getDueReviews(store, now) {
+    var schedule = store.reviewSchedule;
+    return Object.keys(schedule).filter(function (id) {
+      return schedule[id].dueAt <= now;
+    }).sort(function (a, b) {
+      return schedule[a].dueAt - schedule[b].dueAt;
+    });
+  }
+
+  function updateReviewSchedule(store, q, isCorrect, scheduled, now) {
+    var current = store.reviewSchedule[q.id];
+    if (!isCorrect && DANG_BAI_LIST.some(function (topic) {
+      return topic.id === q.dang_bai && topic.chuong === String(q.chuong || q.chapter);
+    })) {
+      store.reviewSchedule[q.id] = { step: 0, dueAt: now + REVIEW_DAYS[0] * DAY_MS };
+    } else if (isCorrect && scheduled && current && current.dueAt <= now) {
+      var step = current.step + 1;
+      if (step === REVIEW_DAYS.length) delete store.reviewSchedule[q.id];
+      else store.reviewSchedule[q.id] = { step: step, dueAt: now + REVIEW_DAYS[step] * DAY_MS };
+    }
   }
 
   function loadStore() {
@@ -132,7 +170,8 @@
       p1Score: Number(result.p1Score || 0),
       p2Score: Number(result.p2Score || 0),
       p3Score: Number(result.p3Score || 0),
-      elapsedSec: Number(result.elapsedSec || 0)
+      elapsedSec: Number(result.elapsedSec || 0),
+      studyTopics: result.studyTopics || null
     });
     if (store.examHistory.length > 50) {
       store.examHistory = store.examHistory.slice(0, 50);
@@ -231,10 +270,11 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
-  function recordQuestionOutcome(qMeta, isCorrect) {
+  function recordQuestionOutcome(qMeta, isCorrect, scheduled) {
     if (!qMeta || !qMeta.id) return loadStore();
     var store = loadStore();
     var qid = String(qMeta.id);
+    updateReviewSchedule(store, qMeta, isCorrect, scheduled, Date.now());
     if (isCorrect) {
       store.solvedCorrect[qid] = {
         dang_bai: String(qMeta.dang_bai || ''),
@@ -999,6 +1039,7 @@
     recordExamResult: recordExamResult,
     recordQuestionOutcome: recordQuestionOutcome,
     getWrongQueue: getWrongQueue,
+    getDueReviews: getDueReviews,
     getSolvedMap: getSolvedMap,
     generateWrongQueueMarkdown: generateWrongQueueMarkdown,
     getErrorStats: getErrorStats,

@@ -98,6 +98,12 @@
       #lttn-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       #lttn-filters > div:first-child { grid-column: 1 / -1; }
     }
+    #exam-jump { padding: 14px; gap: 8px; }
+    #exam-jump-links button { min-height: 44px; min-width: 44px; }
+    #exam-jump-links .flagged { outline: 2px dashed var(--phys-warm); outline-offset: -4px; }
+    #exam-jump-links .answered { background: var(--phys-ok-bg); border-color: var(--phys-ok); }
+    .q-card { scroll-margin-top: 85px; }
+    .topic-stat-grid .btn, .q-head .btn { white-space: normal; min-height: 44px; }
     .exam-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -288,6 +294,8 @@
     <div class="card" style="margin-top: 18px;">
       <div class="mode-tabs" role="group" aria-label="Chế độ luyện tập">
         <button type="button" class="mode-tab" data-mode="ly_thuyet_tn" id="tab-ly_thuyet_tn" aria-pressed="false">Lý thuyết &amp; thí nghiệm</button>
+        <button type="button" class="mode-tab" data-mode="chan_doan" id="tab-chan_doan" aria-pressed="false">Chẩn đoán Ch1–2</button>
+        <button type="button" class="mode-tab" data-mode="on_dinh_ky" id="tab-on_dinh_ky" aria-pressed="false">Ôn đúng hạn</button>
         <button type="button" class="mode-tab" data-mode="exam50" id="tab-exam50" aria-pressed="true">Thi thử Ch1–2</button>
         <button type="button" class="mode-tab" data-mode="chuyen_de" id="tab-chuyen_de" aria-pressed="false">Luyện chuyên đề</button>
         <button type="button" class="mode-tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-pressed="false">Bẫy Đúng/Sai &amp; TLN</button>
@@ -345,7 +353,7 @@
               </select>
             </div>
             <div style="align-self: flex-end;">
-              <span id="cd-count-tag" class="tag">Đang hiển thị: 36 câu</span>
+              <span id="cd-count-tag" class="tag">Đang hiển thị: 42 câu</span>
             </div>
           </div>
         </div>
@@ -431,6 +439,10 @@
               <option value="II">Đúng/Sai</option>
             </select>
           </div>
+          <div>
+            <label for="sel-lttn-dang" class="control-label">Dạng trọng tâm</label>
+            <select id="sel-lttn-dang"><option value="all">Tất cả 6 dạng</option></select>
+          </div>
           <div class="lesson-progress">
             <label id="lttn-count-tag" for="lttn-progress" aria-live="polite"></label>
             <progress id="lttn-progress" value="0" max="1"></progress>
@@ -486,6 +498,11 @@
 
     <!-- Khu vực câu hỏi -->
     <form id="exam-form" style="display: flex; flex-direction: column; gap: 24px; margin-top: 22px;">
+      <nav id="exam-jump" class="card" aria-label="Danh sách câu trong bài" hidden>
+        <strong id="exam-answered" aria-live="polite"></strong>
+        <p id="exam-flagged" class="muted" hidden></p>
+        <div id="exam-jump-links" class="btn-group"></div>
+      </nav>
       <div id="questions-container" style="display: flex; flex-direction: column; gap: 22px;"></div>
 
       <div id="submit-footer-card" class="card" style="flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between;">
@@ -554,6 +571,7 @@
   <script src="./data_ly_thuyet_tn_c1_c2.js"></script>
   <script src="./data_bay_ly_thuyet_c1_c2.js"></script>
   <script src="./minh_hoa_loi_giai_c1_c2.js"></script>
+  <script src="./data_chan_doan_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -564,6 +582,7 @@
       var NGUON_BANK = window.LY_NGUON_THUC_TE_C1_C2 || { questions: [] };
       var DE_TINH_BANK = window.LY_DE_TINH_HOT_C1_C2 || { questions: [] };
       var HAY_KHO_BANK = window.LY_HAY_KHO_C1_C2 || { questions: [] };
+      var DIAGNOSTIC = window.LY_DIAGNOSTIC_C1_C2;
       var LTTN_BANK = window.LY_LY_THUYET_TN_C1_C2 || { lessons: [], questions: [] };
       var ALL_NGUON_QUESTIONS = [].concat(
         NGUON_BANK.questions || [],
@@ -585,6 +604,7 @@
       (CD_BANK.questions || []).forEach(function (q) { registerQuestion(q); });
       (ALL_NGUON_QUESTIONS || []).forEach(function (q) { registerQuestion(q); });
       (LTTN_BANK.questions || []).forEach(function (q) { registerQuestion(q); });
+      DIAGNOSTIC.phan1.concat(DIAGNOSTIC.phan3).forEach(function (q) { registerQuestion(q); });
       (EXAM_C12.phan1 || []).forEach(function (q) { registerQuestion(q, 'I'); });
       (EXAM_C12.phan2 || []).forEach(function (q) { registerQuestion(q, 'II'); });
       (EXAM_C12.phan3 || []).forEach(function (q) { registerQuestion(q, 'III'); });
@@ -605,12 +625,8 @@
         if (s.length > 4) {
           return { valid: false, msg: 'Vượt quá 4 ký tự chuẩn phiếu tô (' + s.length + '/4).' };
         }
-        if (!/^-?[0-9.,]+$/.test(s)) {
+        if (!/^-?\d+(?:[.,]\d+)?$/.test(s)) {
           return { valid: false, msg: 'Chỉ nhập số, dấu âm "-" ở đầu và tối đa 1 dấu "," hoặc ".".' };
-        }
-        var sepCount = (s.match(/[.,]/g) || []).length;
-        if (sepCount > 1 || (s.indexOf('-') > 0)) {
-          return { valid: false, msg: 'Định dạng số không hợp lệ trên phiếu tô.' };
         }
         return { valid: true, msg: 'Hợp lệ (' + s.length + '/4 ký tự).' };
       }
@@ -683,6 +699,10 @@
       var selLttnBai = document.getElementById('sel-lttn-bai');
       var selLttnLoai = document.getElementById('sel-lttn-loai');
       var selLttnPhan = document.getElementById('sel-lttn-phan');
+      var selLttnDang = document.getElementById('sel-lttn-dang');
+      C.DANG_BAI_LIST.forEach(function (topic) {
+        selLttnDang.add(new Option(topic.ten, topic.id));
+      });
       var lttnCountTag = document.getElementById('lttn-count-tag');
       var lttnProgress = document.getElementById('lttn-progress');
       var lttnLessons = LTTN_BANK.lessons || [];
@@ -698,6 +718,10 @@
       var topicStatsWrap = document.getElementById('topic-stats-wrap');
       var topicStatsGrid = document.getElementById('topic-stats-grid');
       var qContainer = document.getElementById('questions-container');
+      var examJump = document.getElementById('exam-jump');
+      var examJumpLinks = document.getElementById('exam-jump-links');
+      var examAnswered = document.getElementById('exam-answered');
+      var examFlagged = document.getElementById('exam-flagged');
       var submitFooterCard = document.getElementById('submit-footer-card');
       var btnSubmitExam = document.getElementById('btn-submit-exam');
 
@@ -753,15 +777,21 @@
         checkedQuestions: {}, /* qid -> { checked: true, isCorrect: bool, userScore?: number } */
         revealedHints: {},
         revealedSolutions: {},
+        examQuestions: [],
+        flagged: new Set(),
+        reviewQuestions: [],
         clearedWrongView: {} /* qid -> true trong phien hien tai de xem loi giai sau khi da go khoi localStorage */
       };
 
       /* Đồng hồ (đếm ngược cho exam50, đếm lên cho các chế độ khác) */
       var timerSec = 50 * 60;
       var timerRunning = true;
+      var countdownEndsAt = 0;
 
-      function isCountdownMode() {
-        return appState.mode === 'exam50';
+      function currentTimedExam() {
+        if (appState.mode === 'chan_doan') return DIAGNOSTIC;
+        if (appState.mode === 'exam50') return EXAM_C12;
+        return null;
       }
 
       function renderTimer() {
@@ -769,7 +799,7 @@
         var mm = String(Math.floor(displaySec / 60)).padStart(2, '0');
         var ss = String(displaySec % 60).padStart(2, '0');
         timerEl.textContent = mm + ':' + ss;
-        if (isCountdownMode() && displaySec <= 300 && !appState.submitted) {
+        if (currentTimedExam() && displaySec <= 300 && !appState.submitted) {
           timerEl.classList.add('timer-warn');
         } else {
           timerEl.classList.remove('timer-warn');
@@ -777,8 +807,9 @@
       }
 
       function resetTimerForMode() {
-        timerSec = isCountdownMode() ? ((EXAM_C12.durationMin || 50) * 60) : 0;
-        timerRunning = appState.mode !== 'on_cau_sai';
+        timerSec = currentTimedExam() ? (currentTimedExam().durationMin * 60) : 0;
+        countdownEndsAt = Date.now() + timerSec * 1000;
+        timerRunning = appState.mode !== 'on_cau_sai' && appState.mode !== 'on_dinh_ky';
         btnTimerToggle.disabled = false;
         btnTimerToggle.textContent = timerRunning ? 'Tạm dừng đồng hồ' : 'Bắt đầu bấm giờ';
         renderTimer();
@@ -786,9 +817,9 @@
 
       setInterval(function () {
         if (!timerRunning || appState.submitted) return;
-        if (isCountdownMode()) {
+        if (currentTimedExam()) {
           if (timerSec > 0) {
-            timerSec -= 1;
+            timerSec = Math.max(0, Math.ceil((countdownEndsAt - Date.now()) / 1000));
             renderTimer();
             if (timerSec === 0) {
               submitCurrentExam(true);
@@ -802,6 +833,7 @@
 
       btnTimerToggle.addEventListener('click', function () {
         timerRunning = !timerRunning;
+        if (currentTimedExam() && timerRunning) countdownEndsAt = Date.now() + timerSec * 1000;
         btnTimerToggle.textContent = timerRunning ? 'Tạm dừng đồng hồ' : 'Tiếp tục đồng hồ';
       });
 
@@ -837,7 +869,7 @@
       selNguonNhom.addEventListener('change', renderView);
       selNguonDang.addEventListener('change', renderView);
       selNguonPhan.addEventListener('change', renderView);
-      [selLttnBai, selLttnLoai, selLttnPhan].forEach(function (select) {
+      [selLttnBai, selLttnLoai, selLttnPhan, selLttnDang].forEach(function (select) {
         select.addEventListener('change', function () {
           appState.lessonIndex = null;
           renderView();
@@ -855,13 +887,15 @@
       }
 
       function getActiveQuestions() {
-        if (appState.mode === 'exam50') {
+        var timed = currentTimedExam();
+        if (timed) {
           return {
-            p1: EXAM_C12.phan1 || [],
-            p2: EXAM_C12.phan2 || [],
-            p3: EXAM_C12.phan3 || [],
-            list: [].concat(EXAM_C12.phan1 || [], EXAM_C12.phan2 || [], EXAM_C12.phan3 || [])
+            p1: timed.phan1, p2: timed.phan2, p3: timed.phan3,
+            list: timed.phan1.concat(timed.phan2, timed.phan3)
           };
+        }
+        if (appState.mode === 'on_dinh_ky') {
+          return { list: appState.reviewQuestions };
         }
         if (appState.mode === 'chuyen_de') {
           var filteredCd = (CD_BANK.questions || []).filter(function (q) {
@@ -897,6 +931,7 @@
             if (content === 'bo_sung' && !q.bo_sung) return false;
             if (content !== 'all' && content !== 'bo_sung' && content !== q.loai_lt) return false;
             if (selLttnPhan.value !== 'all' && q.phan !== selLttnPhan.value) return false;
+            if (selLttnDang.value !== 'all' && q.dang_bai !== selLttnDang.value) return false;
             return true;
           });
           return { list: filteredLttn };
@@ -957,7 +992,8 @@
           });
           return { isCorrect: cnt === 4, points: scorePart2(cnt), maxPoints: 1.0, correctItems: cnt };
         }
-        var normU = normalizeShortAnswer(appState.p3Ans[q.id]);
+        var rawAnswer = appState.p3Ans[q.id];
+        var normU = validateShortFormat(rawAnswer).valid ? normalizeShortAnswer(rawAnswer) : '';
         var normK = normalizeShortAnswer(q.answer);
         var ok3 = normU !== '' && normU === normK;
         if (!ok3 && normU !== '' && /^-?[0-9]+(,[0-9]+)?$/.test(normU) && /^-?[0-9]+(,[0-9]+)?$/.test(normK)) {
@@ -980,7 +1016,7 @@
         var html = '<div class="notice-title">Lời giải chi tiết</div>' +
           '<p><strong>1. Bản chất &amp; Điều kiện mô hình:</strong> ' + exp.banChat + '</p>' +
           '<p><strong>2. Biến đổi &amp; Công thức:</strong> ' + exp.bienDoi + '</p>';
-        if (q.bo_sung) {
+        if (q.loi_giai && q.loi_giai.don_vi) {
           html += '<p><strong>Đơn vị:</strong> ' + q.loi_giai.don_vi + '</p>' +
             '<p><strong>Điều kiện áp dụng:</strong> ' + q.loi_giai.dieu_kien + '</p>' +
             '<p><strong>Cách đọc đồ thị:</strong> ' + q.loi_giai.do_thi + '</p>';
@@ -1022,11 +1058,12 @@
         var card = document.createElement('div');
         card.className = 'q-card';
         card.id = 'card-' + q.id;
+        card.tabIndex = -1;
 
         var guided = appState.mode === 'ly_thuyet_tn';
+        var scheduled = appState.mode === 'on_dinh_ky';
         if (guided) {
           card.classList.add('lesson-card');
-          card.tabIndex = -1;
           card.setAttribute('role', 'group');
           card.setAttribute('aria-labelledby', card.id + '-title');
         }
@@ -1089,6 +1126,22 @@
 
         head.appendChild(titleEl);
         head.appendChild(tagsWrap);
+        if (!practiceMode && !locked) {
+          var flag = document.createElement('button');
+          flag.type = 'button';
+          flag.className = 'btn btn-sm';
+          flag.textContent = appState.flagged.has(q.id) ? 'Bỏ đánh dấu' : 'Đánh dấu xem lại';
+          flag.setAttribute('aria-pressed', appState.flagged.has(q.id));
+          flag.addEventListener('click', function () {
+            var selected = !appState.flagged.has(q.id);
+            if (selected) appState.flagged.add(q.id);
+            else appState.flagged.delete(q.id);
+            flag.textContent = selected ? 'Bỏ đánh dấu' : 'Đánh dấu xem lại';
+            flag.setAttribute('aria-pressed', selected);
+            refreshExamJump();
+          });
+          head.appendChild(flag);
+        }
         card.appendChild(head);
 
         if (q.nguon) {
@@ -1119,6 +1172,7 @@
             rad.disabled = locked;
             rad.addEventListener('change', function () {
               appState.p1Ans[q.id] = oi;
+              refreshExamJump();
             });
 
             var txt = document.createElement('span');
@@ -1176,11 +1230,13 @@
               appState.p2Ans[q.id][ii] = true;
               btnTrue.setAttribute('aria-pressed', 'true');
               btnFalse.setAttribute('aria-pressed', 'false');
+              refreshExamJump();
             });
             btnFalse.addEventListener('click', function () {
               appState.p2Ans[q.id][ii] = false;
               btnTrue.setAttribute('aria-pressed', 'false');
               btnFalse.setAttribute('aria-pressed', 'true');
+              refreshExamJump();
             });
 
             if (locked) {
@@ -1232,7 +1288,7 @@
               omr.appendChild(cell);
             }
             var check = validateShortFormat(s);
-            statusMsg.textContent = check.msg || ('Đơn vị yêu cầu: ' + q.unit + ' | Tối đa 4 ký tự.');
+            statusMsg.textContent = check.msg || ('Tối đa 4 ký tự' + (q.unit ? ' · Đơn vị ' + q.unit : '') + '.');
             statusMsg.style.color = check.valid ? 'var(--ink-muted)' : 'var(--phys-warm)';
           }
 
@@ -1240,12 +1296,13 @@
             if (inp.value.length > 4) inp.value = inp.value.slice(0, 4);
             appState.p3Ans[q.id] = inp.value;
             updateOmr(inp.value);
+            refreshExamJump();
           });
           updateOmr(inp.value);
 
           var unitBadge = document.createElement('span');
           unitBadge.className = 'tag';
-          unitBadge.textContent = 'Đơn vị: ' + q.unit;
+          unitBadge.textContent = q.unit ? 'Đơn vị: ' + q.unit : 'Không có đơn vị';
 
           row3.appendChild(inp);
           row3.appendChild(omr);
@@ -1260,7 +1317,7 @@
           actionRow.className = 'btn-group';
           actionRow.style.marginTop = '4px';
 
-          if (q.goi_y) {
+          if (q.goi_y && !scheduled) {
             var btnHint = document.createElement('button');
             btnHint.type = 'button';
             btnHint.className = 'btn btn-sm';
@@ -1280,13 +1337,17 @@
             btnCheck.className = 'btn btn-primary btn-sm';
             btnCheck.textContent = appState.mode === 'on_cau_sai' ? 'Kiểm tra lại câu này' : 'Kiểm tra câu này';
             btnCheck.addEventListener('click', function () {
-              if (guided && q.phan === 'II') {
+              if ((guided || scheduled) && q.phan === 'II') {
                 var unfilled = appState.p2Ans[q.id].indexOf(null);
                 if (unfilled !== -1) {
                   alert('Hãy chọn Đúng hoặc Sai cho cả 4 ý trước khi kiểm tra.');
                   card.querySelectorAll('.tf-choice-group')[unfilled].querySelector('button').focus();
                   return;
                 }
+              }
+              if (q.phan === 'III' && !validateShortFormat(appState.p3Ans[q.id]).valid) {
+                card.querySelector('.short-input').focus();
+                return;
               }
               if (!isQuestionAttempted(q)) {
                 alert('Hãy chọn hoặc nhập đáp án của bạn trước khi kiểm tra!');
@@ -1304,8 +1365,8 @@
               } else if (appState.mode === 'on_cau_sai' && !res.isCorrect) {
                 delete appState.clearedWrongView[q.id];
               }
-              C.recordQuestionOutcome(q, res.isCorrect);
-              if (guided) appState.revealedSolutions[q.id] = true;
+              C.recordQuestionOutcome(q, res.isCorrect, scheduled);
+              if (guided || scheduled) appState.revealedSolutions[q.id] = true;
               renderQuestionUpdate(guided, '.lesson-card .notice');
             });
             actionRow.appendChild(btnCheck);
@@ -1334,7 +1395,7 @@
               else appState.p3Ans[q.id] = '';
               renderQuestionUpdate(guided, '.lesson-card');
             });
-            actionRow.appendChild(btnRetry);
+            if (!scheduled) actionRow.appendChild(btnRetry);
           }
 
           card.appendChild(actionRow);
@@ -1358,7 +1419,13 @@
             if (q.phan === 'II') {
               msg += ' (' + checkedInfo.correctItems + '/4 ý đúng — ' + C.fmt(checkedInfo.points, 2) + ' đ)';
             } else if (q.phan === 'III') {
-              msg += ' Đáp số chuẩn phiếu tô: ' + q.answer + ' (' + q.unit + ').';
+              msg += ' Đáp số chuẩn phiếu tô: ' + q.answer + (q.unit ? ' (' + q.unit + ')' : '') + '.';
+            }
+            if (scheduled) {
+              var nextReview = C.loadStore().reviewSchedule[q.id];
+              msg += nextReview
+                ? ' Hẹn ôn lại ngày ' + new Date(nextReview.dueAt).toLocaleDateString('vi-VN') + '.'
+                : ' Đã hoàn tất bốn lượt ôn định kỳ.';
             }
             verdictBox.innerHTML = '<div class="notice-title">' + (checkedInfo.isCorrect ? 'Đạt yêu cầu' : 'Cần rà soát lại') + '</div><p>' + msg + '</p>';
             card.appendChild(verdictBox);
@@ -1374,7 +1441,7 @@
             summaryLine.innerHTML = '<strong>Điểm câu này:</strong> ' + C.fmt(evalExam.points, 2) + ' / 1,00 điểm (' + evalExam.correctItems + '/4 ý đúng).';
             card.appendChild(summaryLine);
           } else if (q.phan === 'III') {
-            summaryLine.innerHTML = '<strong>Đáp số chuẩn phiếu tô:</strong> <code>' + q.answer + '</code> (' + q.unit + ') — ' + (evalExam.isCorrect ? 'Chính xác (+0,25 đ)' : 'Chưa đúng (0,00 đ)');
+            summaryLine.innerHTML = '<strong>Đáp số chuẩn phiếu tô:</strong> <code>' + q.answer + '</code>' + (q.unit ? ' (' + q.unit + ')' : '') + ' — ' + (evalExam.isCorrect ? 'Chính xác (+0,25 đ)' : 'Chưa đúng (0,00 đ)');
             card.appendChild(summaryLine);
           }
           card.appendChild(buildSolutionBlock(q, qTitle + ' (' + q.id + ')', !evalExam.isCorrect, true));
@@ -1468,9 +1535,57 @@
         qContainer.appendChild(controls);
       }
 
+      function hasCompleteAnswer(q) {
+        if (q.phan === 'II') {
+          return (appState.p2Ans[q.id] || []).filter(function (answer) {
+            return typeof answer === 'boolean';
+          }).length === q.items.length;
+        }
+        return isQuestionAttempted(q) && (q.phan !== 'III' || validateShortFormat(appState.p3Ans[q.id]).valid);
+      }
+
+      function refreshExamJump() {
+        if (examJump.hidden) return;
+        var completed = 0;
+        var flaggedNumbers = [];
+        appState.examQuestions.forEach(function (q, i) {
+          var answered = hasCompleteAnswer(q);
+          if (answered) completed += 1;
+          var button = examJumpLinks.children[i];
+          var flagged = appState.flagged.has(q.id);
+          if (flagged) flaggedNumbers.push(i + 1);
+          button.classList.toggle('answered', answered);
+          button.classList.toggle('flagged', flagged);
+          button.setAttribute('aria-label', 'Câu ' + (i + 1) +
+            (answered ? ' đã hoàn thành' : ' chưa hoàn thành') + (flagged ? ', đánh dấu xem lại' : ''));
+        });
+        examAnswered.textContent = 'Đã hoàn thành ' + completed + '/' + appState.examQuestions.length + ' câu';
+        examFlagged.hidden = !flaggedNumbers.length;
+        examFlagged.textContent = 'Đánh dấu xem lại: ' + flaggedNumbers.join(', ');
+      }
+
+      function renderExamJump(questions) {
+        appState.examQuestions = questions;
+        examJumpLinks.textContent = '';
+        questions.forEach(function (q, i) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = i + 1;
+          button.className = 'btn btn-sm';
+          button.addEventListener('click', function () {
+            var card = document.getElementById('card-' + q.id);
+            card.focus({ preventScroll: true });
+            card.scrollIntoView({ block: 'start' });
+          });
+          examJumpLinks.appendChild(button);
+        });
+        refreshExamJump();
+      }
+
       function renderView() {
         updateWrongTabBadge();
-        var isExamMode = (appState.mode === 'exam50' || appState.mode === 'de_mau');
+        var isExamMode = Boolean(currentTimedExam()) || appState.mode === 'de_mau';
+        examJump.hidden = !isExamMode;
         var practiceMode = !isExamMode;
 
         cdFilters.hidden = appState.mode !== 'chuyen_de';
@@ -1486,10 +1601,14 @@
         submitFooterCard.hidden = !isExamMode;
         if (!isExamMode) resultBanner.hidden = true;
 
+        if (appState.mode === 'chan_doan') practiceTitle.textContent = DIAGNOSTIC.title;
+        if (appState.mode === 'on_dinh_ky') practiceTitle.textContent = 'Ôn đúng hạn Chương 1–2';
         var modeDesc = {
+          chan_doan: '12 câu trong 20 phút, mỗi dạng có một câu lí thuyết và một bài tính. Khi nộp bài, xem dạng nào cần luyện thêm.',
+          on_dinh_ky: 'Làm lại các câu đã đến hạn mà không mở gợi ý. Trả lời đúng để giãn khoảng ôn lên 3, 7 rồi 14 ngày.',
           exam50: 'Đề thi thử 50 phút — 28 câu (100% Chương 1 & Chương 2). Khóa đáp án đến lúc nộp, chấm xong thống kê theo 6 dạng.',
-          chuyen_de: 'Ngân hàng 36 câu chuyên đề chia theo 6 dạng trọng tâm Chương 1 & 2. Chọn dạng muốn cày, mở gợi ý trước khi xem lời giải.',
-          bay_ds_tln: 'Kho tốc độ cao gồm toàn bộ 28 câu Phần II (Đúng/Sai) & Phần III (Trả lời ngắn) của Chương 1 & 2.',
+          chuyen_de: 'Ngân hàng 42 câu chuyên đề chia theo 6 dạng trọng tâm Chương 1 & 2. Chọn dạng muốn cày, mở gợi ý trước khi xem lời giải.',
+          bay_ds_tln: 'Luyện Phần II (Đúng/Sai) và Phần III (Trả lời ngắn) của Chương 1–2.',
           on_cau_sai: 'Tự động gom các câu làm sai từ bộ nhớ cục bộ. Làm đúng trọn vẹn mới gỡ khỏi danh sách sai.',
           nguon_that: '76 câu hỏi 100% nguồn thật: 28 câu Bộ GD&ĐT & SGK + 28 câu Đề các Sở/Chuyên hot + 20 câu Tuyển tập Hay & Khó (Vận dụng cao 9+).',
           de_mau: 'Đề mẫu tổng hợp đủ cả 4 chương (Vật lí nhiệt, Khí lí tưởng, Từ trường, Vật lí hạt nhân).'
@@ -1502,7 +1621,7 @@
         if (appState.mode === 'chuyen_de') {
           cdCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + (CD_BANK.questions || []).length + ' câu';
         } else if (appState.mode === 'bay_ds_tln') {
-          trapCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / 28 câu';
+          trapCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + buildTrapPool().length + ' câu';
         } else if (appState.mode === 'nguon_that') {
           nguonCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + ALL_NGUON_QUESTIONS.length + ' câu';
         } else if (appState.mode === 'ly_thuyet_tn') {
@@ -1511,9 +1630,10 @@
         }
 
         if (isExamMode) {
+          renderExamJump(data.list);
           renderSectionGroup('Phần I: Trắc nghiệm nhiều lựa chọn (0,25 điểm / câu)', data.p1, 0, false);
-          renderSectionGroup('Phần II: Trắc nghiệm Đúng/Sai (1 ý: 0,10 | 2 ý: 0,25 | 3 ý: 0,50 | 4 ý: 1,00 điểm)', data.p2, 0, false);
-          renderSectionGroup('Phần III: Trắc nghiệm Trả lời ngắn (0,25 điểm / câu — Tối đa 4 ký tự)', data.p3, 0, false);
+          renderSectionGroup('Phần II: Trắc nghiệm Đúng/Sai (1 ý: 0,10 | 2 ý: 0,25 | 3 ý: 0,50 | 4 ý: 1,00 điểm)', data.p2, data.p1.length, false);
+          renderSectionGroup('Phần III: Trắc nghiệm Trả lời ngắn (0,25 điểm / câu — Tối đa 4 ký tự)', data.p3, data.p1.length + data.p2.length, false);
           return;
         }
 
@@ -1528,13 +1648,14 @@
               '<button type="button" class="btn btn-primary btn-sm" id="empty-go-exam">Làm đề Thi thử 50 phút Ch1–C2</button>' +
               '<button type="button" class="btn btn-sm" id="empty-go-trap">Chuyên cày Đúng/Sai &amp; Trả lời ngắn</button>' +
               '</div>';
-            qContainer.appendChild(empty);
-            document.getElementById('empty-go-exam').addEventListener('click', function () { switchMode('exam50'); });
-            document.getElementById('empty-go-trap').addEventListener('click', function () { switchMode('bay_ds_tln'); });
+            empty.querySelector('#empty-go-exam').addEventListener('click', function () { switchMode('exam50'); });
+            empty.querySelector('#empty-go-trap').addEventListener('click', function () { switchMode('bay_ds_tln'); });
+          } else if (appState.mode === 'on_dinh_ky') {
+            empty.innerHTML = '<strong>Chưa có câu đến hạn ôn.</strong><p class="muted">Các câu Chương 1–2 làm sai được hẹn ôn sau một ngày. Bạn có thể sửa lỗi ngay trong mục Ôn câu sai.</p>';
           } else {
             empty.innerHTML = '<strong>Không có câu hỏi khớp bộ lọc.</strong><p class="muted">Hãy đổi bộ lọc để xem thêm câu hỏi.</p>';
-            qContainer.appendChild(empty);
           }
+          qContainer.appendChild(empty);
           return;
         }
 
@@ -1546,6 +1667,7 @@
       function submitCurrentExam(autoSubmitted) {
         if (appState.submitted) return;
         var data = getActiveQuestions();
+        var hasAnswers = data.list.some(isQuestionAttempted);
         var p1Score = 0;
         var p2Score = 0;
         var p3Score = 0;
@@ -1564,11 +1686,13 @@
           if (q.dang_bai && topicStats[q.dang_bai]) {
             topicStats[q.dang_bai].total += 1;
             if (evalRes.isCorrect) topicStats[q.dang_bai].exactCount += 1;
+            if (bucket === 'p1') topicStats[q.dang_bai].theoryCorrect = evalRes.isCorrect;
+            if (bucket === 'p3') topicStats[q.dang_bai].exerciseCorrect = evalRes.isCorrect;
             topicStats[q.dang_bai].earnedPts += evalRes.points;
             topicStats[q.dang_bai].maxPts += evalRes.maxPoints;
           }
 
-          if (isQuestionAttempted(q)) {
+          if (isQuestionAttempted(q) || (hasAnswers && appState.mode === 'chan_doan')) {
             C.recordQuestionOutcome(q, evalRes.isCorrect);
           }
         }
@@ -1579,7 +1703,8 @@
 
         var maxScore = data.p1.length * 0.25 + data.p2.length * 1.0 + data.p3.length * 0.25;
         var total = Number((p1Score + p2Score + p3Score).toFixed(2));
-        var elapsedSec = isCountdownMode() ? ((EXAM_C12.durationMin || 50) * 60 - timerSec) : timerSec;
+        var timed = currentTimedExam();
+        var elapsedSec = timed ? timed.durationMin * 60 - timerSec : timerSec;
 
         appState.submitted = true;
         timerRunning = false;
@@ -1587,9 +1712,10 @@
         btnTimerToggle.disabled = true;
         btnSubmitExam.disabled = true;
 
-        C.recordExamResult({
-          title: appState.mode === 'exam50' ? EXAM_C12.title : (data.exam ? data.exam.title : 'Đề luyện tập'),
-          filter: appState.mode === 'exam50' ? 'c1_c2' : selChapter.value,
+        if (hasAnswers) C.recordExamResult({
+          title: timed ? timed.title : (data.exam ? data.exam.title : 'Đề luyện tập'),
+          filter: appState.mode === 'chan_doan' ? 'chan_doan_c1_c2' : (timed ? 'c1_c2' : selChapter.value),
+          studyTopics: appState.mode === 'chan_doan' ? topicStats : null,
           totalScore: total,
           maxScore: maxScore,
           p1Score: p1Score,
@@ -1603,18 +1729,24 @@
         document.getElementById('result-headline').textContent = (autoSubmitted ? 'Hết giờ làm bài! ' : 'Đã chấm xong bài làm ') + '(Thời gian làm: ' + mm + ':' + ss + ')';
         document.getElementById('res-total').textContent = C.fmt(total, 2) + ' / ' + C.fmt(maxScore, 2);
         document.getElementById('res-p1').textContent = C.fmt(p1Score, 2) + ' / ' + C.fmt(data.p1.length * 0.25, 2);
+        document.getElementById('res-p2').closest('.stat-item').hidden = !data.p2.length;
         document.getElementById('res-p2').textContent = C.fmt(p2Score, 2) + ' / ' + C.fmt(data.p2.length * 1.0, 2);
         document.getElementById('res-p3').textContent = C.fmt(p3Score, 2) + ' / ' + C.fmt(data.p3.length * 0.25, 2);
 
-        if (appState.mode === 'exam50') {
+        if (timed) {
           topicStatsWrap.hidden = false;
           topicStatsGrid.innerHTML = C.DANG_BAI_LIST.map(function (d) {
             var st = topicStats[d.id];
+            var theoryLink = appState.mode === 'chan_doan' && !st.theoryCorrect
+              ? '<a class="btn btn-sm" href="?mode=ly_thuyet_tn&amp;dang=' + d.id + '">Ôn lý thuyết dạng ' + d.id.slice(1) + '</a>'
+              : '';
             var pct = st.maxPts > 0 ? Math.round((st.earnedPts / st.maxPts) * 100) : 0;
             return '<div class="stat-item">' +
               '<div class="stat-label">' + d.ten + '</div>' +
               '<div class="stat-value" style="font-size: 1.05rem;">' + st.exactCount + '/' + st.total + ' câu (' + pct + '% điểm)</div>' +
               '<div class="muted num" style="font-size: 0.85rem;">' + C.fmt(st.earnedPts, 2) + ' / ' + C.fmt(st.maxPts, 2) + ' đ</div>' +
+              '<div class="btn-group">' + theoryLink +
+              '<a class="btn btn-sm" href="?mode=chuyen_de&amp;dang=' + d.id + '">Luyện dạng ' + d.id.slice(1) + '</a></div>' +
               '</div>';
           }).join('');
         } else {
@@ -1629,12 +1761,16 @@
 
       document.getElementById('exam-form').addEventListener('submit', function (e) {
         e.preventDefault();
+        if (examJump.hidden) return;
+        var left = appState.examQuestions.filter(function (q) { return !hasCompleteAnswer(q); }).length;
+        if (left && !window.confirm('Còn ' + left + ' câu chưa hoàn thành. Bạn muốn nộp bài ngay?')) return;
         submitCurrentExam(false);
       });
 
       function resetModeState() {
         appState.submitted = false;
         appState.lessonIndex = null;
+        appState.flagged.clear();
         appState.p1Ans = {};
         appState.p2Ans = {};
         appState.p3Ans = {};
@@ -1642,6 +1778,9 @@
         appState.revealedHints = {};
         appState.revealedSolutions = {};
         appState.clearedWrongView = {};
+        appState.reviewQuestions = appState.mode === 'on_dinh_ky'
+          ? C.getDueReviews(C.loadStore(), Date.now()).map(function (id) { return QUESTION_BY_ID[id]; }).filter(Boolean)
+          : [];
         btnSubmitExam.disabled = false;
         resultBanner.hidden = true;
         topicStatsWrap.hidden = true;
@@ -1650,7 +1789,7 @@
       }
 
       function switchMode(nextMode) {
-        var validModes = ['exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'ly_thuyet_tn', 'de_mau'];
+        var validModes = ['chan_doan', 'on_dinh_ky', 'exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'ly_thuyet_tn', 'de_mau'];
         if (validModes.indexOf(nextMode) < 0) nextMode = 'exam50';
         appState.mode = nextMode;
         modeSelect.value = nextMode;
@@ -1787,8 +1926,11 @@
       var qMode = params.get('mode') || 'ly_thuyet_tn';
       var qDang = params.get('dang');
       if (qDang && selectedDangs.hasOwnProperty(qDang)) {
-        C.DANG_BAI_LIST.forEach(function (d) { selectedDangs[d.id] = (d.id === qDang); });
-        syncDangChipUI();
+        if (qMode === 'ly_thuyet_tn') selLttnDang.value = qDang;
+        else {
+          C.DANG_BAI_LIST.forEach(function (d) { selectedDangs[d.id] = (d.id === qDang); });
+          syncDangChipUI();
+        }
       }
       var qNguon = params.get('nguon');
       if (qNguon) {

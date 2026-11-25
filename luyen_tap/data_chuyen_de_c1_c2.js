@@ -6,7 +6,7 @@
     meta: {
       standard: 'GDPT 2018',
       chapters: ['1', '2'],
-      totalQuestions: 36,
+      totalQuestions: 42,
       dangList: ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'],
       updatedAt: '2026-11-22'
     },
@@ -786,6 +786,82 @@
       }
     ]
   };
+
+  function transfer(topic, chapter, prompt, answer, unit, hint, model, formula, units, limits, graph, trap) {
+    return {
+      id: 'cd_' + topic.toLowerCase() + '_van_dung_moi',
+      chuong: chapter,
+      chapter: chapter,
+      dang_bai: topic,
+      phan: 'III',
+      muc_do: 'Vận dụng',
+      prompt: prompt,
+      answer: answer,
+      unit: unit,
+      goi_y: hint,
+      loi_giai: {
+        ban_chat: model, bien_doi: formula, don_vi: units, dieu_kien: limits, do_thi: graph,
+        dap_an: answer + ' ' + unit + '.', bay: trap
+      }
+    };
+  }
+
+  LY_CHUYEN_DE_C1_C2.questions.push(
+    transfer('D1', '1',
+      'Một nhiệt kế sai lệch tuyến tính. Khi mẫu ở 0 °C, nhiệt kế chỉ 5 °C. Khi mẫu ở 100 °C, nó chỉ 95 °C. Một mẫu khác cho số chỉ 41 °C. Nhiệt độ thực của mẫu theo °C là bao nhiêu?',
+      '40', '°C', 'Dùng hai mốc để tìm cả độ dốc và độ dời của số chỉ.',
+      'Sai lệch của nhiệt kế có thể thay đổi theo nhiệt độ nếu độ dốc hiệu chuẩn khác 1.',
+      'Gọi s là số chỉ. s = 5 + 0,9t. Suy ra t = (41 − 5)/0,9 = 40 °C.',
+      'Số chỉ và nhiệt độ thực đều theo °C. Độ dốc s theo t bằng 0,9.',
+      'Đường chuẩn tuyến tính và mẫu cân bằng nhiệt với đầu dò.',
+      'Đồ thị s theo t cắt trục tung tại 5 °C. Đồ thị đi qua (100; 95).',
+      'Chỉ trừ 5 °C mà bỏ qua hệ số góc sẽ ra 36 °C.'),
+    transfer('D2', '1',
+      'Khí giãn từ 1 L đến 2 L trong xi-lanh theo đường thẳng trên đồ thị p–V. Áp suất giảm từ 220 kPa đến 140 kPa. Giai đoạn này khí nhận 270 J. Sau đó giữ pít-tông đứng yên để khí tỏa 110 J. Tính biến thiên nội năng của cả hai giai đoạn theo J.',
+      '-20', 'J', 'Tính diện tích hình thang trong giai đoạn giãn. Giai đoạn giữ pít-tông không có công do thay đổi thể tích.',
+      'Biến thiên nội năng của cả quá trình là tổng biến thiên của từng giai đoạn.',
+      'A₁ = −(220 + 140)(2 − 1)/2 = −180 J. A₂ = 0. ΔU = −180 + 270 − 110 = −20 J.',
+      'Tích kPa·L tương đương J.',
+      'Khí biến đổi gần cân bằng và công duy nhất là công do thay đổi thể tích.',
+      'Đường thẳng nghiêng cho diện tích hình thang. Đoạn đẳng tích thẳng đứng có diện tích công bằng 0.',
+      'Không nhân áp suất đầu với ΔV khi áp suất thay đổi theo V.'),
+    transfer('D3', '1',
+      'Trộn 100 g đá ở 0 °C với 150 g nước ở 20 °C. Bỏ qua nhiệt dung của bình và thất thoát. Cho c của nước bằng 4200 J/(kg·K), λ của đá bằng 3,36 × 10⁵ J/kg. Hỏi còn lại bao nhiêu gam đá khi cân bằng?',
+      '62,5', 'g', 'Giả sử nước nguội về 0 °C rồi so sánh nhiệt tỏa với nhiệt cần để làm tan toàn bộ đá.',
+      'Nếu nhiệt tỏa ra không đủ làm đá tan hết thì trạng thái cuối có cả đá lẫn nước ở 0 °C.',
+      'Q = 0,15 × 4200 × 20 = 12600 J < 33600 J để tan hết đá. m_tan = 12600/336000 = 0,0375 kg. m_còn = 62,5 g.',
+      'Đổi g sang kg trước khi nhân c, λ rồi đổi đáp số về g.',
+      'Hệ cách nhiệt, các pha cân bằng ở áp suất thường.',
+      'Đồ thị T theo Q của nước đá ở đoạn nằm ngang, mẫu chưa đến cuối đoạn nóng chảy.',
+      'Đáp số hỏi khối lượng còn lại, sau khi đã tính khối lượng tan.'),
+    transfer('D4', '2',
+      'Một bình cứng chứa khí lí tưởng ở 320 kPa và 320 K. Sau một lần xả, lượng khí còn lại bằng 3/4 số mol ban đầu. Nhiệt độ cuối 280 K. Tính áp suất tuyệt đối cuối theo kPa.',
+      '210', 'kPa', 'Chia phương trình trạng thái của hai trạng thái để giữ lại tỉ số số mol.',
+      'Trong bình có thể tích cố định, áp suất giảm do cả mật độ hạt và nhiệt độ giảm.',
+      'p₂/p₁ = (n₂/n₁)(T₂/T₁) = (3/4)(280/320). Suy ra p₂ = 210 kPa.',
+      'T tính bằng K. Hai áp suất dùng cùng đơn vị kPa trong tỉ số.',
+      'Chỉ xét hai trạng thái cân bằng. Số mol thay đổi nên pV/T cũng thay đổi.',
+      'Trên đồ thị p–T, khi n giảm 1/4, đường thẳng của trạng thái mới có độ dốc bằng 3/4 đường cũ.',
+      'Không áp dụng p₁/T₁ = p₂/T₂ khi có khí thoát.'),
+    transfer('D5', '2',
+      'Khí ở dưới pít-tông nhẹ, thẳng đứng, có thể tích đầu 3 L. Tiết diện xi-lanh là 100 cm² và áp suất khí quyển là 100 kPa. Đặt vật 50 kg lên pít-tông, lấy g = 10 m/s². Sau khi khí trở về nhiệt độ đầu, pít-tông đã hạ bao nhiêu cm?',
+      '10', 'cm', 'Tìm áp suất cuối từ cân bằng lực, rồi dùng Boyle cho hai trạng thái đầu và cuối.',
+      'Thêm tải làm tăng áp suất cần để cân bằng. Khi T cuối bằng T đầu, thể tích cuối giảm.',
+      'p₂ = 100000 + 500/0,01 = 150000 Pa. V₂ = 3 × 100/150 = 2 L. Độ hạ = (1 L)/S = 0,001/0,01 = 0,1 m.',
+      '100 cm² = 0,01 m². 1 L = 0,001 m³. 0,1 m = 10 cm.',
+      'Lượng khí giữ nguyên. Pít-tông nhẹ, không ma sát và tiết diện không đổi.',
+      'Hai điểm đầu và cuối thuộc cùng đường đẳng nhiệt p–V. Độ chênh theo trục V là 1 L.',
+      'Lực do vật chỉ tạo thêm 50 kPa. Áp suất tuyệt đối còn gồm 100 kPa khí quyển.'),
+    transfer('D6', '2',
+      'Một lượng khí lí tưởng ban đầu có áp suất 160 kPa. Sau biến đổi, thể tích gấp đôi và tốc độ căn quân phương gấp 1,5 lần ban đầu. Khí vẫn kín. Tính áp suất cuối theo kPa.',
+      '180', 'kPa', 'Viết áp suất theo mật độ phân tử và bình phương tốc độ căn quân phương.',
+      'Thể tích tăng làm giảm mật độ hạt, còn chuyển động nhanh hơn làm tăng áp suất.',
+      'p₂/p₁ = (V₁/V₂)(v_rms,₂/v_rms,₁)² = 0,5 × 1,5² = 1,125. p₂ = 180 kPa.',
+      'v_rms tính bằng m/s. Hai áp suất dùng cùng đơn vị kPa.',
+      'Cùng lượng cùng loại khí, phân bố vận tốc đẳng hướng ở hai trạng thái cân bằng.',
+      'Ở từng V cố định, đồ thị p theo v_rms² là đường thẳng qua gốc. Khi V tăng gấp đôi, độ dốc bằng một nửa.',
+      'Phải bình phương hệ số 1,5 trước khi nhân với tỉ số mật độ.')
+  );
 
   global.LY_CHUYEN_DE_C1_C2 = LY_CHUYEN_DE_C1_C2;
 })(window);
