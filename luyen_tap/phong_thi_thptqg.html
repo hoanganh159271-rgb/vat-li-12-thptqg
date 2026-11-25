@@ -203,6 +203,7 @@
         <button type="button" class="mode-tab" role="tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-selected="false">3. Chuyên cày Bẫy Đúng/Sai &amp; Trả lời ngắn</button>
         <button type="button" class="mode-tab" role="tab" data-mode="on_cau_sai" id="tab-on_cau_sai" aria-selected="false">4. Ôn lại Câu Từng Sai (0)</button>
         <button type="button" class="mode-tab" role="tab" data-mode="nguon_that" id="tab-nguon_that" aria-selected="false">Nguồn thật: Bộ, Sở &amp; Hay–Khó (76 câu)</button>
+        <button type="button" class="mode-tab" role="tab" data-mode="ly_thuyet_tn" id="tab-ly_thuyet_tn" aria-selected="false">LT &amp; Mô hình TN theo Bài (33 câu)</button>
         <button type="button" class="mode-tab" role="tab" data-mode="de_mau" id="tab-de_mau" aria-selected="false">Đề mẫu 4 chương (Ch1–Ch4)</button>
       </div>
 
@@ -306,6 +307,35 @@
           </div>
           <div style="align-self: flex-end;">
             <span id="nguon-count-tag" class="tag">Đang hiển thị: 76 câu</span>
+          </div>
+        </div>
+
+        <!-- Bộ lọc Lý thuyết & Mô hình TN từng Bài học (Mode 6) -->
+        <div id="lttn-filters" hidden style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <div>
+            <label for="sel-lttn-bai" class="control-label" style="display: block; margin-bottom: 4px;">Lọc theo Bài học</label>
+            <select id="sel-lttn-bai" style="min-width: 260px;">
+              <option value="all">Tất cả 11 bài học Ch1–C2 (33 câu)</option>
+            </select>
+          </div>
+          <div>
+            <label for="sel-lttn-loai" class="control-label" style="display: block; margin-bottom: 4px;">Phân loại nội dung</label>
+            <select id="sel-lttn-loai" style="min-width: 210px;">
+              <option value="all">Lí thuyết &amp; Mô hình TN</option>
+              <option value="ly_thuyet">Lí thuyết bài học cốt lõi</option>
+              <option value="mo_hinh_tn">Lí thuyết Mô hình Thí nghiệm</option>
+            </select>
+          </div>
+          <div>
+            <label for="sel-lttn-phan" class="control-label" style="display: block; margin-bottom: 4px;">Lọc Phần</label>
+            <select id="sel-lttn-phan" style="min-width: 170px;">
+              <option value="all">Cả 2 phần (I &amp; II)</option>
+              <option value="I">Phần I (Nhiều lựa chọn)</option>
+              <option value="II">Phần II (Đúng/Sai)</option>
+            </select>
+          </div>
+          <div style="align-self: flex-end;">
+            <span id="lttn-count-tag" class="tag">Đang hiển thị: 33 câu</span>
           </div>
         </div>
 
@@ -423,6 +453,7 @@
   <script src="./data_nguon_thuc_te_c1_c2.js"></script>
   <script src="./data_de_tinh_hot_c1_c2.js"></script>
   <script src="./data_hay_kho_c1_c2.js"></script>
+  <script src="./data_ly_thuyet_tn_c1_c2.js"></script>
   <script>
     (function () {
       'use strict';
@@ -433,6 +464,7 @@
       var NGUON_BANK = window.LY_NGUON_THUC_TE_C1_C2 || { questions: [] };
       var DE_TINH_BANK = window.LY_DE_TINH_HOT_C1_C2 || { questions: [] };
       var HAY_KHO_BANK = window.LY_HAY_KHO_C1_C2 || { questions: [] };
+      var LTTN_BANK = window.LY_LY_THUYET_TN_C1_C2 || { lessons: [], questions: [] };
       var ALL_NGUON_QUESTIONS = [].concat(
         NGUON_BANK.questions || [],
         DE_TINH_BANK.questions || [],
@@ -452,6 +484,7 @@
 
       (CD_BANK.questions || []).forEach(function (q) { registerQuestion(q); });
       (ALL_NGUON_QUESTIONS || []).forEach(function (q) { registerQuestion(q); });
+      (LTTN_BANK.questions || []).forEach(function (q) { registerQuestion(q); });
       (EXAM_C12.phan1 || []).forEach(function (q) { registerQuestion(q, 'I'); });
       (EXAM_C12.phan2 || []).forEach(function (q) { registerQuestion(q, 'II'); });
       (EXAM_C12.phan3 || []).forEach(function (q) { registerQuestion(q, 'III'); });
@@ -539,6 +572,12 @@
       var selNguonPhan = document.getElementById('sel-nguon-phan');
       var nguonCountTag = document.getElementById('nguon-count-tag');
 
+      var lttnFilters = document.getElementById('lttn-filters');
+      var selLttnBai = document.getElementById('sel-lttn-bai');
+      var selLttnLoai = document.getElementById('sel-lttn-loai');
+      var selLttnPhan = document.getElementById('sel-lttn-phan');
+      var lttnCountTag = document.getElementById('lttn-count-tag');
+
       var legacyFilters = document.getElementById('legacy-filters');
       var selExam = document.getElementById('sel-exam');
       var selChapter = document.getElementById('sel-chapter');
@@ -575,6 +614,13 @@
         optNguon.value = d.id;
         optNguon.textContent = d.ten;
         selNguonDang.appendChild(optNguon);
+      });
+
+      (LTTN_BANK.lessons || []).forEach(function (ls) {
+        var optLttn = document.createElement('option');
+        optLttn.value = ls.id;
+        optLttn.textContent = 'Ch' + ls.chuong + ' — ' + ls.label;
+        selLttnBai.appendChild(optLttn);
       });
 
       (LEGACY_BANK.exams || []).forEach(function (ex) {
@@ -677,6 +723,9 @@
       selNguonNhom.addEventListener('change', renderView);
       selNguonDang.addEventListener('change', renderView);
       selNguonPhan.addEventListener('change', renderView);
+      selLttnBai.addEventListener('change', renderView);
+      selLttnLoai.addEventListener('change', renderView);
+      selLttnPhan.addEventListener('change', renderView);
 
       function buildTrapPool() {
         var list = [];
@@ -722,6 +771,15 @@
             return true;
           });
           return { list: filteredNguon };
+        }
+        if (appState.mode === 'ly_thuyet_tn') {
+          var filteredLttn = (LTTN_BANK.questions || []).filter(function (q) {
+            if (selLttnBai.value !== 'all' && q.bai !== selLttnBai.value) return false;
+            if (selLttnLoai.value !== 'all' && q.loai_lt !== selLttnLoai.value) return false;
+            if (selLttnPhan.value !== 'all' && q.phan !== selLttnPhan.value) return false;
+            return true;
+          });
+          return { list: filteredLttn };
         }
         if (appState.mode === 'on_cau_sai') {
           var wq = C.getWrongQueue();
@@ -858,6 +916,18 @@
           dTag.className = 'tag tag-cold';
           dTag.textContent = dangLabel(q.dang_bai);
           tagsWrap.appendChild(dTag);
+        }
+        if (q.bai) {
+          var bTag = document.createElement('span');
+          bTag.className = 'tag tag-cold';
+          bTag.textContent = q.bai.replace('B', 'Bài ');
+          tagsWrap.appendChild(bTag);
+        }
+        if (q.loai_lt) {
+          var ltTag = document.createElement('span');
+          ltTag.className = q.loai_lt === 'mo_hinh_tn' ? 'tag tag-warm' : 'tag';
+          ltTag.textContent = q.loai_lt === 'mo_hinh_tn' ? 'Mô hình TN' : 'Lí thuyết bài';
+          tagsWrap.appendChild(ltTag);
         }
         if (q.muc_do) {
           var mTag = document.createElement('span');
@@ -1176,6 +1246,7 @@
         cdFilters.hidden = appState.mode !== 'chuyen_de';
         trapFilters.hidden = appState.mode !== 'bay_ds_tln';
         nguonFilters.hidden = appState.mode !== 'nguon_that';
+        lttnFilters.hidden = appState.mode !== 'ly_thuyet_tn';
         legacyFilters.hidden = appState.mode !== 'de_mau';
         btnExportWrongMd.hidden = appState.mode !== 'on_cau_sai';
         submitFooterCard.hidden = !isExamMode;
@@ -1187,6 +1258,7 @@
           bay_ds_tln: 'Kho tốc độ cao gồm toàn bộ 28 câu Phần II (Đúng/Sai) & Phần III (Trả lời ngắn) của Chương 1 & 2.',
           on_cau_sai: 'Tự động gom các câu làm sai từ bộ nhớ cục bộ. Làm đúng trọn vẹn mới gỡ khỏi danh sách sai.',
           nguon_that: '76 câu hỏi 100% nguồn thật: 28 câu Bộ GD&ĐT & SGK + 28 câu Đề các Sở/Chuyên hot + 20 câu Tuyển tập Hay & Khó (Vận dụng cao 9+).',
+          ly_thuyet_tn: '33 câu hỏi Lí thuyết cốt lõi & Lí thuyết Mô hình Thí nghiệm cho từng bài học (Bài 1–6 Chương 1; Bài 8–12 Chương 2) — mỗi bài 2 câu Phần I + 1 câu Phần II Đúng/Sai.',
           de_mau: 'Đề mẫu tổng hợp đủ cả 4 chương (Vật lí nhiệt, Khí lí tưởng, Từ trường, Vật lí hạt nhân).'
         };
         leftControls.innerHTML = '<span class="muted" style="font-size: 0.92rem;">' + modeDesc[appState.mode] + '</span>';
@@ -1200,6 +1272,8 @@
           trapCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / 28 câu';
         } else if (appState.mode === 'nguon_that') {
           nguonCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + ALL_NGUON_QUESTIONS.length + ' câu';
+        } else if (appState.mode === 'ly_thuyet_tn') {
+          lttnCountTag.textContent = 'Đang hiển thị: ' + data.list.length + ' / ' + (LTTN_BANK.questions || []).length + ' câu';
         }
 
         if (isExamMode) {
@@ -1341,7 +1415,7 @@
       }
 
       function switchMode(nextMode) {
-        var validModes = ['exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'de_mau'];
+        var validModes = ['exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'ly_thuyet_tn', 'de_mau'];
         if (validModes.indexOf(nextMode) < 0) nextMode = 'exam50';
         appState.mode = nextMode;
         modeTabs.forEach(function (t) {
@@ -1479,6 +1553,16 @@
       if (qNguon) {
         var hasNguonOpt = Array.prototype.some.call(selNguonNhom.options, function (opt) { return opt.value === qNguon; });
         if (hasNguonOpt) selNguonNhom.value = qNguon;
+      }
+      var qBai = params.get('bai');
+      if (qBai) {
+        var hasBaiOpt = Array.prototype.some.call(selLttnBai.options, function (opt) { return opt.value === qBai; });
+        if (hasBaiOpt) selLttnBai.value = qBai;
+      }
+      var qLoai = params.get('loai');
+      if (qLoai) {
+        var hasLoaiOpt = Array.prototype.some.call(selLttnLoai.options, function (opt) { return opt.value === qLoai; });
+        if (hasLoaiOpt) selLttnLoai.value = qLoai;
       }
 
       /* Giữ nguyên API kiểm thử cho các script xác minh */
