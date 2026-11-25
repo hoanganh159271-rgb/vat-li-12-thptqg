@@ -970,7 +970,7 @@
       window.addEventListener('resize', redrawActive);
 
       /* Đọc ?tab= hoặc #tab= trên URL */
-      var params = new URLSearchParams(window.location.search || '');
+      var params = new URLSearchParams(window.location.search);
       var reqTab = params.get('tab') || '';
       if (!reqTab && window.location.hash.indexOf('tab=') !== -1) {
         reqTab = window.location.hash.split('tab=')[1].split('&')[0];
