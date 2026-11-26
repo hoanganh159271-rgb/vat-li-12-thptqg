@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#184E8A">
+  <title>8 thí nghiệm Đúng/Sai · Ôn hai đề Vật lí</title>
+  <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="./thi_nghiem_hai_de.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="./on_hai_de.html" class="brand-link">Ôn trước hai đề Vật lí</a>
+      <button type="button" id="ly-theme-toggle" class="btn btn-sm">Chế độ Tối</button>
+    </div>
+  </header>
+  <main class="wrap page-main ds-lab-page">
+    <section class="card">
+      <h1>Thí nghiệm cho 8 câu Đúng/Sai</h1>
+      <p>Chọn một câu, đổi dữ kiện trong mô phỏng và dự đoán từng ý. Bấm vào nhận định để đối chiếu đáp án.</p>
+      <label for="ds-lab-choice">Chọn câu thí nghiệm</label>
+      <select id="ds-lab-choice"></select>
+      <div class="btn-group">
+        <a id="ds-lab-theory" class="btn btn-sm" href="./on_hai_de.html">Ôn lý thuyết liên quan</a>
+        <a id="ds-lab-exam" class="btn btn-sm" href="./on_hai_de.html#lam-de">Làm đề</a>
+      </div>
+    </section>
+    <section class="card" aria-labelledby="ds-lab-question">
+      <h2 id="ds-lab-question">Câu Đúng/Sai</h2>
+      <p id="ds-lab-stem"></p>
+      <ol id="ds-lab-statements" type="a"></ol>
+    </section>
+    <section class="card">
+      <div id="ds-lab-model" class="ds-lab-body"></div>
+    </section>
+  </main>
+  <script src="../assets/common.js"></script>
+  <script src="../luyen_tap/data_hai_de_nhiet_khi.js"></script>
+  <script src="./thi_nghiem_hai_de.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      window.LY_COMMON.initShell();
+      var bank = window.LY_HAI_DE_NHIET_KHI;
+      var choice = document.getElementById('ds-lab-choice');
+      var mapping = new Map();
+      [
+        [bank.de_pdf_a, 'Đề A · Thi thử lần 4', 'de_pdf_a'],
+        [bank.de_pdf_b, 'Đề B · Nguyễn Khuyến – Lê Thánh Tông', 'de_pdf_b']
+      ].forEach(function (entry, index) {
+        var group = document.createElement('optgroup');
+        group.label = entry[1];
+        entry[0].phan2.forEach(function (q) {
+          var label = 'Đề ' + 'AB'[index] + ' · Câu ' + q.sourceNumber;
+          group.appendChild(new Option(label, q.id));
+          mapping.set(q.id, { question: q, label: label, mode: entry[2] });
+        });
+        choice.appendChild(group);
+      });
+
+      var id = new URLSearchParams(location.search).get('cau');
+      if (mapping.has(id)) choice.value = id;
+
+      function selectQuestion() {
+        var current = mapping.get(choice.value);
+        var q = current.question;
+        document.getElementById('ds-lab-question').textContent = current.label;
+        document.getElementById('ds-lab-stem').textContent = q.stem;
+        document.getElementById('ds-lab-theory').href = './on_hai_de.html#' + q.studyAnchor;
+        document.getElementById('ds-lab-exam').href = '../luyen_tap/phong_thi_thptqg.html?mode=' + current.mode;
+        var list = document.getElementById('ds-lab-statements');
+        list.replaceChildren();
+        q.items.forEach(function (item) {
+          var row = document.createElement('li');
+          var answer = document.createElement('details');
+          var summary = document.createElement('summary');
+          var reason = document.createElement('p');
+          summary.textContent = item.text;
+          reason.textContent = (item.answer ? 'Đúng. ' : 'Sai. ') + item.reason;
+          answer.append(summary, reason);
+          row.appendChild(answer);
+          list.appendChild(row);
+        });
+        var model = document.getElementById('ds-lab-model');
+        model.replaceChildren();
+        window.LY_DS_MODELS.mount(model, q.id);
+      }
+
+      choice.addEventListener('change', selectQuestion);
+      selectQuestion();
+    })();
+  </script>
+</body>
+</html>

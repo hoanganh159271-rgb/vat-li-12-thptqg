@@ -1,0 +1,122 @@
+.ds-lab {
+  margin: 4px 0 12px;
+  padding: clamp(10px, 2vw, 16px);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  min-width: 0;
+}
+.ds-lab > summary {
+  min-height: 44px;
+  padding-block: 8px;
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 650;
+}
+.ds-lab-body {
+  display: grid;
+  gap: 12px;
+  overflow-wrap: anywhere;
+}
+.ds-lab-body h3, .ds-lab-body h4, .ds-lab-body p {
+  margin: 0;
+}
+.ds-lab-fields, .ds-lab-values {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+.ds-lab-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 4px 8px;
+}
+.ds-lab-control input {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+}
+.ds-lab-control output {
+  color: var(--accent);
+  white-space: nowrap;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.ds-lab-values { margin: 0; }
+.ds-lab-values > div {
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+}
+.ds-lab-values dt { color: var(--ink-muted); }
+.ds-lab-values dd {
+  margin: 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.ds-lab-picture { display: grid; gap: 8px; }
+.ds-lab-picture canvas {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.ds-lab-track {
+  height: 10px;
+  overflow: hidden;
+  background: var(--surface-alt);
+  border-radius: 8px;
+}
+.ds-lab-fill {
+  height: 100%;
+  background: var(--accent);
+}
+.ds-lab-directions {
+  margin: 0;
+  padding-inline-start: 1.55em;
+}
+.ds-lab-directions li + li { margin-top: 6px; }
+.ds-lab-page .btn { min-height: 44px; white-space: normal; }
+.ds-lab-page select { max-width: 100%; min-height: 44px; }
+.ds-lab-page .card + .card { margin-top: 14px; }
+.ds-lab-page #ds-lab-stem { margin: 0; }
+.ds-lab-page #ds-lab-statements { margin: 0; padding-inline-start: 1.55em; }
+.ds-lab-page #ds-lab-statements li { padding-block: 4px; }
+.ds-lab-page #ds-lab-statements details p { margin-block: 4px 0; }
+
+.ds-lab-scene {
+  display: flex;
+  max-width: 190px;
+  height: 100px;
+  margin: 4px 0;
+}
+.ds-lab-scene-piston {
+  width: 78px;
+  align-items: end;
+  border: 2px solid var(--border-strong);
+  border-top: 0;
+  background: var(--surface-alt);
+}
+.ds-lab-scene-piston .ds-lab-shape {
+  width: 100%;
+  height: var(--size);
+  background: var(--phys-warm-bg);
+  border-top: 7px solid var(--ink-muted);
+}
+.ds-lab-scene-bag {
+  width: 160px;
+  align-items: center;
+  justify-content: center;
+  background: var(--phys-cold-bg);
+  border-radius: var(--radius-sm);
+}
+.ds-lab-scene-bag .ds-lab-shape {
+  width: calc(var(--size) * 0.5);
+  aspect-ratio: 1;
+  border-radius: 45% 48% 47% 46%;
+  border: 3px solid var(--phys-cold);
+  background: var(--surface);
+}

@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#184E8A">
   <link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
   <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../ly_thuyet/thi_nghiem_hai_de.css">
   <style>
     #mode-controls select { max-width: 100%; }
     #mode-controls label + select { min-width: 0 !important; width: 100%; min-height: 44px; }
@@ -577,6 +578,7 @@
   <script src="./minh_hoa_loi_giai_c1_c2.js"></script>
   <script src="./data_chan_doan_c1_c2.js"></script>
   <script src="./data_hai_de_nhiet_khi.js"></script>
+  <script src="../ly_thuyet/thi_nghiem_hai_de.js"></script>
   <script>
     (function () {
       'use strict';
@@ -1048,6 +1050,24 @@
           reviewLink.className = 'btn btn-sm solution-study-link';
           reviewLink.textContent = 'Ôn kiến thức của câu này';
           box.appendChild(reviewLink);
+        }
+
+        if (q.studyAnchor && q.phan === 'II' && window.LY_DS_MODELS) {
+          var lab = document.createElement('details');
+          lab.className = 'ds-lab';
+          var labLabel = document.createElement('summary');
+          labLabel.textContent = 'Thử thí nghiệm của câu này';
+          lab.appendChild(labLabel);
+          function mountExperiment() {
+            if (!lab.open) return;
+            var labBody = document.createElement('div');
+            labBody.className = 'ds-lab-body';
+            window.LY_DS_MODELS.mount(labBody, q.id);
+            lab.appendChild(labBody);
+            lab.removeEventListener('toggle', mountExperiment);
+          }
+          lab.addEventListener('toggle', mountExperiment);
+          box.appendChild(lab);
         }
 
         if (isWrong) {
