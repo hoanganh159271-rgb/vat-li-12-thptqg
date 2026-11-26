@@ -104,6 +104,7 @@
     #exam-jump-links .answered { background: var(--phys-ok-bg); border-color: var(--phys-ok); }
     .q-card { scroll-margin-top: 85px; }
     .topic-stat-grid .btn, .q-head .btn { white-space: normal; min-height: 44px; }
+    .solution-study-link { align-self: flex-start; min-height: 44px; white-space: normal; }
     .exam-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -296,6 +297,8 @@
         <button type="button" class="mode-tab" data-mode="ly_thuyet_tn" id="tab-ly_thuyet_tn" aria-pressed="false">Lý thuyết &amp; thí nghiệm</button>
         <button type="button" class="mode-tab" data-mode="chan_doan" id="tab-chan_doan" aria-pressed="false">Chẩn đoán Ch1–2</button>
         <button type="button" class="mode-tab" data-mode="on_dinh_ky" id="tab-on_dinh_ky" aria-pressed="false">Ôn đúng hạn</button>
+        <button type="button" class="mode-tab" data-mode="de_pdf_a" aria-pressed="false">Đề A · Thi thử lần 4</button>
+        <button type="button" class="mode-tab" data-mode="de_pdf_b" aria-pressed="false">Đề B · Nguyễn Khuyến</button>
         <button type="button" class="mode-tab" data-mode="exam50" id="tab-exam50" aria-pressed="true">Thi thử Ch1–2</button>
         <button type="button" class="mode-tab" data-mode="chuyen_de" id="tab-chuyen_de" aria-pressed="false">Luyện chuyên đề</button>
         <button type="button" class="mode-tab" data-mode="bay_ds_tln" id="tab-bay_ds_tln" aria-pressed="false">Bẫy Đúng/Sai &amp; TLN</button>
@@ -312,6 +315,7 @@
       <!-- Thanh điều khiển ngữ cảnh theo chế độ -->
       <div id="mode-controls" style="display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--border); padding-top: 14px;">
         <div class="exam-toolbar" id="exam-toolbar">
+          <a id="study-pdf-link" class="btn btn-sm" href="../ly_thuyet/on_hai_de.html" hidden>Ôn kiến thức cho hai đề</a>
           <div id="mode-left-controls" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;"></div>
 
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
@@ -572,6 +576,7 @@
   <script src="./data_bay_ly_thuyet_c1_c2.js"></script>
   <script src="./minh_hoa_loi_giai_c1_c2.js"></script>
   <script src="./data_chan_doan_c1_c2.js"></script>
+  <script src="./data_hai_de_nhiet_khi.js"></script>
   <script>
     (function () {
       'use strict';
@@ -583,6 +588,7 @@
       var DE_TINH_BANK = window.LY_DE_TINH_HOT_C1_C2 || { questions: [] };
       var HAY_KHO_BANK = window.LY_HAY_KHO_C1_C2 || { questions: [] };
       var DIAGNOSTIC = window.LY_DIAGNOSTIC_C1_C2;
+      var PDF_EXAMS = window.LY_HAI_DE_NHIET_KHI || {};
       var LTTN_BANK = window.LY_LY_THUYET_TN_C1_C2 || { lessons: [], questions: [] };
       var ALL_NGUON_QUESTIONS = [].concat(
         NGUON_BANK.questions || [],
@@ -608,6 +614,9 @@
       (EXAM_C12.phan1 || []).forEach(function (q) { registerQuestion(q, 'I'); });
       (EXAM_C12.phan2 || []).forEach(function (q) { registerQuestion(q, 'II'); });
       (EXAM_C12.phan3 || []).forEach(function (q) { registerQuestion(q, 'III'); });
+      Object.values(PDF_EXAMS).forEach(function (exam) {
+        exam.phan1.concat(exam.phan2, exam.phan3).forEach(function (q) { registerQuestion(q); });
+      });
       (LEGACY_BANK.exams || []).forEach(function (ex) {
         (ex.phan1 || []).forEach(function (q) { registerQuestion(q, 'I'); });
         (ex.phan2 || []).forEach(function (q) { registerQuestion(q, 'II'); });
@@ -791,7 +800,7 @@
       function currentTimedExam() {
         if (appState.mode === 'chan_doan') return DIAGNOSTIC;
         if (appState.mode === 'exam50') return EXAM_C12;
-        return null;
+        return PDF_EXAMS[appState.mode] || null;
       }
 
       function renderTimer() {
@@ -1025,14 +1034,21 @@
           html += '<p><strong>3. Đáp án chuẩn:</strong> ' + exp.dapAn + '</p>';
         }
         var visual = window.LY_SOLUTION_VISUAL && window.LY_SOLUTION_VISUAL.render(q);
-        if (!visual && q.bo_sung && q.phan === 'II') {
-          html += '<ul>' + q.items.map(function (item) {
+        if (!visual && q.phan === 'II' && q.items.some(function (item) { return item.reason; })) {
+          html += '<ul>' + q.items.filter(function (item) { return item.reason; }).map(function (item) {
             return '<li><strong>' + item.label + ')</strong> ' + item.reason + '</li>';
           }).join('') + '</ul>';
         }
         html += '<p><strong>4. Bẫy cần tránh:</strong> ' + exp.bay + '</p>';
         box.innerHTML = html;
         if (visual) box.firstElementChild.after(visual);
+        if (q.studyAnchor) {
+          var reviewLink = document.createElement('a');
+          reviewLink.href = '../ly_thuyet/on_hai_de.html#' + q.studyAnchor;
+          reviewLink.className = 'btn btn-sm solution-study-link';
+          reviewLink.textContent = 'Ôn kiến thức của câu này';
+          box.appendChild(reviewLink);
+        }
 
         if (isWrong) {
           var btnLog = document.createElement('button');
@@ -1584,6 +1600,7 @@
 
       function renderView() {
         updateWrongTabBadge();
+        var pdfExam = PDF_EXAMS[appState.mode];
         var isExamMode = Boolean(currentTimedExam()) || appState.mode === 'de_mau';
         examJump.hidden = !isExamMode;
         var practiceMode = !isExamMode;
@@ -1602,6 +1619,8 @@
         if (!isExamMode) resultBanner.hidden = true;
 
         if (appState.mode === 'chan_doan') practiceTitle.textContent = DIAGNOSTIC.title;
+        if (pdfExam) practiceTitle.textContent = pdfExam.title;
+        document.getElementById('study-pdf-link').hidden = !pdfExam;
         if (appState.mode === 'on_dinh_ky') practiceTitle.textContent = 'Ôn đúng hạn Chương 1–2';
         var modeDesc = {
           chan_doan: '12 câu trong 20 phút, mỗi dạng có một câu lí thuyết và một bài tính. Khi nộp bài, xem dạng nào cần luyện thêm.',
@@ -1613,7 +1632,7 @@
           nguon_that: '76 câu hỏi 100% nguồn thật: 28 câu Bộ GD&ĐT & SGK + 28 câu Đề các Sở/Chuyên hot + 20 câu Tuyển tập Hay & Khó (Vận dụng cao 9+).',
           de_mau: 'Đề mẫu tổng hợp đủ cả 4 chương (Vật lí nhiệt, Khí lí tưởng, Từ trường, Vật lí hạt nhân).'
         };
-        leftControls.textContent = modeDesc[appState.mode] || '';
+        leftControls.textContent = pdfExam ? pdfExam.description : (modeDesc[appState.mode] || '');
 
         var data = getActiveQuestions();
         qContainer.innerHTML = '';
@@ -1714,7 +1733,8 @@
 
         if (hasAnswers) C.recordExamResult({
           title: timed ? timed.title : (data.exam ? data.exam.title : 'Đề luyện tập'),
-          filter: appState.mode === 'chan_doan' ? 'chan_doan_c1_c2' : (timed ? 'c1_c2' : selChapter.value),
+          filter: PDF_EXAMS[appState.mode] ? appState.mode :
+            (appState.mode === 'chan_doan' ? 'chan_doan_c1_c2' : (timed ? 'c1_c2' : selChapter.value)),
           studyTopics: appState.mode === 'chan_doan' ? topicStats : null,
           totalScore: total,
           maxScore: maxScore,
@@ -1735,7 +1755,9 @@
 
         if (timed) {
           topicStatsWrap.hidden = false;
-          topicStatsGrid.innerHTML = C.DANG_BAI_LIST.map(function (d) {
+          topicStatsGrid.innerHTML = C.DANG_BAI_LIST.filter(function (d) {
+            return topicStats[d.id].total > 0;
+          }).map(function (d) {
             var st = topicStats[d.id];
             var theoryLink = appState.mode === 'chan_doan' && !st.theoryCorrect
               ? '<a class="btn btn-sm" href="?mode=ly_thuyet_tn&amp;dang=' + d.id + '">Ôn lý thuyết dạng ' + d.id.slice(1) + '</a>'
@@ -1789,7 +1811,7 @@
       }
 
       function switchMode(nextMode) {
-        var validModes = ['chan_doan', 'on_dinh_ky', 'exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'ly_thuyet_tn', 'de_mau'];
+        var validModes = ['chan_doan', 'on_dinh_ky', 'exam50', 'chuyen_de', 'bay_ds_tln', 'on_cau_sai', 'nguon_that', 'ly_thuyet_tn', 'de_mau'].concat(Object.keys(PDF_EXAMS));
         if (validModes.indexOf(nextMode) < 0) nextMode = 'exam50';
         appState.mode = nextMode;
         modeSelect.value = nextMode;
