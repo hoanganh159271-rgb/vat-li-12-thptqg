@@ -1,5 +1,5 @@
 /* Service Worker — Hỗ trợ chạy 100% ngoại tuyến & tự cập nhật khi có mạng */
-var CACHE_NAME = 'vatli12-gdpt2018-v11';
+var CACHE_NAME = 'vatli12-gdpt2018-v12';
 
 var PRECACHE_URLS = [
   './',
